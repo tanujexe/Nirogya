@@ -60,8 +60,8 @@ export default function Navbar() {
             <div className="bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] p-2 rounded-xl group-hover:scale-105 transition-transform">
               <Heart className="w-6 h-6 text-white" fill="white" />
             </div>
-            <span className="text-xl font-semibold bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] bg-clip-text text-transparent">
-              Nirogya Sathi
+            <span className="text-xl font-bold bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] bg-clip-text text-transparent">
+              NirogyaSathi
             </span>
           </Link>
 
