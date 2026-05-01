@@ -10,8 +10,6 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [role, setRole] = useState('user');
-
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -24,11 +22,11 @@ export default function Login() {
     }
 
     try {
-      await login(email, password, role);
+      await login(email, password);
       toast.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
-      toast.error('Login failed. Please try again.');
+      toast.error(typeof error === 'string' ? error : 'Login failed. Please try again.');
     }
   };
 
@@ -73,24 +71,6 @@ export default function Login() {
                 to Nirogya Sathi Healthcare
               </p>
             </div>
-          </div>
-
-          {/* Role Switch */}
-          <div className="flex bg-muted rounded-xl p-1 mb-8">
-            {['user', 'doctor', 'admin'].map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRole(r)}
-                className={`flex-1 py-2.5 rounded-lg font-medium transition-all capitalize ${
-                  role === r
-                    ? 'bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white shadow-lg'
-                    : 'text-muted-foreground hover:bg-white/10'
-                }`}
-              >
-                {r === 'user' ? 'Patient' : r}
-              </button>
-            ))}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
