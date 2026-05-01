@@ -1,0 +1,26 @@
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.Toastify__toast {
+  border-radius: 1rem !important;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(to right, var(--healthcare-green), var(--healthcare-cyan)) !important;
+  color: white !important;
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(to right, var(--healthcare-red), #f87171) !important;
+  color: white !important;
+}
+
+.Toastify__toast--info {
+  background: linear-gradient(to right, var(--healthcare-cyan), var(--healthcare-blue)) !important;
+  color: white !important;
+}
