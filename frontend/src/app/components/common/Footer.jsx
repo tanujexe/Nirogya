@@ -15,22 +15,25 @@ export default function Footer() {
 
   const footerLinks = {
     company: [
-      { name: "About Us", path: "/about" },
-      { name: "Careers", path: "/careers" },
-      { name: "Press", path: "/press" },
-      { name: "Blog", path: "/blog" },
+      { name: "About Us", path: "/#features" },
+      { name: "Testimonials", path: "/#testimonials" },
+      { name: "FAQs", path: "/#faqs" },
+      { name: "Health Tips", path: "/#faqs" },
     ],
     services: [
       { name: "Find Doctors", path: "/doctors" },
+      { name: "Medical Vault", path: "/vault" },
       { name: "Hospitals", path: "/hospitals" },
+      { name: "Blood Bank", path: "/blood-bank" },
+      { name: "Ambulances", path: "/ambulance" },
       { name: "Lab Tests", path: "/lab-tests" },
       { name: "Symptom Checker", path: "/symptom-checker" },
     ],
     support: [
-      { name: "Help Center", path: "/help" },
-      { name: "Contact Us", path: "/contact" },
-      { name: "Privacy Policy", path: "/privacy" },
-      { name: "Terms of Service", path: "/terms" },
+      { name: "Help Center", path: "/#faqs" },
+      { name: "Contact Us", path: "mailto:support@nirogyasathi.com" },
+      { name: "Privacy Policy", path: "#" },
+      { name: "Terms of Service", path: "#" },
     ],
   };
 
@@ -52,7 +55,7 @@ export default function Footer() {
               </div>
 
               <span className="text-xl font-semibold bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] bg-clip-text text-transparent">
-                Nirogya Sathi
+                NirogyaSathi
               </span>
             </Link>
 
@@ -62,15 +65,15 @@ export default function Footer() {
             </p>
 
             <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <a href="tel:+9118001234567" className="flex items-center space-x-2 text-sm text-muted-foreground hover:text-[var(--healthcare-cyan)] transition-colors">
                 <Phone className="w-4 h-4 text-[var(--healthcare-cyan)]" />
                 <span>+91 1800-123-4567</span>
-              </div>
+              </a>
 
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <a href="mailto:support@nirogyasathi.com" className="flex items-center space-x-2 text-sm text-muted-foreground hover:text-[var(--healthcare-cyan)] transition-colors">
                 <Mail className="w-4 h-4 text-[var(--healthcare-cyan)]" />
                 <span>support@nirogyasathi.com</span>
-              </div>
+              </a>
 
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 text-[var(--healthcare-cyan)]" />
@@ -85,7 +88,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.company.map(function (link) {
                 return (
-                  <li key={link.path}>
+                  <li key={link.name}>
                     <Link
                       to={link.path}
                       className="text-sm text-muted-foreground hover:text-[var(--healthcare-cyan)] transition-colors"
@@ -104,7 +107,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.services.map(function (link) {
                 return (
-                  <li key={link.path}>
+                  <li key={link.name}>
                     <Link
                       to={link.path}
                       className="text-sm text-muted-foreground hover:text-[var(--healthcare-cyan)] transition-colors"
@@ -123,7 +126,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {footerLinks.support.map(function (link) {
                 return (
-                  <li key={link.path}>
+                  <li key={link.name}>
                     <Link
                       to={link.path}
                       className="text-sm text-muted-foreground hover:text-[var(--healthcare-cyan)] transition-colors"
@@ -140,7 +143,7 @@ export default function Footer() {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} Nirogya Sathi Healthcare. All rights reserved.
+              © {currentYear} NirogyaSathi Healthcare. All rights reserved.
             </p>
 
             <div className="flex items-center space-x-4">
