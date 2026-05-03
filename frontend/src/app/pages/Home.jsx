@@ -213,7 +213,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Why Choose Nirogya Sathi?</h2>
+          <h2 id="features" className="text-4xl font-bold mb-4">Why Choose NirogyaSathi?</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Experience healthcare like never before with our comprehensive digital platform
             </p>
@@ -280,7 +280,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">What Our Patients Say</h2>
+            <h2 id="testimonials" className="text-4xl font-bold mb-4">What Our Patients Say</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Read experiences from our satisfied patients
             </p>
@@ -327,7 +327,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+            <h2 id="faqs" className="text-4xl font-bold mb-4">Frequently Asked Questions</h2>
             <p className="text-lg text-muted-foreground">
               Got questions? We've got answers
             </p>
@@ -362,7 +362,7 @@ export default function Home() {
           <div className="relative z-10">
             <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-xl mb-8 opacity-90">
-              Join thousands of patients who trust Nirogya Sathi for their healthcare needs
+              Join thousands of patients who trust NirogyaSathi for their healthcare needs
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
