@@ -1,15 +1,13 @@
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-// Create axios instance
+
 const api = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor to add auth token
+// Attach JWT to every request
 api.interceptors.request.use(
   (config) => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -18,12 +16,10 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle errors
+// Global 401 handler
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -35,59 +31,93 @@ api.interceptors.response.use(
   }
 );
 
-// Auth API
+// ── Auth ──────────────────────────────────────────────────────────────────
 export const authAPI = {
   register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
-  getProfile: () => api.get('/auth/profile'),
-  updateProfile: (data) => api.put('/auth/profile', data),
-};
-
-// Doctors API
-export const doctorsAPI = {
-  getAll: (params) => api.get('/doctors', { params }),
-  getById: (id) => api.get(`/doctors/${id}`),
-  getAvailability: (id, date) => api.get(`/doctors/${id}/availability`, { params: { date } }),
-  getSpecializations: () => api.get('/doctors/specializations'),
-};
-
-// Bookings API
-export const bookingsAPI = {
-  create: (data) => api.post('/bookings', data),
-  getAll: (params) => api.get('/bookings', { params }),
-  getById: (id) => api.get(`/bookings/${id}`),
-  getUpcoming: () => api.get('/bookings/upcoming'),
-  cancel: (id, reason) => api.put(`/bookings/${id}/cancel`, { reason }),
-  updateStatus: (id, status) => api.put(`/bookings/${id}/status`, { status }),
-};
-
-// Health Records API
-export const healthRecordsAPI = {
-  upload: (formData) => api.post('/health-records', formData, {
+  login:    (data) => api.post('/auth/login', data),
+  getProfile:    () => api.get('/auth/me'),
+  updateProfile: (data) => api.patch('/users/profile', data),
+  uploadAvatar:  (formData) => api.post('/users/upload-avatar', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
-  getAll: (params) => api.get('/health-records', { params }),
-  getById: (id) => api.get(`/health-records/${id}`),
-  update: (id, data) => api.put(`/health-records/${id}`, data),
-  delete: (id) => api.delete(`/health-records/${id}`),
-  getStats: () => api.get('/health-records/stats'),
 };
 
-// Lab Tests API
+// ── Doctors ───────────────────────────────────────────────────────────────
+export const doctorsAPI = {
+  getAll:            (params) => api.get('/doctors', { params }),
+  getById:           (id)     => api.get(`/doctors/${id}`),
+  getSpecializations:()       => api.get('/doctors/specializations'),
+  updateProfile:     (data)   => api.patch('/doctors/profile', data),
+  uploadAvatar:      (formData) => api.post('/doctors/upload-avatar', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+};
+
+// ── Bookings ──────────────────────────────────────────────────────────────
+export const bookingsAPI = {
+  create:       (data)         => api.post('/bookings', data),
+  getAll:       (params)       => api.get('/bookings/my', { params }),
+  getById:      (id)           => api.get(`/bookings/${id}`),
+  getUpcoming:  ()             => api.get('/bookings/upcoming'),
+  cancel:       (id, reason)   => api.put(`/bookings/${id}/cancel`, { reason }),
+  updateStatus: (id, status)   => api.put(`/bookings/${id}/status`, { status }),
+};
+
+// ── Health Records ────────────────────────────────────────────────────────
+export const healthRecordsAPI = {
+  upload:  (formData) => api.post('/health-records/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  getAll:  (params) => api.get('/health-records/my', { params }),
+  getById: (id)     => api.get(`/health-records/${id}`),
+  update:  (id, data) => api.put(`/health-records/${id}`, data),
+  delete:  (id)     => api.delete(`/health-records/${id}`),
+};
+
+// ── Lab Tests ─────────────────────────────────────────────────────────────
 export const labTestsAPI = {
-  getAll: (params) => api.get('/lab-tests', { params }),
-  getById: (id) => api.get(`/lab-tests/${id}`),
-  createBooking: (data) => api.post('/lab-tests/bookings', data),
-  getBookings: (params) => api.get('/lab-tests/bookings', { params }),
-  getBookingById: (id) => api.get(`/lab-tests/bookings/${id}`),
-  cancelBooking: (id) => api.put(`/lab-tests/bookings/${id}/cancel`),
+  getAll:  (params) => api.get('/lab-tests', { params }),
+  getById: (id)     => api.get(`/lab-tests/${id}`),
+  book:    (data)   => api.post('/lab-tests/book-test', data),
 };
 
-// Admin API
+// ── Hospitals ─────────────────────────────────────────────────────────────
+export const hospitalsAPI = {
+  getAll:    (params)    => api.get('/hospitals', { params }),
+  getNearby: (lat, lng)  => api.get('/hospitals/nearby', { params: { lat, lng } }),
+};
+
+// ── Ambulance ─────────────────────────────────────────────────────────────
+export const ambulanceAPI = {
+  getAll:  ()     => api.get('/ambulances'),
+  request: (data) => api.post('/ambulances/request', data),
+};
+
+// ── Providers ─────────────────────────────────────────────────────────────
+export const providersAPI = {
+  apply:    (data)          => api.post('/providers/apply', data),
+  getByType:(type, params)  => api.get(`/providers/${type}`, { params }),
+  getById:  (type, id)      => api.get(`/providers/${type}/${id}`),
+};
+
+// ── Admin ─────────────────────────────────────────────────────────────────
 export const adminAPI = {
-  getAllUsers: () => api.get('/auth/users'),
-  getAllBookings: () => api.get('/bookings'),
-  getAllDoctors: () => api.get('/doctors'),
+  getAnalytics:    ()              => api.get('/admin/analytics'),
+  getAllUsers:     (params)        => api.get('/admin/users', { params }),
+  getAllDoctors:   (params)        => api.get('/admin/doctors', { params }),
+  getPendingDoctors:()             => api.get('/admin/doctors/pending'),
+  getDoctorById:   (id)            => api.get(`/admin/doctors/${id}`),
+  getAllBookings:  ()              => api.get('/admin/bookings'),
+  verifyDoctor:    (id)            => api.patch(`/admin/doctors/${id}/verify`),
+  rejectDoctor:    (id, reason)    => api.patch(`/admin/doctors/${id}/reject`, { reason }),
+  suspendDoctor:   (id, reason)    => api.patch(`/admin/doctors/${id}/suspend`, { reason }),
+  activateDoctor:  (id)            => api.patch(`/admin/doctors/${id}/activate`),
+  updateDoctor:    (id, data)      => api.patch(`/admin/doctors/${id}`, data),
+  deleteUser:      (id)            => api.delete(`/admin/users/${id}`),
+  
+  // Generic Provider Verifications
+  getAllProviders: (params)        => api.get('/admin/providers', { params }),
+  approveProvider: (type, id)      => api.patch(`/admin/providers/${type}/${id}/approve`),
 };
 
 export default api;
