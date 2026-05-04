@@ -1,232 +1,126 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Beaker, Home, Clock, CheckCircle, ShoppingCart, Star } from 'lucide-react';
-import { labTestsAPI } from '../utils/api';
-import { toast } from 'react-toastify';
+import { Search, FlaskConical, MapPin, ShieldCheck, Star, ChevronRight, Home, Microscope } from 'lucide-react';
+import { providersAPI } from '../utils/api';
+import Loader from '../components/common/Loader';
+import { Link } from 'react-router-dom';
 
 export default function LabTests() {
-  const [labTests, setLabTests] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All Tests');
+  const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const fetchTests = async () => {
+    const fetchLabs = async () => {
+      setLoading(true);
       try {
-        const res = await labTestsAPI.getAll();
-        setLabTests(res.data.data);
+        const res = await providersAPI.getByType('lab', { search: searchTerm });
+        setProviders(res.data.data);
       } catch (error) {
-        console.error("Error fetching lab tests:", error);
+        console.error('Error fetching labs', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchTests();
-  }, []);
-
-  const addToCart = (testId, testName) => {
-    if (cart.includes(testId)) {
-      toast.info('Test already in cart');
-      return;
-    }
-    setCart([...cart, testId]);
-    toast.success(`${testName} added to cart`);
-  };
-
-  const categories = [
-    'All Tests',
-    'Blood Test',
-    'Hormone Test',
-    'Vitamin Test',
-    'Health Package'
-  ];
-
-  const filteredTests = labTests.filter(
-    (test) => selectedCategory === 'All Tests' || test.category === selectedCategory
-  );
+    fetchLabs();
+  }, [searchTerm]);
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Book{' '}
-            <span className="bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] bg-clip-text text-transparent">
-              Lab Tests
-            </span>
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Get accurate diagnostic tests from certified labs
-          </p>
-        </motion.div>
-
-        {/* Feature cards */}
-        <div className="grid lg:grid-cols-4 gap-6 mb-12">
-          <div className="bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] rounded-2xl p-6 text-white">
-            <Home className="w-10 h-10 mb-3" />
-            <h3 className="font-semibold mb-2">Home Sample Collection</h3>
-            <p className="text-sm opacity-90">Free collection from your doorstep</p>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+          <div>
+            <h1 className="text-4xl md:text-6xl font-black mb-4">
+              Diagnostic <span className="text-emerald-500">Labs</span>
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-xl">
+              Book health checkups and lab tests from verified diagnostic centers. Home sample collection available.
+            </p>
           </div>
-
-          <div className="bg-card border border-border rounded-2xl p-6">
-            <div className="w-10 h-10 bg-[var(--healthcare-green)]/10 rounded-xl flex items-center justify-center mb-3">
-              <CheckCircle className="w-6 h-6 text-[var(--healthcare-green)]" />
-            </div>
-            <h3 className="font-semibold mb-2">NABL Certified Labs</h3>
-            <p className="text-sm text-muted-foreground">100% accurate results</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-2xl p-6">
-            <div className="w-10 h-10 bg-[var(--healthcare-blue)]/10 rounded-xl flex items-center justify-center mb-3">
-              <Clock className="w-6 h-6 text-[var(--healthcare-blue)]" />
-            </div>
-            <h3 className="font-semibold mb-2">Fast Reports</h3>
-            <p className="text-sm text-muted-foreground">Get results within 24-48 hours</p>
-          </div>
-
-          <div className="bg-card border border-border rounded-2xl p-6">
-            <div className="w-10 h-10 bg-[var(--healthcare-cyan)]/10 rounded-xl flex items-center justify-center mb-3">
-              <Star className="w-6 h-6 text-[var(--healthcare-cyan)]" />
-            </div>
-            <h3 className="font-semibold mb-2">Best Prices</h3>
-            <p className="text-sm text-muted-foreground">Affordable diagnostic services</p>
+          
+          <div className="relative w-full md:w-96 group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-emerald-500 transition-colors" />
+            <input 
+              type="text"
+              placeholder="Search tests or labs..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 bg-card border border-border rounded-2xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all"
+            />
           </div>
         </div>
 
-        {/* Categories */}
-        <div className="flex flex-wrap gap-3 mb-8">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2.5 rounded-xl font-medium transition-all ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white shadow-lg'
-                  : 'bg-card border border-border hover:bg-accent'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        {/* Main content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold">
-                {selectedCategory === 'All Tests' ? 'All Lab Tests' : selectedCategory}
-              </h2>
-              <span className="text-sm text-muted-foreground">
-                {filteredTests.length} tests available
-              </span>
-            </div>
-
-            <div className="grid gap-6">
-              {filteredTests.map((test, index) => (
-                <motion.div
-                  key={test._id || test.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-card border border-border rounded-2xl p-6 hover:shadow-2xl transition-all"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start space-x-4">
-                      <div className="p-3 bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] rounded-xl">
-                        <Beaker className="w-6 h-6 text-white" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-lg font-semibold mb-1">{test.testName || test.name}</h3>
-
-                        <div className="flex flex-wrap gap-2 mb-3">
-                          <span className="px-3 py-1 bg-[var(--healthcare-blue)]/10 text-[var(--healthcare-blue)] rounded-full text-xs">
-                            {test.category}
-                          </span>
-
-                          {test.popular && (
-                            <span className="px-3 py-1 bg-[var(--healthcare-green)]/10 text-[var(--healthcare-green)] rounded-full text-xs flex items-center space-x-1">
-                              <Star className="w-3 h-3" fill="currentColor" />
-                              <span>Popular</span>
-                            </span>
-                          )}
-
-                          {test.fasting && (
-                            <span className="px-3 py-1 bg-yellow-500/10 text-yellow-600 rounded-full text-xs">
-                              Fasting Required
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                          <div className="flex items-center space-x-1">
-                            <Clock className="w-4 h-4" />
-                            <span>Report in {test.duration}</span>
-                          </div>
-
-                          <div className="flex items-center space-x-1">
-                            <Home className="w-4 h-4" />
-                            <span>Home collection available</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+        {loading ? (
+          <Loader />
+        ) : providers.length > 0 ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {providers.map((provider) => (
+              <motion.div
+                key={provider._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -5 }}
+                className="bg-card border border-border rounded-[40px] p-8 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all group flex flex-col"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform">
+                    <FlaskConical className="w-8 h-8" />
                   </div>
-
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Test Price</p>
-                      <p className="text-2xl font-bold text-[var(--healthcare-cyan)]">
-                        ₹{test.price}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => addToCart(test._id || test.id, test.testName || test.name)}
-                      className={`px-6 py-3 rounded-xl font-medium transition-all ${
-                        cart.includes(test._id || test.id)
-                          ? 'bg-[var(--healthcare-green)]/10 text-[var(--healthcare-green)] border-2 border-[var(--healthcare-green)]'
-                          : 'bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white'
-                      }`}
-                    >
-                      {cart.includes(test._id || test.id) ? 'Added to Cart' : 'Add to Cart'}
-                    </button>
+                  <div className="flex items-center gap-1 text-yellow-500 font-bold text-sm">
+                    <Star className="w-4 h-4 fill-current" />
+                    {provider.rating || '4.8'}
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                </div>
+
+                <h3 className="text-2xl font-black mb-2 group-hover:text-emerald-500 transition-colors">
+                  {provider.businessName}
+                </h3>
+                
+                <div className="space-y-3 mb-8">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-emerald-500" /> {provider.city}, {provider.state}
+                  </p>
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-500" /> NABL & ISO Certified
+                  </p>
+                  {provider.homeCollection && (
+                    <p className="text-sm text-emerald-600 font-bold flex items-center gap-2 bg-emerald-500/5 w-fit px-2 py-1 rounded-lg">
+                      <Home className="w-4 h-4" /> Home Collection Available
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2 mb-8">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Popular Tests</p>
+                  <div className="flex flex-wrap gap-2">
+                    {provider.testCategories?.slice(0, 3).map(cat => (
+                      <span key={cat} className="px-3 py-1 bg-white border border-border rounded-lg text-[10px] font-bold uppercase">{cat}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-6 border-t border-border flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Reports within</p>
+                    <p className="font-bold text-emerald-600">{provider.reportTime || '24-48 Hours'}</p>
+                  </div>
+                  <Link 
+                    to={`/provider/lab/${provider._id}`}
+                    className="p-4 bg-emerald-500 text-white rounded-2xl hover:shadow-lg hover:shadow-emerald-500/20 transition-all group/btn"
+                  >
+                    <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
           </div>
-
-          {/* Cart */}
-          <div className="bg-card border border-border rounded-2xl p-6 sticky top-24">
-            <h3 className="text-lg font-semibold mb-4">Your Cart</h3>
-
-            {cart.length === 0 ? (
-              <div className="text-center py-8">
-                <ShoppingCart className="w-10 h-10 mx-auto text-muted-foreground mb-3" />
-                <p className="text-muted-foreground">Your cart is empty</p>
-              </div>
-            ) : (
-              cart.map((id) => {
-                const test = labTests.find((t) => t._id === id || t.id === id);
-                return (
-                  <div key={id} className="flex justify-between mb-3">
-                    <span className="text-sm">{test?.name}</span>
-                    <span className="text-sm">₹{test?.price}</span>
-                  </div>
-                );
-              })
-            )}
+        ) : (
+          <div className="text-center py-32 bg-card border border-dashed border-border rounded-[40px]">
+            <Microscope className="w-20 h-20 text-muted-foreground/20 mx-auto mb-6" />
+            <h2 className="text-2xl font-bold mb-2">No labs found</h2>
+            <p className="text-muted-foreground">Try searching for a different test or area.</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
