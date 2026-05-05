@@ -23,10 +23,10 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password, role) => {
+  const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await authAPI.login({ email, password, role });
+      const response = await authAPI.login({ email, password });
       const userData = response.data.data;
       
       setUser(userData);
@@ -39,25 +39,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password, role) => {
+  const register = async (data) => {
     setLoading(true);
     try {
-      const response = await authAPI.register({ name, email, password, role });
+      // If data is an object, use it directly, otherwise if old arguments passed (not expected anymore)
+      const payload = typeof data === 'object' ? data : { name: arguments[0], email: arguments[1], password: arguments[2], role: arguments[3] };
+      const response = await authAPI.register(payload);
       const userData = response.data.data;
       
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       return userData;
     } catch (error) {
-      throw error.response?.data?.message || error.message || "Registration failed";
+      throw error;
     } finally {
       setLoading(false);
+    }
+  };
+
+  const refreshUser = async () => {
+    try {
+      const response = await authAPI.getMe();
+      const userData = response.data.data;
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+    } catch (error) {
+      console.error("Failed to refresh user data", error);
     }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    window.location.href = "/login";
   };
 
   return (
@@ -67,6 +81,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
         login,
         register,
+        refreshUser,
         logout,
         loading,
       }}
