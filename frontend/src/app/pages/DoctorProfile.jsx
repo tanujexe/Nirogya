@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { motion } from "motion/react";
 import {
   Star,
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { doctorsAPI } from "../utils/api";
-import BookingForm from "../components/doctors/BookingForm";
+import GeneralBookingForm from "../components/common/GeneralBookingForm";
 
 export default function DoctorProfile() {
   const { id } = useParams();
@@ -141,7 +141,7 @@ export default function DoctorProfile() {
                   Professional Profile
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed italic">
-                  "{doctor.about || `Dr. ${doctorName} is a highly skilled professional specialized in ${doctor.specialization} with over ${doctor.experience} years of clinical experience.`}"
+                  {doctor.about || `Dr. ${doctorName} is a highly skilled professional specialized in ${doctor.specialization} with over ${doctor.experience} years of clinical experience.`}
                 </p>
               </section>
 
@@ -211,10 +211,9 @@ export default function DoctorProfile() {
         </motion.div>
 
         {showBookingForm && (
-          <BookingForm
-            doctorName={doctorName}
-            doctorId={doctor._id || id}
-            doctorFees={doctor.fees}
+          <GeneralBookingForm
+            provider={doctor}
+            type="doctor"
             onClose={() => setShowBookingForm(false)}
           />
         )}

@@ -68,7 +68,7 @@ export default function Login() {
             <div>
               <h1 className="text-3xl font-bold">Sign In</h1>
               <p className="text-sm text-muted-foreground">
-                to Nirogya Sathi Healthcare
+                to NirogyaSathi Healthcare
               </p>
             </div>
           </div>
