@@ -164,12 +164,14 @@ export default function Navbar() {
               </AnimatePresence>
             </div>
 
-            <Link
-              to="/join-provider"
-              className="ml-4 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest bg-[var(--healthcare-cyan)]/10 text-[var(--healthcare-cyan)] hover:bg-[var(--healthcare-cyan)] hover:text-white transition-all shadow-sm flex items-center gap-2"
-            >
-              <UserPlus className="w-4 h-4" /> Join as Provider
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                to="/join-provider"
+                className="ml-4 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest bg-[var(--healthcare-cyan)]/10 text-[var(--healthcare-cyan)] hover:bg-[var(--healthcare-cyan)] hover:text-white transition-all shadow-sm flex items-center gap-2"
+              >
+                <UserPlus className="w-4 h-4" /> Join as Provider
+              </Link>
+            )}
           </div>
 
           {/* Right Actions */}
@@ -241,6 +243,18 @@ export default function Navbar() {
                           <Settings className="w-4 h-4 text-muted-foreground group-hover:text-[var(--healthcare-cyan)]" />
                           <span className="text-sm font-medium">Settings</span>
                         </Link>
+
+                        {user?.role === 'user' && (
+                          <div className="mt-2 pt-2 border-t border-border/50">
+                            <Link
+                              to="/join-provider"
+                              className="flex items-center space-x-3 p-3 rounded-xl bg-[var(--healthcare-cyan)]/5 text-[var(--healthcare-cyan)] hover:bg-[var(--healthcare-cyan)] hover:text-white transition-all group"
+                            >
+                              <UserPlus className="w-4 h-4" />
+                              <span className="text-sm font-black uppercase tracking-tighter">Join as Provider</span>
+                            </Link>
+                          </div>
+                        )}
                       </div>
 
                       <div className="p-2 border-t border-border/50">
