@@ -27,7 +27,7 @@ export default function NotFound() {
              <motion.div 
                animate={{ rotate: [0, 10, -10, 0] }}
                transition={{ repeat: Infinity, duration: 4 }}
-               className="absolute -top-2 -right-2 bg-white p-4 rounded-2xl shadow-xl border border-border"
+               className="absolute -top-2 -right-2 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-border"
              >
                 <HeartPulse className="w-8 h-8 text-red-500" />
              </motion.div>

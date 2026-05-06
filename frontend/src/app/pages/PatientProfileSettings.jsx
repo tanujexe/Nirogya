@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { toast } from 'react-toastify';
-import { User, Mail, Phone, MapPin, Save, Loader2, Heart } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Save, Loader2, Heart, Camera } from 'lucide-react';
 import { authAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function PatientProfileSettings() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, refreshUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -61,6 +61,7 @@ export default function PatientProfileSettings() {
     setSaving(true);
     try {
       await authAPI.updateProfile(formData);
+      if (refreshUser) await refreshUser();
       toast.success('Profile updated successfully!');
     } catch (error) {
       toast.error('Failed to update profile');
@@ -69,7 +70,27 @@ export default function PatientProfileSettings() {
     }
   };
 
-  if (loading) return <div className="min-h-screen pt-24 flex justify-center items-center"><Loader2 className="animate-spin" /></div>;
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formDataUpload = new FormData();
+    formDataUpload.append('avatar', file);
+
+    setSaving(true);
+    try {
+      // Import api from utils/api if not already available
+      const res = await authAPI.uploadAvatar(formDataUpload);
+      setFormData(prev => ({ ...prev, avatar: res.data.url }));
+      toast.success('Photo uploaded! Save to apply changes.');
+    } catch (error) {
+      toast.error('Upload failed');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="min-h-screen pt-24 flex justify-center items-center"><Loader2 className="animate-spin text-[var(--healthcare-cyan)]" /></div>;
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 bg-muted/5">
@@ -77,15 +98,28 @@ export default function PatientProfileSettings() {
         <h1 className="text-3xl font-black mb-8">My Profile</h1>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-card border rounded-3xl p-8 shadow-xl">
+          <div className="bg-card border border-border rounded-[2.5rem] p-8 shadow-xl">
              <div className="flex justify-center mb-8">
                 <div className="relative group">
-                  <img 
-                    src={formData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name}`} 
-                    className="w-24 h-24 rounded-2xl object-cover ring-4 ring-muted" 
-                  />
-                  <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                    <User className="text-white w-6 h-6" />
+                  <div className="relative">
+                    <img 
+                      src={formData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name}`} 
+                      className="w-32 h-32 rounded-[2rem] object-cover ring-4 ring-background shadow-2xl" 
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => document.getElementById('avatar-input').click()}
+                      className="absolute -bottom-2 -right-2 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-border text-[var(--healthcare-cyan)] hover:scale-110 transition-all"
+                    >
+                      <Camera className="w-5 h-5" />
+                    </button>
+                    <input 
+                      id="avatar-input"
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleAvatarUpload}
+                    />
                   </div>
                 </div>
              </div>
