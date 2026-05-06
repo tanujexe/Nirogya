@@ -367,13 +367,13 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/register"
-                className="px-8 py-4 rounded-xl bg-white text-[var(--healthcare-cyan)] font-medium hover:shadow-2xl transition-all"
+                className="px-8 py-4 rounded-xl bg-white dark:bg-slate-800 text-[var(--healthcare-cyan)] font-medium hover:shadow-2xl transition-all"
               >
                 Create Account
               </Link>
               <Link
                 to="/doctors"
-                className="px-8 py-4 rounded-xl border-2 border-white text-white font-medium hover:bg-white/10 transition-all"
+                className="px-8 py-4 rounded-xl border-2 border-white text-white font-medium hover:bg-white dark:bg-slate-800/10 transition-all"
               >
                 Browse Doctors
               </Link>

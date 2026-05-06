@@ -1,5 +1,4 @@
-"use client";
-
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
   MapPin,
@@ -9,44 +8,31 @@ import {
   AlertCircle,
   Navigation,
   Clock,
+  Loader2,
 } from "lucide-react";
-const mockHospitals = [
-  {
-    id: "1",
-    name: "City Medical Center",
-    type: "Multi-Specialty",
-    address: "123 Healthcare Way, North Side",
-    distance: "2.5 km",
-    beds: 150,
-    rating: 4.8,
-    emergency: true,
-    image: "https://images.unsplash.com/photo-1587350859728-117622bc937e?w=800&q=80",
-  },
-  {
-    id: "2",
-    name: "Green Valley Hospital",
-    type: "Super Specialty",
-    address: "456 Wellness Blvd, East District",
-    distance: "4.2 km",
-    beds: 300,
-    rating: 4.6,
-    emergency: true,
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80",
-  },
-  {
-    id: "3",
-    name: "Grace Community Clinic",
-    type: "Primary Care",
-    address: "789 Care Lane, Central Hub",
-    distance: "1.8 km",
-    beds: 50,
-    rating: 4.5,
-    emergency: false,
-    image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=800&q=80",
-  }
-];
+import { hospitalsAPI } from "../utils/api";
 
 export default function Hospitals() {
+  const [hospitals, setHospitals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        setLoading(true);
+        const res = await hospitalsAPI.getAll();
+        setHospitals(res.data.data);
+      } catch (err) {
+        console.error("Error fetching hospitals:", err);
+        setError("Failed to load hospitals. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHospitals();
+  }, []);
+
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -96,87 +82,100 @@ export default function Hospitals() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold">All Hospitals</h2>
                 <span className="text-sm text-muted-foreground">
-                  {mockHospitals.length} hospitals found
+                  {hospitals.length} hospitals found
                 </span>
               </div>
 
-              <div className="space-y-4">
-                {mockHospitals.map((hospital, index) => (
-                  <motion.div
-                    key={hospital.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-card border border-border rounded-2xl p-6 hover:shadow-2xl hover:shadow-[var(--healthcare-cyan)]/10 transition-all"
-                  >
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <img
-                        src={hospital.image}
-                        alt={hospital.name}
-                        className="w-full md:w-48 h-48 object-cover rounded-xl"
-                      />
+              {loading ? (
+                <div className="flex justify-center items-center py-20">
+                  <Loader2 className="w-10 h-10 text-[var(--healthcare-cyan)] animate-spin" />
+                </div>
+              ) : error ? (
+                <div className="text-center py-20 bg-red-50 rounded-2xl border border-red-100">
+                  <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-4" />
+                  <p className="text-red-600">{error}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {hospitals.map((hospital, index) => (
+                    <motion.div
+                      key={hospital._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-card border border-border rounded-2xl p-6 hover:shadow-2xl hover:shadow-[var(--healthcare-cyan)]/10 transition-all"
+                    >
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <img
+                          src={hospital.image || "https://images.unsplash.com/photo-1587350859728-117622bc937e?w=800&q=80"}
+                          alt={hospital.name}
+                          className="w-full md:w-48 h-48 object-cover rounded-xl"
+                        />
 
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="text-xl font-bold mb-2">
-                              {hospital.name}
-                            </h3>
-                            <span className="px-3 py-1 bg-[var(--healthcare-blue)]/10 text-[var(--healthcare-blue)] rounded-full text-sm">
-                              {hospital.type}
-                            </span>
-                          </div>
-
-                          {hospital.emergency && (
-                            <span className="px-3 py-1 bg-[var(--healthcare-red)]/10 text-[var(--healthcare-red)] rounded-full text-sm flex items-center space-x-1">
-                              <AlertCircle className="w-4 h-4" />
-                              <span>24/7 Emergency</span>
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="space-y-2 mb-4">
-                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                            <MapPin className="w-4 h-4 text-[var(--healthcare-cyan)]" />
-                            <span>{hospital.address}</span>
-                            <span className="px-2 py-0.5 bg-muted rounded-full text-xs">
-                              {hospital.distance}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center space-x-4 text-sm">
-                            <div className="flex items-center space-x-1">
-                              <Bed className="w-4 h-4 text-muted-foreground" />
-                              <span>{hospital.beds} beds</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Star
-                                className="w-4 h-4 text-yellow-500"
-                                fill="currentColor"
-                              />
-                              <span className="font-medium">
-                                {hospital.rating}
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h3 className="text-xl font-bold mb-2">
+                                {hospital.name}
+                              </h3>
+                              <span className="px-3 py-1 bg-[var(--healthcare-blue)]/10 text-[var(--healthcare-blue)] rounded-full text-sm">
+                                {hospital.type || "Medical Facility"}
                               </span>
                             </div>
+
+                            {hospital.emergencyAvailable && (
+                              <span className="px-3 py-1 bg-[var(--healthcare-red)]/10 text-[var(--healthcare-red)] rounded-full text-sm flex items-center space-x-1">
+                                <AlertCircle className="w-4 h-4" />
+                                <span>24/7 Emergency</span>
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="space-y-2 mb-4">
+                            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                              <MapPin className="w-4 h-4 text-[var(--healthcare-cyan)]" />
+                              <span>{hospital.address}</span>
+                            </div>
+
+                            <div className="flex items-center space-x-4 text-sm">
+                              <div className="flex items-center space-x-1">
+                                <Bed className="w-4 h-4 text-muted-foreground" />
+                                <span>{hospital.beds || "N/A"} beds</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Star
+                                  className="w-4 h-4 text-yellow-500"
+                                  fill="currentColor"
+                                />
+                                <span className="font-medium">
+                                  {hospital.rating || "New"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap gap-3">
+                            <button className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white hover:opacity-90 transition-opacity">
+                              <Navigation className="w-4 h-4" />
+                              <span>Get Directions</span>
+                            </button>
+
+                            <button className="flex items-center space-x-2 px-4 py-2 rounded-xl border border-border hover:bg-muted transition-colors">
+                              <Phone className="w-4 h-4" />
+                              <span>Call Hospital</span>
+                            </button>
                           </div>
                         </div>
-
-                        <div className="flex flex-wrap gap-3">
-                          <button className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white">
-                            <Navigation className="w-4 h-4" />
-                            <span>Get Directions</span>
-                          </button>
-
-                          <button className="flex items-center space-x-2 px-4 py-2 rounded-xl border border-border">
-                            <Phone className="w-4 h-4" />
-                            <span>Call Hospital</span>
-                          </button>
-                        </div>
                       </div>
+                    </motion.div>
+                  ))}
+                  {hospitals.length === 0 && (
+                    <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed">
+                      <p className="text-muted-foreground">No hospitals found in this area.</p>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -189,7 +188,7 @@ export default function Hospitals() {
                   <label className="block text-sm font-medium mb-2">
                     Hospital Type
                   </label>
-                  <select className="w-full px-4 py-2.5 bg-input-background border border-border rounded-xl">
+                  <select className="w-full px-4 py-2.5 bg-input-background border border-border rounded-xl focus:ring-2 focus:ring-[var(--healthcare-cyan)] outline-none">
                     <option>All Types</option>
                     <option>Multi-Specialty</option>
                     <option>Super Specialty</option>
@@ -197,31 +196,19 @@ export default function Hospitals() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Distance
-                  </label>
-                  <select className="w-full px-4 py-2.5 bg-input-background border border-border rounded-xl">
-                    <option>Within 5 km</option>
-                    <option>Within 10 km</option>
-                    <option>Within 20 km</option>
-                    <option>Any distance</option>
-                  </select>
-                </div>
-
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" defaultChecked />
-                  <span className="text-sm">24/7 Emergency only</span>
+                <label className="flex items-center space-x-2 cursor-pointer group">
+                  <input type="checkbox" className="rounded text-[var(--healthcare-cyan)] focus:ring-[var(--healthcare-cyan)]" />
+                  <span className="text-sm group-hover:text-[var(--healthcare-cyan)] transition-colors">24/7 Emergency only</span>
                 </label>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] rounded-2xl p-6 text-white">
+            <div className="bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] rounded-2xl p-6 text-white shadow-xl">
               <h3 className="text-lg font-semibold mb-3">Need Help?</h3>
               <p className="text-sm opacity-90 mb-4">
-                Our team is available 24/7 to help you
+                Our team is available 24/7 to help you locate the best care.
               </p>
-              <button className="w-full py-3 bg-white text-[var(--healthcare-cyan)] rounded-xl font-medium">
+              <button className="w-full py-3 bg-white dark:bg-slate-800 text-[var(--healthcare-cyan)] rounded-xl font-medium hover:bg-opacity-90 transition-all active:scale-95">
                 Contact Support
               </button>
             </div>
@@ -229,25 +216,31 @@ export default function Hospitals() {
             <div className="bg-card border border-border rounded-2xl p-6">
               <h3 className="text-lg font-semibold mb-4">Quick Tips</h3>
 
-              <div className="space-y-3">
-                <div className="flex items-start space-x-2">
-                  <Clock className="w-5 h-5 mt-0.5 text-[var(--healthcare-cyan)]" />
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-[var(--healthcare-cyan)]/10 p-2 rounded-lg">
+                    <Clock className="w-5 h-5 text-[var(--healthcare-cyan)]" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
-                    Check visiting hours before going
+                    Check visiting hours before heading out to ensure you can see your loved ones.
                   </p>
                 </div>
 
-                <div className="flex items-start space-x-2">
-                  <Phone className="w-5 h-5 mt-0.5 text-[var(--healthcare-cyan)]" />
+                <div className="flex items-start space-x-3">
+                  <div className="bg-[var(--healthcare-cyan)]/10 p-2 rounded-lg">
+                    <Phone className="w-5 h-5 text-[var(--healthcare-cyan)]" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
-                    Call before visiting
+                    Call the hospital in advance to confirm bed availability if possible.
                   </p>
                 </div>
 
-                <div className="flex items-start space-x-2">
-                  <AlertCircle className="w-5 h-5 mt-0.5 text-[var(--healthcare-cyan)]" />
+                <div className="flex items-start space-x-3">
+                  <div className="bg-red-50 p-2 rounded-lg">
+                    <AlertCircle className="w-5 h-5 text-red-500" />
+                  </div>
                   <p className="text-sm text-muted-foreground">
-                    In emergency call 108
+                    In case of a serious medical emergency, dial <strong>108</strong> immediately.
                   </p>
                 </div>
               </div>
