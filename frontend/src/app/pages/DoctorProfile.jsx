@@ -77,18 +77,18 @@ export default function DoctorProfile() {
           {/* Header */}
           <div className="relative bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] p-8 md:p-12 overflow-hidden">
             {/* Decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white dark:bg-slate-800/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-cyan-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
 
             <div className="relative flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
               <div className="relative group">
-                <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
+                <div className="absolute inset-0 bg-white dark:bg-slate-800/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
                 <img
                   src={doctorAvatar}
                   alt={doctorName}
                   className="relative w-32 h-32 md:w-48 md:h-48 rounded-2xl object-cover border-4 border-white shadow-2xl"
                 />
-                <div className="absolute -bottom-2 -right-2 bg-white p-2.5 rounded-xl shadow-lg ring-4 ring-[var(--healthcare-cyan)]/10">
+                <div className="absolute -bottom-2 -right-2 bg-white dark:bg-slate-800 p-2.5 rounded-xl shadow-lg ring-4 ring-[var(--healthcare-cyan)]/10">
                   <CheckCircle
                     className="w-6 h-6 text-[var(--healthcare-green)]"
                     fill="currentColor"
@@ -101,7 +101,7 @@ export default function DoctorProfile() {
                   <h1 className="text-3xl md:text-4xl font-black">
                     {doctorName}
                   </h1>
-                  <span className="inline-flex items-center px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex items-center px-3 py-1 bg-white dark:bg-slate-800/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider">
                     Verified Pro
                   </span>
                 </div>
@@ -111,12 +111,12 @@ export default function DoctorProfile() {
                 </p>
 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-8 mb-8 text-sm md:text-base font-medium">
-                  <span className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm">
+                  <span className="flex items-center gap-2 bg-white dark:bg-slate-800/10 px-4 py-2 rounded-xl backdrop-blur-sm">
                     <Clock className="w-5 h-5 text-cyan-200" />
                     {doctor.experience}+ Years Exp.
                   </span>
 
-                  <span className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm">
+                  <span className="flex items-center gap-2 bg-white dark:bg-slate-800/10 px-4 py-2 rounded-xl backdrop-blur-sm">
                     <Star className="w-5 h-5 text-yellow-300" fill="currentColor" />
                     {doctor.rating || "New"} Rating
                   </span>
@@ -124,7 +124,7 @@ export default function DoctorProfile() {
 
                 <button
                   onClick={() => setShowBookingForm(true)}
-                  className="px-8 py-4 bg-white text-[var(--healthcare-cyan)] rounded-2xl font-black shadow-xl shadow-black/10 hover:scale-105 active:scale-95 transition-all"
+                  className="px-8 py-4 bg-white dark:bg-slate-800 text-[var(--healthcare-cyan)] rounded-2xl font-black shadow-xl shadow-black/10 hover:scale-105 active:scale-95 transition-all"
                 >
                   Book Instant Appointment
                 </button>
@@ -152,7 +152,7 @@ export default function DoctorProfile() {
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="p-6 bg-muted/30 border border-border rounded-2xl flex gap-4">
-                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                    <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm">
                       <GraduationCap className="w-6 h-6 text-[var(--healthcare-cyan)]" />
                     </div>
                     <div>
@@ -162,7 +162,7 @@ export default function DoctorProfile() {
                   </div>
 
                   <div className="p-6 bg-muted/30 border border-border rounded-2xl flex gap-4">
-                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                    <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm">
                       <Award className="w-6 h-6 text-[var(--healthcare-cyan)]" />
                     </div>
                     <div>
@@ -185,7 +185,7 @@ export default function DoctorProfile() {
                     <span className="text-2xl font-black text-[var(--healthcare-cyan)]">₹{doctor.fees}</span>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground bg-white border border-border p-4 rounded-2xl">
+                  <div className="flex items-center gap-3 text-sm font-medium text-muted-foreground bg-white dark:bg-slate-800 border border-border p-4 rounded-2xl">
                     <Calendar className="w-5 h-5 text-[var(--healthcare-green)]" />
                     Available: Mon - Sat
                   </div>
@@ -202,7 +202,7 @@ export default function DoctorProfile() {
               <div className="p-8 bg-gradient-to-br from-cyan-900 to-blue-900 rounded-3xl text-white shadow-xl">
                 <h3 className="text-lg font-bold mb-4">Patient Support</h3>
                 <p className="text-sm opacity-70 mb-6">Need help with booking? Our team is available 24/7 to assist you.</p>
-                <button className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-sm font-bold transition-all">
+                <button className="w-full py-3 bg-white dark:bg-slate-800/10 hover:bg-white dark:bg-slate-800/20 border border-white/20 rounded-xl text-sm font-bold transition-all">
                   Contact Support
                 </button>
               </div>
