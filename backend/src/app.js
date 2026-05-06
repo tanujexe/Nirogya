@@ -23,6 +23,7 @@ const recordRoutes = require('./routes/recordRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const providerRoutes = require('./routes/providerRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
 const app = express();
 
@@ -58,15 +59,14 @@ app.use('/api/doctors',      doctorRoutes);
 app.use('/api/bookings',     bookingRoutes);
 app.use('/api/admin',        adminRoutes);
 app.use('/api/hospitals',    hospitalRoutes);
-app.use('/api/labs',         labRoutes);       // internal alias
-app.use('/api/lab-tests',    labRoutes);       // frontend alias
+app.use('/api/lab-tests',    labRoutes);
 app.use('/api/bloodbanks',   bloodBankRoutes);
 app.use('/api/ambulances',   ambulanceRoutes);
 app.use('/api/records',      recordRoutes);
-app.use('/api/health-records', recordRoutes);  // frontend alias
 app.use('/api/reviews',      reviewRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/providers',     providerRoutes);
+app.use('/api/ai',            aiRoutes);
 
 app.get('/', (_req, res) => {
   res.json({ success: true, message: 'Nirogya API Server Running ✅' });
@@ -77,3 +77,6 @@ app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
+// trigger restart
+// restart proxy
+// restart proxy again
