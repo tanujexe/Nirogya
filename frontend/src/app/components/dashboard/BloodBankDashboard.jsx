@@ -15,6 +15,8 @@ import {
   Activity
 } from 'lucide-react';
 import { bookingsAPI, providerAPI } from "../../utils/api";
+import { useAuth } from "../../context/AuthContext";
+import SuspensionBanner from "../common/SuspensionBanner";
 import ProviderProfileModal from "./ProviderProfileModal";
 
 export default function BloodBankDashboard() {
@@ -69,8 +71,12 @@ export default function BloodBankDashboard() {
     </div>
   );
 
+  const { user } = useAuth();
+
   return (
     <div className="space-y-8">
+      <SuspensionBanner details={user?.suspensionDetails} />
+      
       {/* Quick Actions */}
       <div className="flex flex-wrap gap-4">
         <button 
