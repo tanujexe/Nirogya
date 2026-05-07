@@ -4,6 +4,8 @@ import { Calendar, User, Clock, Eye, ChevronRight, FileText, Settings, ShieldChe
 import { bookingsAPI, providerAPI } from "../../utils/api";
 import AppointmentDetailsModal from "./AppointmentDetailsModal";
 import ProviderProfileModal from "./ProviderProfileModal";
+import { useAuth } from "../../context/AuthContext";
+import SuspensionBanner from "../common/SuspensionBanner";
 
 export default function DoctorDashboard() {
   const [appointments, setAppointments] = useState([]);
@@ -53,8 +55,12 @@ export default function DoctorDashboard() {
     </div>
   );
 
+  const { user } = useAuth();
+
   return (
     <div className="space-y-8">
+      <SuspensionBanner details={user?.suspensionDetails} />
+      
       {/* Header Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card border border-border rounded-3xl p-6 flex items-center gap-4">

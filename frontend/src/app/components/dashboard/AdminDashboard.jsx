@@ -23,13 +23,6 @@ export default function AdminDashboard() {
   const [providerType, setProviderType] = useState("doctor");
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({
-    fees: 0,
-    specialization: "",
-    clinicAddress: "",
-    about: ""
-  });
 
   const fetchData = async () => {
     try {
@@ -70,11 +63,31 @@ export default function AdminDashboard() {
         case 'approve': 
           res = await adminAPI.approveProvider(providerType, id); 
           break;
+        case 'reject':
+          const reason = window.prompt("Enter rejection reason:", "Documents do not meet requirements");
+          if (reason === null) { setLoading(false); return; }
+          res = await adminAPI.rejectProvider(providerType, id, reason);
+          break;
         case 'suspend': 
-          res = await adminAPI.suspendDoctor(id, extra.reason || "Policy violation"); 
+          const sReason = window.prompt("Enter suspension reason:", "Policy violation");
+          if (sReason === null) { setLoading(false); return; }
+          res = await adminAPI.suspendProvider(providerType, id, sReason); 
+          break;
+        case 'activate':
+          res = await adminAPI.activateProvider(providerType, id);
+          break;
+        case 'remove':
+          const rReason = window.prompt("Enter removal reason (optional):", "Business requirements change");
+          if (rReason === null) { setLoading(false); return; }
+          if(window.confirm(`Are you sure you want to REMOVE this ${providerType} role? The user will be downgraded to a regular patient account.`)) {
+            res = await adminAPI.removeProviderRole(providerType, id, rReason);
+          } else {
+            setLoading(false);
+            return;
+          }
           break;
         case 'delete': 
-          if(window.confirm("Are you sure you want to delete this record?")) {
+          if(window.confirm("Are you sure you want to delete this USER account entirely? This action is irreversible.")) {
             res = await adminAPI.deleteUser(id);
           } else {
             setLoading(false);
@@ -98,6 +111,7 @@ export default function AdminDashboard() {
     setSelectedProvider(provider);
     setIsModalOpen(true);
   };
+
 
   if (loading && !analytics) return (
     <div className="min-h-screen flex items-center justify-center bg-muted/5">
@@ -166,6 +180,7 @@ export default function AdminDashboard() {
                     <ProgressBar label="Hospitals" value={analytics?.totalHospitals} total={analytics?.totalHospitals > 20 ? analytics.totalHospitals : 20} color="blue" />
                     <ProgressBar label="Labs" value={analytics?.totalLabs} total={analytics?.totalLabs > 50 ? analytics.totalLabs : 50} color="purple" />
                     <ProgressBar label="Blood Banks" value={analytics?.totalBloodBanks} total={analytics?.totalBloodBanks > 10 ? analytics.totalBloodBanks : 10} color="red" />
+                    <ProgressBar label="Ambulance Services" value={analytics?.totalAmbulances} total={analytics?.totalAmbulances > 30 ? analytics.totalAmbulances : 30} color="cyan" />
                   </div>
                 </div>
 
@@ -226,7 +241,7 @@ export default function AdminDashboard() {
                       onClick={() => setProviderType(type)}
                       className={`px-3 md:px-4 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-wider transition-all whitespace-nowrap ${
                         providerType === type 
-                        ? 'bg-white text-foreground shadow-sm' 
+                        ? 'bg-white dark:bg-slate-800 text-foreground shadow-sm' 
                         : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
@@ -324,10 +339,26 @@ export default function AdminDashboard() {
                         </button>
                       </>
                     ) : (
-                      <div className={`flex-1 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-center ${
-                        p.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
-                      }`}>
-                        Account {p.status}
+                      <div className="flex flex-col flex-1 gap-2">
+                        <div className={`py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center ${
+                          p.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+                        }`}>
+                          Account {p.status}
+                        </div>
+                        {p.status === 'suspended' && (
+                           <button 
+                             onClick={() => handleAction('activate', p._id)}
+                             className="py-3 bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all"
+                           >
+                             Reactivate
+                           </button>
+                        )}
+                        <button 
+                          onClick={() => handleAction('remove', p._id)}
+                          className="py-3 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
+                        >
+                          Remove Provider Role
+                        </button>
                       </div>
                     )}
                   </div>
@@ -358,7 +389,7 @@ export default function AdminDashboard() {
                  <input 
                    type="text" 
                    placeholder="Search..." 
-                   className="pl-12 pr-6 py-3 bg-white border border-border rounded-2xl text-sm outline-none focus:ring-2 ring-cyan-500/20 w-full transition-all"
+                   className="pl-12 pr-6 py-3 bg-white dark:bg-slate-800 border border-border rounded-2xl text-sm outline-none focus:ring-2 ring-cyan-500/20 w-full transition-all"
                    value={searchTerm}
                    onChange={(e) => setSearchTerm(e.target.value)}
                  />
@@ -455,10 +486,13 @@ export default function AdminDashboard() {
                         <p className="text-[10px] text-muted-foreground font-bold uppercase">{booking.userId?.email}</p>
                       </td>
                       <td className="px-8 py-6">
-                        <p className="font-black text-sm text-[var(--healthcare-cyan)]">Dr. {booking.doctorId?.userId?.name}</p>
+                        <p className="font-black text-sm text-[var(--healthcare-cyan)]">
+                          {booking.providerId?.businessName || (booking.providerId?.userId?.name ? `Dr. ${booking.providerId.userId.name}` : 'Unknown Provider')}
+                        </p>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase">{booking.type}</p>
                       </td>
                       <td className="px-8 py-6 text-sm font-bold">
-                        {new Date(booking.date).toLocaleDateString()} <span className="text-muted-foreground">at {booking.time}</span>
+                        {new Date(booking.date).toLocaleDateString()} <span className="text-muted-foreground">at {booking.timeSlot || 'Anytime'}</span>
                       </td>
                       <td className="px-8 py-6">
                         <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
@@ -533,7 +567,7 @@ export default function AdminDashboard() {
                     
                     <div className="space-y-4 md:space-y-6">
                        <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-3xl">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
                             <Shield className="w-4 h-4 md:w-5 md:h-5 text-[var(--healthcare-cyan)]" />
                           </div>
                           <div>
@@ -542,7 +576,7 @@ export default function AdminDashboard() {
                           </div>
                        </div>
                        <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-3xl">
-                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
+                          <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-sm">
                             <Phone className="w-4 h-4 md:w-5 md:h-5 text-[var(--healthcare-cyan)]" />
                           </div>
                           <div>
@@ -598,17 +632,54 @@ export default function AdminDashboard() {
                       </div>
                     )}
 
-                    <div className="pt-8 border-t flex gap-4">
-                       <button className="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-black transition-all">
-                         Download Documents
-                       </button>
+                    <div className="pt-8 border-t flex flex-wrap gap-4">
                        {selectedProvider.status === 'pending' && (
-                         <button 
-                           onClick={() => { handleAction('approve', selectedProvider._id); setIsModalOpen(false); }}
-                           className="flex-1 py-4 bg-[var(--healthcare-cyan)] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-cyan-500/20 hover:scale-[1.02] transition-all"
-                         >
-                           Approve Activation
-                         </button>
+                         <>
+                          <button 
+                            onClick={() => { handleAction('approve', selectedProvider._id); setIsModalOpen(false); }}
+                            className="flex-1 py-4 bg-[var(--healthcare-cyan)] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-cyan-500/20 hover:scale-[1.02] transition-all"
+                          >
+                            Approve Activation
+                          </button>
+                          <button 
+                            onClick={() => { handleAction('reject', selectedProvider._id); setIsModalOpen(false); }}
+                            className="px-8 py-4 bg-red-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-red-500/20 hover:scale-[1.02] transition-all"
+                          >
+                            Reject
+                          </button>
+                         </>
+                       )}
+                       {selectedProvider.status === 'active' && (
+                         <div className="flex-1 flex gap-4">
+                           <button 
+                             onClick={() => { handleAction('suspend', selectedProvider._id); setIsModalOpen(false); }}
+                             className="flex-1 py-4 bg-orange-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-orange-500/20 hover:scale-[1.02] transition-all"
+                           >
+                             Suspend Account
+                           </button>
+                           <button 
+                             onClick={() => { handleAction('remove', selectedProvider._id); setIsModalOpen(false); }}
+                             className="flex-1 py-4 bg-red-50 text-red-500 border-2 border-red-500/20 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                           >
+                             Remove Role
+                           </button>
+                         </div>
+                       )}
+                       {selectedProvider.status === 'suspended' && (
+                         <div className="flex-1 flex gap-4">
+                           <button 
+                             onClick={() => { handleAction('activate', selectedProvider._id); setIsModalOpen(false); }}
+                             className="flex-1 py-4 bg-emerald-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-[1.02] transition-all"
+                           >
+                             Reactivate Partner
+                           </button>
+                           <button 
+                             onClick={() => { handleAction('remove', selectedProvider._id); setIsModalOpen(false); }}
+                             className="flex-1 py-4 bg-red-50 text-red-500 border-2 border-red-500/20 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
+                           >
+                             Permanent Removal
+                           </button>
+                         </div>
                        )}
                     </div>
                  </div>
