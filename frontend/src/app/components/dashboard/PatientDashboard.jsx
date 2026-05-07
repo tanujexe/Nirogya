@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import { Calendar, Clock, Activity, FileText, Droplet, Navigation, ShieldCheck, ArrowRight, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { bookingsAPI } from "../../utils/api";
+import { useAuth } from "../../context/AuthContext";
+import SuspensionBanner from "../common/SuspensionBanner";
 
 export default function PatientDashboard() {
   const [appointments, setAppointments] = useState([]);
@@ -33,8 +35,12 @@ export default function PatientDashboard() {
     }
   }
 
+  const { user } = useAuth();
+
   return (
     <div className="space-y-12">
+      <SuspensionBanner details={user?.suspensionDetails} />
+      
       {/* Quick Actions */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {[
@@ -94,7 +100,7 @@ export default function PatientDashboard() {
                       </div>
                       <div>
                         <h3 className="font-bold text-lg group-hover:text-[var(--healthcare-cyan)] transition-colors">
-                          {appointment.providerId?.businessName || appointment.providerId?.userId?.name || 'Healthcare Provider'}
+                          {appointment?.providerId?.businessName || appointment?.providerId?.userId?.name || 'Healthcare Provider'}
                         </h3>
                         <p className={`text-sm font-bold uppercase tracking-wider ${
                           appointment.type === 'doctor' ? 'text-cyan-500/70' :
@@ -102,7 +108,7 @@ export default function PatientDashboard() {
                           appointment.type === 'bloodbank' ? 'text-rose-500/70' :
                           'text-emerald-500/70'
                         }`}>
-                          {appointment.type} {appointment.providerId?.specialization ? `• ${appointment.providerId.specialization}` : ''}
+                          {appointment?.type || 'Appointment'} {appointment?.providerId?.specialization ? `• ${appointment.providerId.specialization}` : ''}
                         </p>
                       </div>
                     </div>
@@ -112,18 +118,18 @@ export default function PatientDashboard() {
                       appointment.status === 'cancelled' ? 'bg-red-500/10 text-red-600 border-red-500/20' :
                       'bg-muted text-muted-foreground border-border'
                     }`}>
-                      {appointment.status}
+                      {appointment?.status || 'unknown'}
                     </span>
                   </div>
                   
                   <div className="flex items-center gap-6 text-sm font-medium text-muted-foreground mb-6 bg-muted/30 p-4 rounded-2xl border border-border/50">
                     <span className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-[var(--healthcare-cyan)]" />
-                      {new Date(appointment.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                      {appointment?.date ? new Date(appointment.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : 'Date TBD'}
                     </span>
                     <span className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-[var(--healthcare-cyan)]" />
-                      {appointment.timeSlot || appointment.time || 'TBD'}
+                      {appointment?.timeSlot || appointment?.time || 'Time TBD'}
                     </span>
                   </div>
 
@@ -150,11 +156,11 @@ export default function PatientDashboard() {
           
           <div className="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-[2rem] p-8 text-white shadow-xl shadow-purple-500/20 relative overflow-hidden group">
             {/* Decoration */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white dark:bg-slate-800/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-400/20 rounded-full -ml-12 -mb-12 blur-xl" />
             
             <div className="relative z-10">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
+              <div className="w-14 h-14 bg-white dark:bg-slate-800/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
                 <Shield className="w-8 h-8 text-white" />
               </div>
               
@@ -174,7 +180,7 @@ export default function PatientDashboard() {
               
               <Link 
                 to="/vault" 
-                className="w-full py-4 bg-white text-purple-700 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl hover:bg-purple-50 transition-all active:scale-[0.98]"
+                className="w-full py-4 bg-white dark:bg-slate-800 text-purple-700 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl hover:bg-purple-50 transition-all active:scale-[0.98]"
               >
                 Enter Your Vault
                 <ArrowRight className="w-4 h-4" />
