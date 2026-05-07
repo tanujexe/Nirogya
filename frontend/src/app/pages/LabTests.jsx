@@ -94,7 +94,7 @@ export default function LabTests() {
                   <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Popular Tests</p>
                   <div className="flex flex-wrap gap-2">
                     {provider.testCategories?.slice(0, 3).map(cat => (
-                      <span key={cat} className="px-3 py-1 bg-white border border-border rounded-lg text-[10px] font-bold uppercase">{cat}</span>
+                      <span key={cat} className="px-3 py-1 bg-white dark:bg-slate-800 border border-border rounded-lg text-[10px] font-bold uppercase">{cat}</span>
                     ))}
                   </div>
                 </div>

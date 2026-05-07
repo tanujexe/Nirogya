@@ -113,13 +113,13 @@ export default function Register() {
 
           <div className="space-y-6 text-muted-foreground text-lg">
             <div className="flex items-start space-x-4">
-              <div className="mt-1 p-2 bg-white rounded-lg shadow-sm">
+              <div className="mt-1 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
                 <Shield className="w-5 h-5 text-[var(--healthcare-cyan)]" />
               </div>
               <p>Secure and private health records management.</p>
             </div>
             <div className="flex items-start space-x-4">
-              <div className="mt-1 p-2 bg-white rounded-lg shadow-sm">
+              <div className="mt-1 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm">
                 <Stethoscope className="w-5 h-5 text-[var(--healthcare-blue)]" />
               </div>
               <p>Connect with verified medical professionals instantly.</p>
