@@ -3,6 +3,10 @@ import { Star, Calendar, Clock, Award } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function DoctorCard({ doctor }) {
+  const doctorName = doctor.userId?.name || doctor.name || 'Doctor';
+  const doctorAvatar = doctor.userId?.avatar || doctor.image || 'https://via.placeholder.com/150';
+  const reviewsCount = doctor.reviewsCount || doctor.reviews || 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -13,37 +17,37 @@ export default function DoctorCard({ doctor }) {
       <div className="flex items-start space-x-4">
         <div className="relative">
           <img
-            src={doctor.image}
-            alt={doctor.name}
+            src={doctorAvatar}
+            alt={doctorName}
             className="w-20 h-20 rounded-xl object-cover border-2 border-border group-hover:border-[var(--healthcare-cyan)] transition-colors"
           />
 
-          <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] p-1.5 rounded-lg">
+          <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] p-1.5 rounded-lg shadow-lg">
             <Award className="w-4 h-4 text-white" />
           </div>
         </div>
 
         <div className="flex-1">
-          <h3 className="font-semibold text-lg mb-1 group-hover:text-[var(--healthcare-cyan)] transition-colors">
-            {doctor.name}
+          <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors line-clamp-1">
+            {doctorName}
           </h3>
 
-          <p className="text-sm text-muted-foreground mb-2">
-            {doctor.specialization}
+          <p className="text-sm text-muted-foreground mb-2 font-medium">
+            {doctor?.specialization || 'General Physician'}
           </p>
 
           <div className="flex items-center space-x-4 text-xs text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Star className="w-4 h-4 text-yellow-500" fill="currentColor" />
               <span className="font-medium text-foreground">
-                {doctor.rating}
+                {doctor?.rating || "New"}
               </span>
-              <span>({doctor.reviews})</span>
+              <span>({reviewsCount})</span>
             </div>
 
             <div className="flex items-center space-x-1">
               <Clock className="w-3.5 h-3.5" />
-              <span>{doctor.experience}+ years</span>
+              <span>{doctor?.experience || 0}+ years</span>
             </div>
           </div>
         </div>
@@ -53,26 +57,26 @@ export default function DoctorCard({ doctor }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Calendar className="w-4 h-4 text-[var(--healthcare-green)]" />
-            <span className="text-sm text-muted-foreground">
-              {doctor.availability}
+            <span className="text-sm text-muted-foreground font-medium">
+              Next Available: Today
             </span>
           </div>
 
           <div className="text-right">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
               Consultation Fee
             </p>
-            <p className="text-lg font-semibold text-[var(--healthcare-cyan)]">
-              ₹{doctor.fees}
+            <p className="text-lg font-bold text-[var(--healthcare-cyan)]">
+              ₹{doctor?.fees || '---'}
             </p>
           </div>
         </div>
 
         <Link
-          to={`/doctor/${doctor.id}`}
-          className="block w-full py-2.5 px-4 text-center rounded-xl bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white font-medium hover:shadow-lg hover:shadow-[var(--healthcare-cyan)]/20 transition-all"
+          to={`/doctor/${doctor._id || doctor.id}`}
+          className="block w-full py-3 px-4 text-center rounded-xl bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white font-bold hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 transition-all"
         >
-          Book Appointment
+          View Profile & Book
         </Link>
       </div>
     </motion.div>

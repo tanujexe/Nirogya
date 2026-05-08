@@ -82,7 +82,7 @@ export default function Loader({ fullScreen = false }) {
             transition={{ duration: 2, repeat: Infinity }}
             className="text-xl font-black tracking-tight text-slate-800 dark:text-white uppercase"
           >
-            Nirogya Sathi
+            NirogyaSathi
           </motion.h3>
           
           <div className="h-6">

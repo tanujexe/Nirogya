@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Menu, X, Moon, Sun, User, LogOut, LayoutDashboard, Heart, 
+import {
+  Menu, X, Moon, Sun, User, LogOut, LayoutDashboard, Heart,
   ChevronDown, Settings, Shield, Activity, Droplet, Navigation, Stethoscope, ShieldCheck, UserPlus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -13,7 +13,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [showServices, setShowServices] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  
+
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,11 +75,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? 'bg-background/70 backdrop-blur-xl shadow-lg border-b border-border/50 py-2'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+          ? 'bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl shadow-medium border-b border-border/50 py-2'
           : 'bg-transparent py-4'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
@@ -100,33 +99,29 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center space-x-1">
             <Link
               to="/"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.pathname === '/' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                }`}
             >
               Home
             </Link>
             <Link
               to="/doctors"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.pathname === '/doctors' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/doctors' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                }`}
             >
               Doctors
             </Link>
             <Link
               to="/hospitals"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                location.pathname === '/hospitals' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${location.pathname === '/hospitals' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                }`}
             >
               Hospitals
             </Link>
             <Link
               to="/symptom-checker"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
-                location.pathname === '/symptom-checker' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${location.pathname === '/symptom-checker' ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                }`}
             >
               <Stethoscope className="w-4 h-4" />
               Check Symptoms
@@ -136,9 +131,8 @@ export default function Navbar() {
             <div className="relative" ref={servicesRef}>
               <button
                 onClick={() => setShowServices(!showServices)}
-                className={`flex items-center space-x-1 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  showServices ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
-                }`}
+                className={`flex items-center space-x-1 px-4 py-2 rounded-xl text-sm font-medium transition-all ${showServices ? 'text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/5' : 'text-foreground/70 hover:text-foreground hover:bg-accent'
+                  }`}
               >
                 <span>Services</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showServices ? 'rotate-180' : ''}`} />
@@ -252,6 +246,15 @@ export default function Navbar() {
                           <Settings className="w-4 h-4 text-muted-foreground group-hover:text-[var(--healthcare-cyan)]" />
                           <span className="text-sm font-medium">Settings</span>
                         </Link>
+                        {user?.role === 'ambulance' && (
+                          <Link
+                            to="/ambulance/driver/dashboard"
+                            className="flex items-center space-x-3 p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all group"
+                          >
+                            <Navigation className="w-4 h-4" />
+                            <span className="text-sm font-bold uppercase tracking-tight">Driver Panel</span>
+                          </Link>
+                        )}
 
                         {user?.role === 'user' && (
                           <div className="mt-2 pt-2 border-t border-border/50">
@@ -260,7 +263,7 @@ export default function Navbar() {
                               className="flex items-center space-x-3 p-3 rounded-xl bg-[var(--healthcare-cyan)]/5 text-[var(--healthcare-cyan)] hover:bg-[var(--healthcare-cyan)] hover:text-white transition-all group"
                             >
                               <UserPlus className="w-4 h-4" />
-                              <span className="text-sm font-black uppercase tracking-tighter">Join as Provider</span>
+                              <span className="text-sm font-bold uppercase tracking-tight">Join as Provider</span>
                             </Link>
                           </div>
                         )}
