@@ -2,6 +2,18 @@
   scroll-behavior: smooth;
 }
 
+/* Hide scrollbar for all elements */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
 body {
   overflow-x: hidden;
 }
@@ -25,16 +37,21 @@ body {
   color: white !important;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   background-color: var(--input-background) !important;
   color: var(--foreground) !important;
 }
 
-input:focus, select:focus, textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   color: var(--foreground) !important;
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--muted-foreground);
   opacity: 0.6;
 }
@@ -42,4 +59,54 @@ input::placeholder, textarea::placeholder {
 select option {
   background-color: var(--card) !important;
   color: var(--foreground) !important;
+}
+
+/* Leaflet Custom Markers */
+.custom-ambulance-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-pickup-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-container {
+  font-family: inherit;
+  z-index: 1;
+}
+
+.leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+
+.leaflet-bar {
+  border: none !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.leaflet-bar a {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+/* Custom Scrollbar for search results */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  display: block !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
 }
