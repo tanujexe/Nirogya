@@ -135,7 +135,7 @@ export default function DoctorProfileSettings() {
                 <button 
                   type="button"
                   onClick={() => document.getElementById('avatar-input').click()}
-                  className="absolute -bottom-2 -right-2 p-2 bg-white rounded-xl shadow-lg border border-border text-[var(--healthcare-cyan)] hover:scale-110 transition-transform"
+                  className="absolute -bottom-2 -right-2 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-border text-[var(--healthcare-cyan)] hover:scale-110 transition-transform"
                 >
                   <Camera className="w-5 h-5" />
                 </button>

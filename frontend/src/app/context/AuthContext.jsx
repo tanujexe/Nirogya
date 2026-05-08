@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { authAPI } from "../utils/api";
 
 const AuthContext = createContext(undefined);
-// jjj
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -15,13 +15,46 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const logout = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem("user");
+    // Only redirect if we are not already on login/register to avoid loops
+    if (!['/login', '/register', '/'].includes(window.location.pathname)) {
+      window.location.href = "/login";
     }
-    setLoading(false);
   }, []);
+
+  const refreshUser = useCallback(async () => {
+    try {
+      const response = await authAPI.getMe();
+      const userData = response.data.data;
+      
+      // Merge token from localStorage if it's not returned by getMe
+      const storedData = JSON.parse(localStorage.getItem("user") || "{}");
+      const updatedUser = { ...userData, token: storedData.token };
+      
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return updatedUser;
+    } catch (error) {
+      console.error("Session validation failed:", error);
+      logout();
+      return null;
+    }
+  }, [logout]);
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        // We have a token in local storage, verify it with the server
+        await refreshUser();
+      }
+      setLoading(false);
+    };
+
+    initializeAuth();
+  }, [refreshUser]);
 
   const login = async (email, password) => {
     setLoading(true);
@@ -39,11 +72,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (data) => {
+  const register = async (payload) => {
     setLoading(true);
     try {
-      // If data is an object, use it directly, otherwise if old arguments passed (not expected anymore)
-      const payload = typeof data === 'object' ? data : { name: arguments[0], email: arguments[1], password: arguments[2], role: arguments[3] };
       const response = await authAPI.register(payload);
       const userData = response.data.data;
       
@@ -55,23 +86,6 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const refreshUser = async () => {
-    try {
-      const response = await authAPI.getMe();
-      const userData = response.data.data;
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-    } catch (error) {
-      console.error("Failed to refresh user data", error);
-    }
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-    window.location.href = "/login";
   };
 
   return (
