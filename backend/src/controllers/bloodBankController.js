@@ -68,12 +68,12 @@ const requestBlood = asyncHandler(async (req, res) => {
   // Create a unified booking record
   const booking = await Booking.create({
     userId:     req.user.id,
-    providerId: bankId,
+    providerId: bank.providerId || bankId,
     type:       'blood',
     date:       new Date(date),
     status:     'confirmed',
     notes,
-    details:    { bloodGroup, units: unitsNum },
+    details:    { bloodGroup, units: unitsNum, bankName: bank.name },
     paymentStatus: 'pending',
   });
 
