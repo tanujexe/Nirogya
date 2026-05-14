@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { Send } from 'lucide-react';
+import { toast } from 'react-toastify';
 import VoiceInput from './VoiceInput';
 
 export default function SymptomInput({ onAnalyze, isAnalyzing }) {
