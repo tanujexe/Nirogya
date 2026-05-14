@@ -68,6 +68,10 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/providers',     providerRoutes);
 app.use('/api/ai',            aiRoutes);
 
+app.get('/api/test-ambulances', (req, res) => {
+  res.json({ success: true, message: 'Ambulance route root is accessible' });
+});
+
 app.get('/', (_req, res) => {
   res.json({ success: true, message: 'Nirogya API Server Running ✅' });
 });
