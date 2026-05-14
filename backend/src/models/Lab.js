@@ -10,6 +10,9 @@ const labSchema = new mongoose.Schema({
   popular: { type: Boolean, default: false },
   fasting: { type: Boolean, default: false },
   homeCollection: { type: Boolean, default: true },
+  rating: { type: Number, default: 0 },
+  reviewsCount: { type: Number, default: 0 },
+  providerId: { type: mongoose.Schema.Types.ObjectId, ref: 'LabProvider' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Lab', labSchema);
