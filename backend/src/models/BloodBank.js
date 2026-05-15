@@ -28,6 +28,7 @@ const bloodBankSchema = new mongoose.Schema({
 
   rating:       { type: Number, default: 0 },
   reviewsCount: { type: Number, default: 0 },
+  providerId:   { type: mongoose.Schema.Types.ObjectId, ref: 'BloodBankProvider' },
 }, { timestamps: true });
 
 // Geo index for nearby search
