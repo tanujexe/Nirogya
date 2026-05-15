@@ -20,6 +20,8 @@ const startServer = async () => {
         credentials: true,
       },
       transports: ['websocket', 'polling'],
+      pingTimeout: 60000, // 60 seconds
+      pingInterval: 25000, // 25 seconds
     });
 
     // Make io available inside controllers via req.app.get('io')
@@ -27,6 +29,10 @@ const startServer = async () => {
 
     // Register socket namespaces / handlers
     setupAmbulanceSocket(io);
+
+    // Start Real-time Simulation (MVP Mode)
+    const startAmbulanceSimulator = require('./services/ambulanceSimulator');
+    startAmbulanceSimulator(io);
 
     server.listen(env.PORT, () => {
       logger.info(`Server running in ${env.NODE_ENV} mode on port ${env.PORT}`);
