@@ -43,6 +43,9 @@ export default function DoctorDashboard() {
           apt._id === bookingId ? { ...apt, status: newStatus } : apt
         )
       );
+      setSelectedAppointment((prev) => 
+        prev && prev._id === bookingId ? { ...prev, status: newStatus } : prev
+      );
     } catch (error) {
       toast.error("Failed to update status");
     }

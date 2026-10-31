@@ -12,15 +12,19 @@ import {
   Check,
   X,
   MapPin,
-  Activity
+  Activity,
+  Eye
 } from 'lucide-react';
 import { bookingsAPI, providerAPI } from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import SuspensionBanner from "../common/SuspensionBanner";
 import ProviderProfileModal from "./ProviderProfileModal";
+import AppointmentDetailsModal from "./AppointmentDetailsModal";
 
 export default function BloodBankDashboard() {
+  const { user } = useAuth();
   const [requests, setRequests] = useState([]);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -71,7 +75,6 @@ export default function BloodBankDashboard() {
     </div>
   );
 
-  const { user } = useAuth();
 
   return (
     <div className="space-y-8">
@@ -151,17 +154,27 @@ export default function BloodBankDashboard() {
                       {req.status}
                     </span>
                     
+                    <button 
+                      onClick={() => setSelectedAppointment(req)}
+                      className="p-3 bg-muted rounded-xl text-muted-foreground hover:bg-[var(--healthcare-cyan)] hover:text-white transition-all shadow-sm"
+                      title="View Details"
+                    >
+                      <Eye className="w-5 h-5" />
+                    </button>
+                    
                     {req.status === 'pending' && (
                       <>
                         <button 
                           onClick={() => handleStatusChange(req._id, 'confirmed')}
-                          className="p-4 bg-emerald-500 text-white rounded-2xl hover:shadow-lg hover:shadow-emerald-500/20 transition-all"
+                          className="p-3 bg-emerald-500 text-white rounded-xl hover:shadow-lg hover:shadow-emerald-500/20 transition-all"
+                          title="Confirm"
                         >
                           <Check className="w-5 h-5" />
                         </button>
                         <button 
                           onClick={() => handleStatusChange(req._id, 'cancelled')}
-                          className="p-4 bg-accent text-muted-foreground rounded-2xl hover:bg-red-500 hover:text-white transition-all"
+                          className="p-3 bg-accent text-muted-foreground rounded-xl hover:bg-red-500 hover:text-white transition-all"
+                          title="Cancel"
                         >
                           <X className="w-5 h-5" />
                         </button>
@@ -208,6 +221,12 @@ export default function BloodBankDashboard() {
         onClose={() => setIsProfileModalOpen(false)}
         profile={profile}
         onUpdate={(newProfile) => setProfile(newProfile)}
+      />
+
+      <AppointmentDetailsModal 
+        isOpen={!!selectedAppointment}
+        onClose={() => setSelectedAppointment(null)}
+        appointment={selectedAppointment}
       />
     </div>
   );

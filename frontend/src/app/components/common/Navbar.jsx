@@ -87,7 +87,7 @@ export default function Navbar() {
             <div className="relative">
               <div className="absolute inset-0 bg-[var(--healthcare-cyan)] blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
               <div className="relative bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] p-2.5 rounded-2xl shadow-lg group-hover:scale-105 transition-transform duration-300">
-                <Heart className="w-5 h-5 text-white" fill="currentColor" />
+                <Stethoscope className="w-5 h-5 text-white" />
               </div>
             </div>
             <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] bg-clip-text text-transparent">
@@ -141,9 +141,10 @@ export default function Navbar() {
               <AnimatePresence>
                 {showServices && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
                     className="absolute top-full left-0 mt-2 w-64 bg-card border border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl p-2 overflow-hidden"
                   >
                     <div className="grid gap-1">
@@ -202,9 +203,10 @@ export default function Navbar() {
                 <AnimatePresence>
                   {showUserMenu && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
                       className="absolute top-full right-0 mt-2 w-64 bg-card border border-border/50 rounded-2xl shadow-2xl backdrop-blur-xl overflow-hidden"
                     >
                       <div className="p-4 border-b border-border/50 bg-muted/30">
@@ -314,15 +316,16 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-background/95 backdrop-blur-2xl border-t border-border/50 overflow-hidden"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-2xl border-t border-border/50 overflow-hidden shadow-2xl"
           >
             <div className="px-4 py-6 space-y-4">
               <div className="grid grid-cols-2 gap-2">
                 <Link to="/" className="p-4 rounded-2xl bg-accent/50 flex flex-col items-center justify-center space-y-2">
-                  <Heart className="w-5 h-5 text-[var(--healthcare-cyan)]" />
+                  <Stethoscope className="w-5 h-5 text-[var(--healthcare-cyan)]" />
                   <span className="text-xs font-bold">Home</span>
                 </Link>
                 <Link to="/doctors" className="p-4 rounded-2xl bg-accent/50 flex flex-col items-center justify-center space-y-2">

@@ -21,6 +21,7 @@ import { useAuth } from "../../context/AuthContext";
 import SuspensionBanner from "../common/SuspensionBanner";
 
 export default function LabDashboard() {
+  const { user } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
@@ -71,7 +72,6 @@ export default function LabDashboard() {
     </div>
   );
 
-  const { user } = useAuth();
 
   return (
     <div className="space-y-8">

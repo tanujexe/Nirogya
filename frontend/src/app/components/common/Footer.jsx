@@ -8,6 +8,7 @@ import {
   Twitter,
   Instagram,
   Linkedin,
+  Stethoscope,
 } from "lucide-react";
 
 export default function Footer() {
@@ -52,8 +53,8 @@ export default function Footer() {
           {/* Brand Identity */}
           <div className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left">
             <Link to="/" className="flex items-center space-x-3 mb-8 group">
-              <div className="bg-[var(--healthcare-cyan)] p-2.5 rounded-2xl shadow-xl shadow-[var(--healthcare-cyan)]/20 group-hover:rotate-12 transition-transform duration-500">
-                <Heart className="w-6 h-6 text-white" fill="currentColor" />
+              <div className="bg-[var(--healthcare-cyan)] p-2.5 rounded-2xl shadow-xl shadow-[var(--healthcare-cyan)]/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                <Stethoscope className="w-6 h-6 text-white" />
               </div>
               <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                 NirogyaSathi
@@ -71,7 +72,7 @@ export default function Footer() {
                   <a
                     key={social.label}
                     href={social.href}
-                    className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400 hover:text-[var(--healthcare-cyan)] hover:border-[var(--healthcare-cyan)]/50 hover:shadow-lg transition-all"
+                    className="w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400 hover:text-[var(--healthcare-cyan)] hover:border-[var(--healthcare-cyan)]/50 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
                     aria-label={social.label}
                   >
                     <Icon className="w-5 h-5" />

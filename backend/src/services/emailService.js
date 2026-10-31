@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+ const nodemailer = require('nodemailer');
 const env = require('../config/env');
 const logger = require('../utils/logger');
 
@@ -18,7 +18,7 @@ const sendEmail = async (options) => {
   });
 
   const message = {
-    from: `${env.EMAIL_FROM_NAME || 'Nirogya Sathi'} <${env.EMAIL_FROM}>`,
+    from: `${env.EMAIL_FROM_NAME || 'NirogyaSathi'} <${env.EMAIL_FROM}>`,
     to: options.email,
     subject: options.subject,
     text: options.message,

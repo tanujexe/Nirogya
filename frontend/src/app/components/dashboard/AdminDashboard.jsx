@@ -250,15 +250,26 @@ export default function AdminDashboard() {
                   ))}
                 </div>
 
-                <select 
-                  className="bg-muted/50 border-none rounded-2xl py-3 px-4 font-bold text-xs md:text-sm outline-none cursor-pointer w-full sm:w-auto"
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="active">Active</option>
-                  <option value="suspended">Suspended</option>
-                </select>
+                <div className="flex items-center gap-1.5 md:gap-2 bg-muted/50 p-1.5 rounded-2xl w-full sm:w-auto">
+                  {[
+                    { id: 'pending', label: 'Pending', icon: Clock, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                    { id: 'active', label: 'Active', icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                    { id: 'suspended', label: 'Suspended', icon: XCircle, color: 'text-red-500', bg: 'bg-red-500/10' }
+                  ].map(status => (
+                    <button
+                      key={status.id}
+                      onClick={() => setFilterStatus(status.id)}
+                      className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${
+                        filterStatus === status.id 
+                        ? 'bg-white dark:bg-slate-800 text-foreground shadow-xl scale-105 border-b-2 border-[var(--healthcare-cyan)]' 
+                        : 'text-muted-foreground hover:text-foreground opacity-60'
+                      }`}
+                    >
+                      <status.icon className={`w-3.5 h-3.5 ${filterStatus === status.id ? status.color : ''}`} />
+                      {status.label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <button 

@@ -21,31 +21,44 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'react-toastify';
 import { bookingsAPI, healthRecordsAPI } from '../../utils/api';
+import { useAuth } from '../../context/AuthContext';
 import { format } from 'date-fns';
 
 export default function GeneralBookingForm({ provider, type, onClose }) {
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [reports, setReports] = useState([]);
   const [selectedReports, setSelectedReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
   
   const [formData, setFormData] = useState({
-    patientName: '',
-    email: '',
-    phone: '',
+    patientName: user?.name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
     date: format(new Date(), 'yyyy-MM-dd'),
     timeSlot: '',
     notes: '',
-    bloodGroup: '', // For blood bank
+    bloodGroup: user?.bloodGroup || '', // For blood bank
     testType: '', // For lab
     emergencyType: 'Routine', // For ambulance
-    address: provider.address || '',
+    address: typeof user?.address === 'string' ? user.address : (user?.address?.street || provider.address || ''),
   });
 
   const [loading, setLoading] = useState(false);
 
   const providerName = provider.businessName || provider.userId?.name || 'Provider';
   const providerId = provider._id;
+
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        patientName: prev.patientName || user.name || '',
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.phone || '',
+      }));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (step === 2 && type === 'doctor') {
@@ -77,6 +90,16 @@ export default function GeneralBookingForm({ provider, type, onClose }) {
     setLoading(true);
 
     try {
+      const extraDetails = {
+        patientName: formData.patientName,
+        phone: formData.phone,
+        email: formData.email,
+        bloodGroup: formData.bloodGroup,
+        testType: formData.testType,
+        emergencyType: formData.emergencyType,
+        address: formData.address
+      };
+
       const bookingData = {
         providerId,
         type,
@@ -84,16 +107,11 @@ export default function GeneralBookingForm({ provider, type, onClose }) {
         timeSlot: formData.timeSlot || 'Anytime',
         notes: formData.notes,
         sharedReports: selectedReports,
-        // Additional metadata
-        metadata: {
-          patientName: formData.patientName,
-          phone: formData.phone,
-          email: formData.email,
-          bloodGroup: formData.bloodGroup,
-          testType: formData.testType,
-          emergencyType: formData.emergencyType,
-          address: formData.address
-        }
+        details: extraDetails,
+        metadata: extraDetails,
+        phone: formData.phone,
+        patientName: formData.patientName,
+        email: formData.email
       };
 
       await bookingsAPI.create(bookingData);

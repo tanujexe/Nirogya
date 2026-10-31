@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/globals.css';
+import { motion, AnimatePresence } from 'motion/react';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/common/Navbar';
@@ -19,28 +20,25 @@ import Hospitals from './pages/Hospitals';
 import LabTests from './pages/LabTests';
 import SymptomCheckerPage from './pages/SymptomCheckerPage';
 import BloodBank from './pages/BloodBank';
-import Ambulance from './pages/Ambulance';
 import Profile from './pages/Profile';
 import MedicalVault from './pages/MedicalVault';
 import JoinAsProvider from './pages/JoinAsProvider';
 import ProviderOnboarding from './pages/ProviderOnboarding';
 import ProviderProfile from './pages/ProviderProfile';
+import AmbulanceBooking from './pages/user/AmbulanceBooking';
+import LiveTracking from './pages/user/LiveTracking';
+import DriverDashboard from './pages/driver/DriverDashboard';
 import PatientProfileSettings from './pages/PatientProfileSettings';
 import DoctorProfileSettings from './pages/DoctorProfileSettings';
 import NotFound from './pages/NotFound';
+import Loader from './components/common/Loader';
+import EmergencyFloat from './components/common/EmergencyFloat';
 
 function ProtectedRoute({ children, roles = [] }) {
   const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin w-12 h-12 border-4 border-[var(--healthcare-cyan)] border-t-transparent rounded-full shadow-lg" />
-          <p className="text-muted-foreground animate-pulse font-medium">Securing your session...</p>
-        </div>
-      </div>
-    );
+    return <Loader fullScreen />;
   }
 
   if (!isAuthenticated) {
@@ -54,8 +52,9 @@ function ProtectedRoute({ children, roles = [] }) {
   return children;
 }
 
-function ScrollToHash() {
-  const { hash } = useLocation();
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
   useEffect(() => {
     if (hash) {
       const element = document.getElementById(hash.replace('#', ''));
@@ -67,68 +66,90 @@ function ScrollToHash() {
     } else {
       window.scrollTo(0, 0);
     }
-  }, [hash]);
+  }, [pathname, hash]);
+
   return null;
 }
 
 function AppRoutes() {
+  const { loading } = useAuth();
+  const location = useLocation();
+  const { pathname } = location;
+
+  if (loading) {
+    return <Loader fullScreen />;
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
-      <ScrollToHash />
+      <ScrollToTop />
       <Navbar />
 
-      <main className="flex-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/doctors" element={<Doctors />} />
-          <Route path="/doctor/:id" element={<DoctorProfile />} />
-          <Route path="/hospitals" element={<Hospitals />} />
-          <Route path="/lab-tests" element={<LabTests />} />
-          <Route path="/blood-bank" element={<BloodBank />} />
-          <Route path="/ambulance" element={<Ambulance />} />
-          <Route path="/symptom-checker" element={<SymptomCheckerPage />} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path="/vault" element={<ProtectedRoute><MedicalVault /></ProtectedRoute>} />
+      <main className="flex-1 relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <Routes location={location} key={pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/doctors" element={<Doctors />} />
+              <Route path="/doctor/:id" element={<DoctorProfile />} />
+              <Route path="/hospitals" element={<Hospitals />} />
+              <Route path="/lab-tests" element={<LabTests />} />
+              <Route path="/blood-bank" element={<BloodBank />} />
+              <Route path="/ambulance" element={<ProtectedRoute><AmbulanceBooking /></ProtectedRoute>} />
+              <Route path="/ambulance/track/:bookingId" element={<ProtectedRoute><LiveTracking /></ProtectedRoute>} />
+              <Route path="/ambulance/driver/dashboard" element={<ProtectedRoute roles={['ambulance']}><DriverDashboard /></ProtectedRoute>} />
+              <Route path="/symptom-checker" element={<SymptomCheckerPage />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              <Route path="/vault" element={<ProtectedRoute><MedicalVault /></ProtectedRoute>} />
 
-          {/* Provider flow — public + 'user' only; blocks doctor/admin */}
-          <Route element={<ProviderRoute />}>
-            <Route path="/join-provider" element={<JoinAsProvider />} />
-            <Route path="/onboarding/:type" element={<ProviderOnboarding />} />
-          </Route>
+              {/* Provider flow — public + 'user' only; blocks doctor/admin */}
+              <Route element={<ProviderRoute />}>
+                <Route path="/join-provider" element={<JoinAsProvider />} />
+                <Route path="/onboarding/:type" element={<ProviderOnboarding />} />
+              </Route>
 
-          <Route path="/provider/:type/:id" element={<ProviderProfile />} />
+              <Route path="/provider/:type/:id" element={<ProviderProfile />} />
 
-          {/* Settings */}
-          <Route path="/settings" element={<ProtectedRoute roles={['user']}><PatientProfileSettings /></ProtectedRoute>} />
-          <Route path="/doctor/settings" element={<ProtectedRoute roles={['doctor']}><DoctorProfileSettings /></ProtectedRoute>} />
+              {/* Settings */}
+              <Route path="/settings" element={<ProtectedRoute roles={['user']}><PatientProfileSettings /></ProtectedRoute>} />
+              <Route path="/doctor/settings" element={<ProtectedRoute roles={['doctor']}><DoctorProfileSettings /></ProtectedRoute>} />
 
-          {/* Unified Dashboard with Role Handling Inside */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+              {/* Unified Dashboard with Role Handling Inside */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Explicit Admin Routes (Example) */}
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute roles={['admin']}>
-                <Navigate to="/dashboard" replace />
-              </ProtectedRoute>
-            }
-          />
+              {/* Explicit Admin Routes (Example) */}
+              <Route
+                path="/admin/*"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <Navigate to="/dashboard" replace />
+                  </ProtectedRoute>
+                }
+              />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <Footer />
+      <EmergencyFloat />
 
       <ToastContainer
         position="top-right"
