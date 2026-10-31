@@ -49,10 +49,10 @@ export default function Register() {
     setLoading(true);
     try {
       await register({
-        name: formData.name,
-        email: formData.email,
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
         password: formData.password,
-        phone: formData.phone,
+        phone: formData.phone ? formData.phone.trim() : '',
         role: 'user', // Always user/patient
       });
       toast.success('Account created successfully!');

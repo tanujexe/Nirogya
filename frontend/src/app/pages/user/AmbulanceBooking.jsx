@@ -14,6 +14,12 @@ import { toast } from 'react-toastify';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+// FALLBACK COORDINATES
+const DEFAULT_CENTER = [26.2183, 78.1828];
+
+// Utility for coordinate validation
+const isValid = (lat, lng) => typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
+
 const AMBULANCE_TYPES = [
   { id: 'Basic', name: 'Basic Life Support', icon: Ambulance, price: 500, desc: 'Oxygen, standard stretcher, first aid.', color: 'text-blue-500' },
   { id: 'Oxygen', name: 'Oxygen Support', icon: Wind, price: 1200, desc: 'High-flow oxygen, pulse oximeter.', color: 'text-cyan-500' },
@@ -44,8 +50,7 @@ export default function AmbulanceBooking() {
   const [pickupResults, setPickupResults] = useState([]);
   const [destResults, setDestResults] = useState([]);
   
-  const [mapCenter, setMapCenter] = useState([26.2298, 78.1734]);
-  const [userLocation, setUserLocation] = useState(null);
+  const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [nearbyAmbulances, setNearbyAmbulances] = useState([]);
   const [route, setRoute] = useState(null);
   const [routeInfo, setRouteInfo] = useState({ distance: '', duration: '', fare: 0 });
@@ -56,9 +61,11 @@ export default function AmbulanceBooking() {
   useEffect(() => {
     if (location.state?.destination) {
       const { name, address, coordinates } = location.state.destination;
-      setDestination({ address, coordinates });
-      setDestSearch(name);
-      setViewState('selection');
+      if (Array.isArray(coordinates) && isValid(coordinates[1], coordinates[0])) {
+        setDestination({ address, coordinates });
+        setDestSearch(name);
+        setViewState('selection');
+      }
     }
   }, [location.state]);
 
@@ -72,19 +79,19 @@ export default function AmbulanceBooking() {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-          const loc = { lat: latitude, lng: longitude };
-          setUserLocation(loc);
-          setMapCenter([latitude, longitude]);
-          
-          // Reverse geocode to get address
-          try {
-            const res = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-            const address = res.data.display_name;
-            setPickup({ address, coordinates: [longitude, latitude] });
-            setPickupSearch(address);
-            fetchNearbyAmbulances(loc);
-          } catch (err) {
-            setPickup({ address: 'Current Location', coordinates: [longitude, latitude] });
+          if (isValid(latitude, longitude)) {
+            setMapCenter([latitude, longitude]);
+            
+            // Reverse geocode to get address
+            try {
+              const res = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+              const address = res.data.display_name;
+              setPickup({ address, coordinates: [longitude, latitude] });
+              setPickupSearch(address);
+              fetchNearbyAmbulances({ lat: latitude, lng: longitude });
+            } catch (err) {
+              setPickup({ address: 'Current Location', coordinates: [longitude, latitude] });
+            }
           }
           setLoading(false);
         },
@@ -94,22 +101,27 @@ export default function AmbulanceBooking() {
         },
         { enableHighAccuracy: true }
       );
+    } else {
+      setLoading(false);
     }
   };
 
   const discoveryTimeoutRef = useRef(null);
 
   const fetchNearbyAmbulances = async (loc) => {
+    if (!isValid(loc.lat, loc.lng)) return;
     try {
       const res = await ambulanceAPI.getNearby({ lat: loc.lat, lng: loc.lng });
       
-      // Clear any existing discovery timeout
       if (discoveryTimeoutRef.current) clearTimeout(discoveryTimeoutRef.current);
       
       discoveryTimeoutRef.current = setTimeout(() => {
         if (res.data?.success && Array.isArray(res.data.data)) {
           setNearbyAmbulances(res.data.data.map((amb, idx) => ({
-            position: { lat: amb.liveLocation?.coordinates[1] || 0, lng: amb.liveLocation?.coordinates[0] || 0 },
+            position: { 
+              lat: amb.liveLocation?.coordinates[1], 
+              lng: amb.liveLocation?.coordinates[0] 
+            },
             type: 'ambulance',
             label: amb.vehicleNumber || 'Rescue Unit',
             status: amb.isBusy ? 'busy' : 'online',
@@ -125,13 +137,6 @@ export default function AmbulanceBooking() {
     }
   };
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (discoveryTimeoutRef.current) clearTimeout(discoveryTimeoutRef.current);
-    };
-  }, []);
-
   const searchLocation = async (query, type) => {
     if (query.length < 3) return;
     try {
@@ -144,16 +149,21 @@ export default function AmbulanceBooking() {
   };
 
   const selectLocation = (item, type) => {
+    const lat = parseFloat(item.lat);
+    const lng = parseFloat(item.lon);
+    if (!isValid(lat, lng)) return;
+
     const loc = {
       address: item.display_name,
-      coordinates: [parseFloat(item.lon), parseFloat(item.lat)]
+      coordinates: [lng, lat]
     };
+
     if (type === 'pickup') {
       setPickup(loc);
       setPickupSearch(item.display_name);
       setPickupResults([]);
-      setMapCenter([loc.coordinates[1], loc.coordinates[0]]);
-      fetchNearbyAmbulances({ lat: loc.coordinates[1], lng: loc.coordinates[0] });
+      setMapCenter([lat, lng]);
+      fetchNearbyAmbulances({ lat, lng });
     } else {
       setDestination(loc);
       setDestSearch(item.display_name);
@@ -164,10 +174,15 @@ export default function AmbulanceBooking() {
 
   // Route Calculation
   useEffect(() => {
-    if (pickup && destination) {
+    if (pickup?.coordinates && destination?.coordinates) {
+      const [pLng, pLat] = pickup.coordinates;
+      const [dLng, dLat] = destination.coordinates;
+
+      if (!isValid(pLat, pLng) || !isValid(dLat, dLng)) return;
+
       const getRoute = async () => {
         try {
-          const res = await axios.get(`https://router.project-osrm.org/route/v1/driving/${pickup.coordinates[0]},${pickup.coordinates[1]};${destination.coordinates[0]},${destination.coordinates[1]}?overview=full&geometries=geojson`);
+          const res = await axios.get(`https://router.project-osrm.org/route/v1/driving/${pLng},${pLat};${dLng},${dLat}?overview=full&geometries=geojson`);
           if (res.data.routes.length > 0) {
             const routeData = res.data.routes[0];
             const coords = routeData.geometry.coordinates.map(c => [c[1], c[0]]);
@@ -194,12 +209,10 @@ export default function AmbulanceBooking() {
 
   const { socket, joinBookingRoom } = useAmbulanceSocket(user?._id, 'user');
   
-  // Listen for real-time mission acceptance
   useEffect(() => {
     if (socket) {
       socket.on('booking_accepted', (data) => {
         toast.success("Rescue mission confirmed! Pilot is en-route.");
-        // Short delay for visual transition
         setTimeout(() => {
           navigate(`/ambulance/track/${data.bookingId}`);
         }, 1500);
@@ -235,13 +248,11 @@ export default function AmbulanceBooking() {
         fare: routeInfo.fare
       });
       
-      // Join the specific booking room for real-time telemetry
       joinBookingRoom(res.data.data._id);
-      
-      // We don't navigate yet. We wait for a driver to accept via socket.
-      console.log("Booking created, waiting for driver acceptance...", res.data.data._id);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Dispatch failure. Please try again.");
+      if (err.response?.status !== 429) {
+        toast.error(err.response?.data?.message || "Dispatch failure. Please try again.");
+      }
       setFindingDrivers(false);
     }
   };
@@ -255,25 +266,35 @@ export default function AmbulanceBooking() {
     );
   }
 
+  // Safe markers logic
+  const mapMarkers = [];
+  if (pickup?.coordinates) {
+    const [pLng, pLat] = pickup.coordinates;
+    if (isValid(pLat, pLng)) {
+      mapMarkers.push({ position: { lat: pLat, lng: pLng }, type: 'user', label: 'Extraction Point' });
+    }
+  }
+
+  nearbyAmbulances.forEach(amb => {
+    if (amb.position && isValid(amb.position.lat, amb.position.lng)) {
+      mapMarkers.push(amb);
+    }
+  });
+
+  const safeDest = (destination?.coordinates && isValid(destination.coordinates[1], destination.coordinates[0])) 
+    ? { lat: destination.coordinates[1], lng: destination.coordinates[0] } 
+    : null;
+
   return (
     <div className="h-screen w-full relative overflow-hidden bg-slate-900">
       {/* Immersive Map Container */}
       <div className="absolute inset-0 z-0">
         <MapContainer 
-          center={pickup ? [pickup.coordinates[1], pickup.coordinates[0]] : [26.2298, 78.1734]}
+          center={mapCenter}
           zoom={15}
-          markers={[
-            ...(pickup ? [{ position: { lat: pickup.coordinates[1], lng: pickup.coordinates[0] }, type: 'user', label: 'Extraction Point' }] : []),
-            ...nearbyAmbulances.map(amb => ({
-              position: amb.position,
-              type: 'ambulance',
-              label: amb.label,
-              status: amb.status,
-              isNearest: amb.isNearest
-            }))
-          ]}
+          markers={mapMarkers}
           route={route}
-          destinationLocation={destination ? { lat: destination.coordinates[1], lng: destination.coordinates[0] } : null}
+          destinationLocation={safeDest}
         />
       </div>
 
@@ -464,7 +485,7 @@ export default function AmbulanceBooking() {
             )}
           </AnimatePresence>
 
-          {/* Scanner Overlay UI - Now triggers after 'Confirming' */}
+          {/* Scanner Overlay UI */}
           <AnimatePresence>
             {findingDrivers && (
               <motion.div 

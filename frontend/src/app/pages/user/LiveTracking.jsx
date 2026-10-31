@@ -16,6 +16,9 @@ import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+// Utility for coordinate validation
+const isValid = (lat, lng) => typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
+
 export default function LiveTracking() {
   const { bookingId } = useParams();
   const { user } = useAuth();
@@ -38,8 +41,9 @@ export default function LiveTracking() {
       joinBookingRoom(bookingId);
 
       socket.on('location_updated', (data) => {
-        console.log('📍 Live Telemetry Received:', data);
-        setDriverLocation({ lat: data.lat, lng: data.lng });
+        if (isValid(data.lat, data.lng)) {
+          setDriverLocation({ lat: data.lat, lng: data.lng });
+        }
       });
 
       socket.on('status_changed', ({ status: newStatus }) => {
@@ -65,13 +69,15 @@ export default function LiveTracking() {
   const fetchBookingDetails = async () => {
     try {
       const res = await ambulanceAPI.getBooking(bookingId);
-      setBooking(res.data.data);
-      setStatus(res.data.data.status);
-      if (res.data.data.ambulance?.liveLocation) {
-        setDriverLocation({
-          lat: res.data.data.ambulance.liveLocation.coordinates[1],
-          lng: res.data.data.ambulance.liveLocation.coordinates[0]
-        });
+      const data = res.data.data;
+      setBooking(data);
+      setStatus(data.status);
+      
+      if (data.ambulance?.liveLocation?.coordinates) {
+        const [lng, lat] = data.ambulance.liveLocation.coordinates;
+        if (isValid(lat, lng)) {
+          setDriverLocation({ lat, lng });
+        }
       }
       setLoading(false);
     } catch (err) {
@@ -82,12 +88,16 @@ export default function LiveTracking() {
 
   useEffect(() => {
     if (driverLocation && booking) {
-      const pickupCoords = booking.pickupLocation.coordinates.coordinates;
-      const destCoords = booking.destination.coordinates.coordinates;
+      const pickupCoords = booking.pickupLocation?.coordinates?.coordinates;
+      const destCoords = booking.destination?.coordinates?.coordinates;
+
+      if (!Array.isArray(pickupCoords) || !Array.isArray(destCoords)) return;
 
       const dest = ['assigned', 'reaching', 'accepted'].includes(status) 
         ? { lat: pickupCoords[1], lng: pickupCoords[0] }
         : { lat: destCoords[1], lng: destCoords[0] };
+
+      if (!isValid(driverLocation.lat, driverLocation.lng) || !isValid(dest.lat, dest.lng)) return;
 
       const getLiveRoute = async () => {
         try {
@@ -125,28 +135,34 @@ export default function LiveTracking() {
 
   const currentStepIndex = steps.findIndex(s => s.id === status);
 
+  // Safe markers with numeric validation
+  const mapMarkers = [];
+  if (driverLocation && isValid(driverLocation.lat, driverLocation.lng)) {
+    mapMarkers.push({ position: driverLocation, type: 'ambulance', label: 'Rescue Unit', status: status });
+  }
+  
+  if (booking?.pickupLocation?.coordinates?.coordinates) {
+    const [pLng, pLat] = booking.pickupLocation.coordinates.coordinates;
+    if (isValid(pLat, pLng)) {
+      mapMarkers.push({ position: { lat: pLat, lng: pLng }, type: 'user', label: 'Patient Location' });
+    }
+  }
+
+  const mapDest = booking?.destination?.coordinates?.coordinates;
+  const safeDest = (Array.isArray(mapDest) && isValid(mapDest[1], mapDest[0])) 
+    ? { lat: mapDest[1], lng: mapDest[0] } 
+    : null;
+
   return (
     <div className="h-screen w-full relative overflow-hidden bg-slate-900">
       {/* Fullscreen Map Background */}
       <div className="absolute inset-0 z-0">
         <MapContainer 
-          center={driverLocation ? [driverLocation.lat, driverLocation.lng] : [26.2298, 78.1734]}
+          center={driverLocation && isValid(driverLocation.lat, driverLocation.lng) ? [driverLocation.lat, driverLocation.lng] : [26.2183, 78.1828]}
           zoom={16}
-          markers={[
-            ...(driverLocation ? [{ position: driverLocation, type: 'ambulance', label: 'Rescue Unit', status: status }] : []),
-            ...(booking ? [{ 
-              position: { 
-                lat: booking.pickupLocation.coordinates.coordinates[1], 
-                lng: booking.pickupLocation.coordinates.coordinates[0] 
-              }, 
-              type: 'user', 
-              label: 'Patient Location' 
-            }] : []),
-          ]}
-          destinationLocation={booking ? { 
-            lat: booking.destination.coordinates.coordinates[1], 
-            lng: booking.destination.coordinates.coordinates[0] 
-          } : null}
+          markers={mapMarkers}
+          destinationLocation={safeDest}
+          route={route}
         />
       </div>
 
