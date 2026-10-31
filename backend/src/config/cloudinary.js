@@ -13,20 +13,26 @@ cloudinary.config({
 // Storage for health records
 const healthRecordStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'nirogyasathi/health-records',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
-    resource_type: 'auto',
+  params: async (req, file) => {
+    const isPdf = file.mimetype === 'application/pdf' || file.originalname?.toLowerCase().endsWith('.pdf');
+    return {
+      folder: 'nirogyasathi/health-records',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
+      resource_type: isPdf ? 'raw' : 'auto',
+    };
   },
 });
 
 // Storage for lab reports
 const labReportStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  params: {
-    folder: 'nirogyasathi/lab-reports',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
-    resource_type: 'auto',
+  params: async (req, file) => {
+    const isPdf = file.mimetype === 'application/pdf' || file.originalname?.toLowerCase().endsWith('.pdf');
+    return {
+      folder: 'nirogyasathi/lab-reports',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
+      resource_type: isPdf ? 'raw' : 'auto',
+    };
   },
 });
 

@@ -6,6 +6,9 @@ const Hospital = require('../models/Hospital');
 const BloodBankProvider = require('../models/BloodBankProvider');
 const AmbulanceProvider = require('../models/AmbulanceProvider');
 const LabProvider = require('../models/LabProvider');
+const Ambulance = require('../models/Ambulance');
+const BloodBank = require('../models/BloodBank');
+const Lab = require('../models/Lab');
 
 // ── ANALYTICS ────────────────────────────────────────────────────────────────
 const getAnalytics = asyncHandler(async (req, res) => {
@@ -14,52 +17,48 @@ const getAnalytics = asyncHandler(async (req, res) => {
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  try {
-    const [
-      totalUsers, totalDoctors, pendingDoctors, suspendedDoctors,
-      totalBookings, todayBookings,
-      totalHospitals, totalLabs, totalBloodBanks,
-      totalAmbulances,
-      recentUsers
-    ] = await Promise.all([
-      User.countDocuments({ role: 'user' }).catch(e => { console.error('User count error:', e); return 0; }),
-      Doctor.countDocuments().catch(e => { console.error('Doctor count error:', e); return 0; }),
-      Doctor.countDocuments({ verified: false, status: { $ne: 'suspended' } }).catch(() => 0),
-      Doctor.countDocuments({ status: 'suspended' }).catch(() => 0),
-      Booking.countDocuments().catch(e => { console.error('Booking count error:', e); return 0; }),
-      Booking.countDocuments({ createdAt: { $gte: today, $lt: tomorrow } }).catch(() => 0),
-      Hospital.countDocuments().catch(() => 0),
-      LabProvider.countDocuments().catch(() => 0),
-      BloodBankProvider.countDocuments().catch(() => 0),
-      AmbulanceProvider.countDocuments().catch(() => 0),
-      User.find({ role: 'user' }).sort({ createdAt: -1 }).limit(5).select('name email createdAt avatar').lean().catch(() => []),
-    ]);
+  const [
+    totalUsers, totalDoctors, pendingDoctors, suspendedDoctors,
+    totalBookings, todayBookings,
+    totalHospitals, totalLabs, totalBloodBanks,
+    totalAmbulances,
+    recentUsers
+  ] = await Promise.all([
+    User.countDocuments({ role: 'user' }),
+    Doctor.countDocuments(),
+    Doctor.countDocuments({ verified: false, status: { $ne: 'suspended' } }),
+    Doctor.countDocuments({ status: 'suspended' }),
+    Booking.countDocuments(),
+    Booking.countDocuments({ createdAt: { $gte: today, $lt: tomorrow } }),
+    Hospital.countDocuments(),
+    LabProvider.countDocuments(),
+    BloodBankProvider.countDocuments(),
+    AmbulanceProvider.countDocuments(),
+    User.find({ role: 'user' }).sort({ createdAt: -1 }).limit(5).select('name email createdAt avatar').lean(),
+  ]);
 
-    res.json({
-      success: true,
-      data: {
-        totalUsers: totalUsers || 0,
-        totalDoctors: totalDoctors || 0,
-        pendingDoctors: pendingDoctors || 0,
-        suspendedDoctors: suspendedDoctors || 0,
-        totalBookings: totalBookings || 0,
-        todayBookings: todayBookings || 0,
-        totalHospitals: totalHospitals || 0,
-        totalLabs: totalLabs || 0,
-        totalBloodBanks: totalBloodBanks || 0,
-        totalAmbulances: totalAmbulances || 0,
-        recentUsers: recentUsers || [],
-      }
-    });
-  } catch (error) {
-    console.error('Analytics Error:', error);
-    res.status(500).json({ success: false, message: 'Server error fetching analytics' });
-  }
+  res.json({
+    success: true,
+    data: {
+      totalUsers,
+      totalDoctors,
+      pendingDoctors,
+      suspendedDoctors,
+      totalBookings,
+      todayBookings,
+      totalHospitals,
+      totalLabs,
+      totalBloodBanks,
+      totalAmbulances,
+      recentUsers,
+    }
+  });
 });
 
 // ── DOCTORS ──────────────────────────────────────────────────────────────────
 const getAllDoctors = asyncHandler(async (req, res) => {
-  const { search, specialization, status, sort } = req.query;
+  const { search, specialization, status, sort, page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
 
   const matchQuery = {};
   if (specialization && specialization !== 'all') matchQuery.specialization = { $regex: specialization, $options: 'i' };
@@ -73,27 +72,38 @@ const getAllDoctors = asyncHandler(async (req, res) => {
   if (sort === 'bookings') sortObj = { bookingsCount: -1 };
   if (sort === 'low_rated') sortObj = { rating: 1 };
 
+  let doctorQuery = Doctor.find(matchQuery);
+
+  // Search by name/email requires joining with User collection
+  // For better scalability, we use aggregation or search by ID after finding users
+  if (search) {
+    const users = await User.find({
+      $or: [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ]
+    }).select('_id');
+    const userIds = users.map(u => u._id);
+    matchQuery.$or = [
+      { userId: { $in: userIds } },
+      { specialization: { $regex: search, $options: 'i' } },
+      { licenseNumber: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  const total = await Doctor.countDocuments(matchQuery);
   let doctors = await Doctor.find(matchQuery)
     .populate('userId', 'name email phone avatar isVerified createdAt')
     .sort(sortObj)
+    .skip(skip)
+    .limit(parseInt(limit))
     .lean();
-
-  // Apply name/email search after populate
-  if (search) {
-    const q = search.toLowerCase();
-    doctors = doctors.filter(d =>
-      d.userId?.name?.toLowerCase().includes(q) ||
-      d.userId?.email?.toLowerCase().includes(q) ||
-      d.specialization?.toLowerCase().includes(q) ||
-      d.licenseNumber?.toLowerCase().includes(q)
-    );
-  }
 
   // Enrich with bookings count
   const doctorIds = doctors.map(d => d._id);
   const bookingCounts = await Booking.aggregate([
-    { $match: { doctorId: { $in: doctorIds } } },
-    { $group: { _id: '$doctorId', count: { $sum: 1 } } }
+    { $match: { providerId: { $in: doctorIds } } },
+    { $group: { _id: '$providerId', count: { $sum: 1 } } }
   ]);
   const bookingMap = Object.fromEntries(bookingCounts.map(b => [b._id.toString(), b.count]));
 
@@ -102,7 +112,7 @@ const getAllDoctors = asyncHandler(async (req, res) => {
     bookingsCount: bookingMap[d._id.toString()] || 0,
   }));
 
-  res.json({ success: true, data: doctors, total: doctors.length });
+  res.json({ success: true, data: doctors, total, page: parseInt(page), limit: parseInt(limit) });
 });
 
 const getDoctorById = asyncHandler(async (req, res) => {
@@ -110,8 +120,8 @@ const getDoctorById = asyncHandler(async (req, res) => {
     .populate('userId', 'name email phone avatar isVerified createdAt');
   if (!doctor) { res.status(404); throw new Error('Doctor not found'); }
 
-  const bookingsCount = await Booking.countDocuments({ doctorId: doctor._id });
-  const patientsServed = await Booking.distinct('userId', { doctorId: doctor._id, status: 'completed' });
+  const bookingsCount = await Booking.countDocuments({ providerId: doctor._id });
+  const patientsServed = await Booking.distinct('userId', { providerId: doctor._id, status: 'completed' });
 
   res.json({
     success: true,
@@ -125,10 +135,17 @@ const verifyDoctor = asyncHandler(async (req, res) => {
 
   doctor.verified = true;
   doctor.status = 'active';
+  doctor.hasVerifiedBadge = true; // Auto-award badge on admin approval
   await doctor.save();
-  await User.findByIdAndUpdate(doctor.userId, { isVerified: true });
 
-  res.json({ success: true, message: 'Doctor verified successfully', data: doctor });
+  // Sync User document: Role must be doctor, verified must be true, status must be active
+  await User.findByIdAndUpdate(doctor.userId, { 
+    role: 'doctor',
+    isVerified: true,
+    status: 'active'
+  });
+
+  res.json({ success: true, message: 'Doctor verified and promoted successfully', data: doctor });
 });
 
 const rejectDoctor = asyncHandler(async (req, res) => {
@@ -140,20 +157,138 @@ const rejectDoctor = asyncHandler(async (req, res) => {
   doctor.rejectionReason = req.body.reason || 'Documents do not meet requirements';
   await doctor.save();
 
+  // Reset user status so they can apply again
+  await User.findByIdAndUpdate(doctor.userId, { status: 'active' });
+
   res.json({ success: true, message: 'Doctor application rejected' });
 });
 
 const suspendDoctor = asyncHandler(async (req, res) => {
-  const doctor = await Doctor.findById(req.params.id);
+  const { id } = req.params;
+  const doctor = await Doctor.findById(id);
   if (!doctor) { res.status(404); throw new Error('Doctor not found'); }
 
   doctor.status = 'suspended';
   doctor.suspendedReason = req.body.reason || 'Policy violation';
   await doctor.save();
-  await User.findByIdAndUpdate(doctor.userId, { isVerified: false });
+
+  // Suspend the user as well
+  await User.findByIdAndUpdate(doctor.userId, { 
+    isVerified: false, 
+    status: 'suspended' 
+  });
 
   res.json({ success: true, message: 'Doctor account suspended' });
 });
+
+const suspendProvider = asyncHandler(async (req, res) => {
+  const { id, type } = req.params;
+  let Model;
+  switch (type) {
+    case 'doctor': Model = Doctor; break;
+    case 'ambulance': Model = AmbulanceProvider; break;
+    case 'bloodbank': Model = BloodBankProvider; break;
+    case 'lab': Model = LabProvider; break;
+    default: res.status(400); throw new Error('Invalid type');
+  }
+
+  const provider = await Model.findById(id);
+  if (!provider) { res.status(404); throw new Error('Provider not found'); }
+
+  const reason = req.body?.reason || 'Policy violation';
+  
+  provider.status = 'suspended';
+  provider.suspendedReason = reason;
+  await provider.save();
+
+  // Suspend the user to block login/access and record details
+  await User.findByIdAndUpdate(provider.userId, { 
+    isVerified: false, 
+    status: 'suspended',
+    suspensionDetails: {
+      isSuspended: true,
+      type: 'suspension',
+      reason: reason,
+      date: new Date(),
+      previousRole: type
+    }
+  });
+
+  res.json({ success: true, message: `${type} account suspended` });
+});
+
+const activateProvider = asyncHandler(async (req, res) => {
+  const { id, type } = req.params;
+  let Model;
+  switch (type) {
+    case 'doctor': Model = Doctor; break;
+    case 'ambulance': Model = AmbulanceProvider; break;
+    case 'bloodbank': Model = BloodBankProvider; break;
+    case 'lab': Model = LabProvider; break;
+    default: res.status(400); throw new Error('Invalid type');
+  }
+
+  const provider = await Model.findById(id);
+  if (!provider) { res.status(404); throw new Error('Provider not found'); }
+
+  provider.status = 'active';
+  provider.verified = true;
+  delete provider.suspendedReason;
+  await provider.save();
+
+  // Reactivate user and clear suspension info
+  await User.findByIdAndUpdate(provider.userId, { 
+    isVerified: true, 
+    status: 'active',
+    $set: { 
+      'suspensionDetails.isSuspended': false,
+      'suspensionDetails.type': 'none'
+    }
+  });
+
+  res.json({ success: true, message: `${type} account activated` });
+});
+
+const removeProviderRole = asyncHandler(async (req, res) => {
+  const { id, type } = req.params;
+  let Model;
+  switch (type) {
+    case 'doctor': Model = Doctor; break;
+    case 'ambulance': Model = AmbulanceProvider; break;
+    case 'bloodbank': Model = BloodBankProvider; break;
+    case 'lab': Model = LabProvider; break;
+    default: res.status(400); throw new Error('Invalid type');
+  }
+
+  const provider = await Model.findById(id);
+  if (!provider) { res.status(404); throw new Error('Provider not found'); }
+
+  const userId = provider.userId;
+  const reason = req.body?.reason || 'Manual removal by admin';
+
+  // 1. Delete the provider profile
+  await Model.findByIdAndDelete(id);
+
+  // 2. Downgrade user role to 'user', reset status, and record removal info
+  await User.findByIdAndUpdate(userId, { 
+    role: 'user', 
+    isVerified: false, 
+    status: 'active',
+    suspensionDetails: {
+      isSuspended: true,
+      type: 'removal',
+      reason: reason,
+      date: new Date(),
+      previousRole: type
+    }
+  });
+
+  res.json({ 
+    success: true, 
+    message: `Provider role removed. Account downgraded to regular user.` 
+  });
+});
+
 
 const activateDoctor = asyncHandler(async (req, res) => {
   const doctor = await Doctor.findById(req.params.id);
@@ -163,7 +298,13 @@ const activateDoctor = asyncHandler(async (req, res) => {
   doctor.verified = true;
   delete doctor.suspendedReason;
   await doctor.save();
-  await User.findByIdAndUpdate(doctor.userId, { isVerified: true });
+
+  // Sync User document
+  await User.findByIdAndUpdate(doctor.userId, { 
+    role: 'doctor',
+    isVerified: true, 
+    status: 'active' 
+  });
 
   res.json({ success: true, message: 'Doctor account activated' });
 });
@@ -179,7 +320,7 @@ const updateDoctorByAdmin = asyncHandler(async (req, res) => {
   const doctor = await Doctor.findByIdAndUpdate(
     req.params.id,
     updateFields,
-    { new: true }
+    { returnDocument: 'after' }
   ).populate('userId', 'name email phone avatar');
 
   if (!doctor) { res.status(404); throw new Error('Doctor not found'); }
@@ -188,21 +329,31 @@ const updateDoctorByAdmin = asyncHandler(async (req, res) => {
 
 // ── USERS ────────────────────────────────────────────────────────────────────
 const getAllUsers = asyncHandler(async (req, res) => {
-  const { search, role } = req.query;
-  const query = {};
-  if (role && role !== 'all') query.role = role;
-  else query.role = 'user'; // default: patients only
+  const { search, role, page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
 
-  let users = await User.find(query).select('-password').sort({ createdAt: -1 }).lean();
+  const query = {};
+  if (role && role !== 'all') {
+    query.role = role;
+  } else {
+    query.role = 'user'; // default: patients only
+  }
 
   if (search) {
-    const q = search.toLowerCase();
-    users = users.filter(u =>
-      u.name?.toLowerCase().includes(q) ||
-      u.email?.toLowerCase().includes(q) ||
-      u.phone?.includes(q)
-    );
+    query.$or = [
+      { name: { $regex: search, $options: 'i' } },
+      { email: { $regex: search, $options: 'i' } },
+      { phone: { $regex: search, $options: 'i' } }
+    ];
   }
+
+  const total = await User.countDocuments(query);
+  let users = await User.find(query)
+    .select('-password')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(parseInt(limit))
+    .lean();
 
   // Enrich with booking counts
   const userIds = users.map(u => u._id);
@@ -213,7 +364,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   const bookingMap = Object.fromEntries(bookingCounts.map(b => [b._id.toString(), b.count]));
   users = users.map(u => ({ ...u, bookingsCount: bookingMap[u._id.toString()] || 0 }));
 
-  res.json({ success: true, data: users, total: users.length });
+  res.json({ success: true, data: users, total, page: parseInt(page), limit: parseInt(limit) });
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -235,33 +386,32 @@ const getPendingDoctors = asyncHandler(async (req, res) => {
 
 // ── GENERAL PROVIDERS ────────────────────────────────────────────────────────
 const getAllProviders = asyncHandler(async (req, res) => {
-  const { type, status } = req.query;
+  const { type, status, page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
   let Model;
   
-  try {
-    switch (type) {
-      case 'doctor': Model = Doctor; break;
-      case 'ambulance': Model = AmbulanceProvider; break;
-      case 'bloodbank': Model = BloodBankProvider; break;
-      case 'lab': Model = LabProvider; break;
-      default: Model = Doctor;
-    }
-
-    const matchQuery = {};
-    if (status && status !== 'all') {
-      matchQuery.status = status;
-    }
-
-    const providers = await Model.find(matchQuery)
-      .populate('userId', 'name email phone avatar isVerified createdAt')
-      .sort({ createdAt: -1 })
-      .lean();
-
-    res.json({ success: true, data: providers || [] });
-  } catch (error) {
-    console.error(`Error fetching providers (${type}):`, error);
-    res.status(500).json({ success: false, message: 'Failed to fetch providers' });
+  switch (type) {
+    case 'doctor': Model = Doctor; break;
+    case 'ambulance': Model = AmbulanceProvider; break;
+    case 'bloodbank': Model = BloodBankProvider; break;
+    case 'lab': Model = LabProvider; break;
+    default: Model = Doctor;
   }
+
+  const matchQuery = {};
+  if (status && status !== 'all') {
+    matchQuery.status = status;
+  }
+
+  const total = await Model.countDocuments(matchQuery);
+  const providers = await Model.find(matchQuery)
+    .populate('userId', 'name email phone avatar isVerified createdAt')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(parseInt(limit))
+    .lean();
+
+  res.json({ success: true, data: providers || [], total, page: parseInt(page), limit: parseInt(limit) });
 });
 
 const approveProvider = asyncHandler(async (req, res) => {
@@ -280,6 +430,12 @@ const approveProvider = asyncHandler(async (req, res) => {
 
   provider.verified = true;
   provider.status = 'active';
+  
+  // Set badges for specific types
+  if (type === 'doctor') {
+    provider.hasVerifiedBadge = true;
+  }
+  
   await provider.save();
 
   // Update user role and status
@@ -289,15 +445,100 @@ const approveProvider = asyncHandler(async (req, res) => {
     status: 'active'
   });
 
-  res.json({ success: true, message: `${type} approved successfully` });
+  // ─── Post-Approval Hook: Create Child Documents ───
+  // This ensures they appear in specific listings (like Ambulance Hub or Blood Search)
+  try {
+    if (type === 'ambulance') {
+      const existing = await Ambulance.findOne({ providerId: id });
+      if (!existing) {
+        await Ambulance.create({
+          providerId: id,
+          driverId: provider.userId,
+          vehicleNumber: 'PENDING',
+          vehicleType: 'Basic',
+          isOnline: true,
+          available: true,
+          liveLocation: { type: 'Point', coordinates: [78.1734, 26.2298] } // Default Gwalior
+        });
+      }
+    } else if (type === 'bloodbank') {
+      const existing = await BloodBank.findOne({ providerId: id });
+      if (!existing) {
+        await BloodBank.create({
+          name: provider.businessName || 'New Blood Bank',
+          address: provider.address,
+          contact: provider.phone,
+          providerId: id,
+          stock: { 'A+': 0, 'O+': 0, 'B+': 0, 'AB+': 0, 'A-': 0, 'O-': 0, 'B-': 0, 'AB-': 0 },
+          location: { type: 'Point', coordinates: [78.1734, 26.2298] }
+        });
+      }
+    } else if (type === 'lab') {
+      const existing = await Lab.findOne({ providerId: id });
+      if (!existing) {
+        await Lab.create({
+          testName: 'General Consultation',
+          category: 'Diagnostics',
+          price: 0,
+          providerId: id,
+          popular: false
+        });
+      }
+    }
+  } catch (childErr) {
+    console.error('Failed to create child document for provider:', childErr.message);
+    // We don't fail the whole approval, but we log it
+  }
+
+  res.json({ 
+    success: true, 
+    message: `${type} approved successfully and profile activated`,
+    data: provider 
+  });
 });
+
+const rejectProvider = asyncHandler(async (req, res) => {
+  const { id, type } = req.params;
+  const { reason } = req.body;
+  let Model;
+  switch (type) {
+    case 'doctor': Model = Doctor; break;
+    case 'ambulance': Model = AmbulanceProvider; break;
+    case 'bloodbank': Model = BloodBankProvider; break;
+    case 'lab': Model = LabProvider; break;
+    default: res.status(400); throw new Error('Invalid type');
+  }
+
+  const provider = await Model.findById(id);
+  if (!provider) { res.status(404); throw new Error('Provider not found'); }
+
+  provider.verified = false;
+  provider.status = 'rejected';
+  provider.rejectionReason = reason || 'Documents do not meet requirements';
+  await provider.save();
+
+  // Reset user status so they can apply again
+  await User.findByIdAndUpdate(provider.userId, { status: 'active' });
+
+  res.json({ success: true, message: `${type} application rejected` });
+});
+
 const getAllBookings = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 100 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const total = await Booking.countDocuments();
   const bookings = await Booking.find()
     .populate('userId', 'name email')
-    .populate({ path: 'doctorId', populate: { path: 'userId', select: 'name' } })
+    .populate({ 
+      path: 'providerId', 
+      populate: { path: 'userId', select: 'name' } 
+    })
     .sort({ createdAt: -1 })
-    .limit(100);
-  res.json({ success: true, data: bookings });
+    .skip(skip)
+    .limit(parseInt(limit));
+
+  res.json({ success: true, data: bookings, total, page: parseInt(page), limit: parseInt(limit) });
 });
 
 module.exports = {
@@ -315,4 +556,9 @@ module.exports = {
   getAllBookings,
   getAllProviders,
   approveProvider,
+  rejectProvider,
+  suspendProvider,
+  activateProvider,
+  removeProviderRole,
 };
+

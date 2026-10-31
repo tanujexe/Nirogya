@@ -15,6 +15,20 @@ const env = {
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
   EMAIL_FROM: process.env.EMAIL_FROM || 'noreply@nirogya.com',
+  GROQ_API_KEY: process.env.GROQ_API_KEY,
 };
+
+// ── Validation (Production Safety) ───────────────────────────────────────────
+const required = ['MONGO_URI', 'JWT_SECRET'];
+if (env.NODE_ENV === 'production') {
+  required.push('CLOUDINARY_API_KEY', 'SMTP_USER');
+}
+
+const missing = required.filter(key => !process.env[key]);
+if (missing.length > 0) {
+  console.error(`\n[FATAL ERROR] Missing required environment variables: ${missing.join(', ')}`);
+  console.error('The application cannot start without these. Please check your .env file.\n');
+  if (env.NODE_ENV === 'production') process.exit(1);
+}
 
 module.exports = env;
