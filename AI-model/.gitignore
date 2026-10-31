@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment & local settings
+.env
+.venv/
+venv/
+ENV/
+
+# Data files (keep raw training data out of Git)
+data/raw/*.csv
+data/processed/
+*.csv
+
+# Model Artifacts (keep large pickled models out of Git)
+artifacts/models/*.pkl
+artifacts/models/*.cbm
+model_artifacts/*.pkl
+*.pkl
+
+# Uploads & Temporary files
+uploads/*
+!uploads/.gitkeep
+tmp/
+*.log
+startup_log.txt
+
+# Editor & OS files
+.history/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
