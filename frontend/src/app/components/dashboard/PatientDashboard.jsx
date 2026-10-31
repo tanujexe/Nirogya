@@ -5,9 +5,11 @@ import { Link } from "react-router-dom";
 import { bookingsAPI } from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import SuspensionBanner from "../common/SuspensionBanner";
+import AppointmentDetailsModal from "./AppointmentDetailsModal";
 
 export default function PatientDashboard() {
   const [appointments, setAppointments] = useState([]);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -133,14 +135,22 @@ export default function PatientDashboard() {
                     </span>
                   </div>
 
-                  {appointment.status !== 'cancelled' && appointment.status !== 'completed' && (
+                  <div className="flex gap-2.5">
                     <button 
-                      onClick={() => handleCancelBooking(appointment._id)}
-                      className="w-full py-3 text-sm font-bold text-red-500 bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 rounded-2xl transition-all active:scale-[0.98]"
+                      onClick={() => setSelectedAppointment(appointment)}
+                      className="flex-1 py-3 text-sm font-bold text-[var(--healthcare-cyan)] bg-[var(--healthcare-cyan)]/10 hover:bg-[var(--healthcare-cyan)]/20 border border-[var(--healthcare-cyan)]/20 rounded-2xl transition-all"
                     >
-                      Cancel Appointment
+                      View Details
                     </button>
-                  )}
+                    {appointment.status !== 'cancelled' && appointment.status !== 'completed' && (
+                      <button 
+                        onClick={() => handleCancelBooking(appointment._id)}
+                        className="py-3 px-5 text-sm font-bold text-red-500 bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 rounded-2xl transition-all active:scale-[0.98]"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -160,19 +170,19 @@ export default function PatientDashboard() {
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-purple-400/20 rounded-full -ml-12 -mb-12 blur-xl" />
             
             <div className="relative z-10">
-              <div className="w-14 h-14 bg-white dark:bg-slate-800/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
-                <Shield className="w-8 h-8 text-white" />
+               <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+                <Shield className="w-8 h-8 text-purple-600" />
               </div>
               
-              <h3 className="text-2xl font-black mb-3">Smart Medical Vault</h3>
-              <p className="text-purple-100/80 text-sm leading-relaxed mb-8">
+              <h3 className="text-2xl font-black mb-3 text-white">Smart Medical Vault</h3>
+              <p className="text-white/90 text-sm font-medium leading-relaxed mb-8">
                 Your medical history, secured with military-grade encryption. Store reports and share them selectively with doctors.
               </p>
               
               <ul className="space-y-3 mb-8">
                 {['Encrypted Storage', 'Selective Sharing', 'Lab Integration', 'Instant PDF Preview'].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-xs font-bold text-purple-100">
-                    <Check className="w-3.5 h-3.5 text-purple-300" />
+                  <li key={item} className="flex items-center gap-2 text-xs font-black text-white/95">
+                    <Check className="w-3.5 h-3.5 text-white" />
                     {item}
                   </li>
                 ))}
@@ -204,6 +214,12 @@ export default function PatientDashboard() {
           </div>
         </div>
       </div>
+
+      <AppointmentDetailsModal 
+        isOpen={!!selectedAppointment}
+        onClose={() => setSelectedAppointment(null)}
+        appointment={selectedAppointment}
+      />
     </div>
   );
 }

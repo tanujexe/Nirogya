@@ -15,7 +15,11 @@ const {
   getPendingDoctors,
   getAllBookings,
   getAllProviders,
-  approveProvider
+  approveProvider,
+  rejectProvider,
+  suspendProvider,
+  activateProvider,
+  removeProviderRole
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -39,6 +43,10 @@ router.patch('/doctors/:id', updateDoctorByAdmin);
 // Provider Management (Generic)
 router.get('/providers', getAllProviders);
 router.patch('/providers/:type/:id/approve', approveProvider);
+router.patch('/providers/:type/:id/reject', rejectProvider);
+router.patch('/providers/:type/:id/suspend', suspendProvider);
+router.patch('/providers/:type/:id/activate', activateProvider);
+router.delete('/providers/:type/:id', removeProviderRole);
 
 // User Management
 router.get('/users', getAllUsers);
