@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { doctorsAPI } from '../utils/api';
 import DoctorCard from '../components/doctors/DoctorCard';
+import { useAuth } from '../context/AuthContext';
+import heroCute from '../../assets/hero-cute.png';
 
 export default function Home() {
   const [featuredDoctors, setFeaturedDoctors] = useState([]);
@@ -100,10 +102,25 @@ export default function Home() {
     },
   ];
 
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="min-h-screen">
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--healthcare-cyan-light)] via-[var(--healthcare-blue-light)] to-transparent opacity-30 dark:opacity-20" />
+      <section className="relative pt-32 pb-40 lg:pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Old Photo as Background for Mobile */}
+        <div 
+          className="absolute inset-0 z-0 block lg:hidden"
+          style={{
+            backgroundImage: `url(${heroCute})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        {/* Overlay for Mobile Visibility - Reduced blur and adjusted opacity */}
+        <div className="absolute inset-0 bg-white/70 dark:bg-slate-900/80 z-0 block lg:hidden" />
+        
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 bg-gradient-background hidden lg:block" />
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -111,6 +128,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
+              className="flex flex-col items-center lg:items-start text-center lg:text-left"
             >
               <div className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-[var(--healthcare-cyan)]/10 to-[var(--healthcare-blue)]/10 rounded-full mb-6">
                 <Sparkles className="w-4 h-4 text-[var(--healthcare-cyan)]" />
@@ -127,57 +145,57 @@ export default function Home() {
                 </span>
               </h1>
 
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-xl">
                 Connect with verified doctors, book appointments, manage health records, and get expert medical care—all in one seamless platform.
               </p>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-col sm:flex-row items-center gap-6 w-full lg:w-auto">
                 <Link
                   to="/doctors"
-                  className="inline-flex items-center space-x-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white font-medium hover:shadow-2xl hover:shadow-[var(--healthcare-cyan)]/20 transition-all group"
+                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 px-10 py-5 rounded-[2rem] bg-gradient-to-r from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] text-white font-black uppercase tracking-widest shadow-2xl shadow-cyan-500/30 hover:scale-105 active:scale-95 transition-all group"
                 >
+                  <Stethoscope className="w-6 h-6 group-hover:rotate-12 transition-transform" />
                   <span>Find Doctors</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </Link>
 
                 <Link
                   to="/symptom-checker"
-                  className="inline-flex items-center space-x-2 px-8 py-4 rounded-xl border-2 border-border hover:border-[var(--healthcare-cyan)] hover:bg-accent transition-all font-medium"
+                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 px-10 py-5 rounded-[2rem] border-2 border-[var(--healthcare-cyan)]/20 bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl text-foreground font-black uppercase tracking-widest hover:border-[var(--healthcare-cyan)] hover:bg-white dark:hover:bg-slate-800 shadow-xl transition-all group"
                 >
-                  <Activity className="w-5 h-5" />
+                  <div className="relative">
+                    <Activity className="w-6 h-6 text-[var(--healthcare-cyan)]" />
+                    <div className="absolute inset-0 bg-cyan-500 blur-md opacity-0 group-hover:opacity-40 animate-pulse transition-opacity" />
+                  </div>
                   <span>Check Symptoms</span>
                 </Link>
               </div>
 
-              <div className="flex items-center space-x-6 mt-8 pt-8 border-t border-border">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 mt-12 pt-8 border-t border-border/50 w-full">
                 {[
-                  { icon: Shield, text: 'Verified Doctors' },
-                  { icon: Clock, text: 'Quick Booking' },
-                  { icon: Heart, text: 'Quality Care' },
+                  { icon: Shield, text: 'Verified Care', color: 'text-cyan-500' },
+                  { icon: Clock, text: '24/7 Priority', color: 'text-blue-500' },
+                  { icon: Heart, text: 'Patient First', color: 'text-rose-500' },
                 ].map((item, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <item.icon className="w-5 h-5 text-[var(--healthcare-cyan)]" />
-                    <span className="text-sm text-muted-foreground">{item.text}</span>
+                  <div key={index} className="flex items-center space-x-2 group cursor-default">
+                    <div className={`p-2 rounded-lg bg-muted/50 group-hover:bg-white transition-colors`}>
+                      <item.icon className={`w-4 h-4 ${item.color}`} />
+                    </div>
+                    <span className="text-xs font-black uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{item.text}</span>
                   </div>
                 ))}
               </div>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] rounded-3xl blur-3xl opacity-20" />
+            <div className="hidden lg:block relative">
+              <div className="relative rounded-[3rem] overflow-hidden border-8 border-white/50 dark:border-slate-800/50 shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800&q=80"
+                  src={heroCute}
                   alt="Healthcare"
-                  className="relative rounded-3xl shadow-2xl w-full"
+                  className="w-full h-auto object-cover"
                 />
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -188,10 +206,10 @@ export default function Home() {
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
                 className="text-center"
               >
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] mb-4">
@@ -213,7 +231,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-          <h2 id="features" className="text-4xl font-bold mb-4">Why Choose NirogyaSathi?</h2>
+            <h2 id="features" className="text-4xl font-bold mb-4">Why Choose NirogyaSathi?</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Experience healthcare like never before with our comprehensive digital platform
             </p>
@@ -223,11 +241,11 @@ export default function Home() {
             {features.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-card border border-border rounded-2xl p-6 hover:shadow-2xl hover:shadow-[var(--healthcare-cyan)]/10 transition-all group"
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
+                className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-[var(--healthcare-cyan)]/5 transition-all group"
               >
                 <div className="p-3 bg-gradient-to-br from-[var(--healthcare-cyan)]/10 to-[var(--healthcare-blue)]/10 rounded-xl w-fit mb-4 group-hover:scale-110 transition-transform">
                   <feature.icon className="w-8 h-8 text-[var(--healthcare-cyan)]" />
@@ -290,10 +308,10 @@ export default function Home() {
             {testimonials.map((testimonial, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: index * 0.1, ease: "easeOut" }}
                 className="bg-card border border-border rounded-2xl p-6"
               >
                 <div className="flex items-center space-x-1 mb-4">
@@ -301,7 +319,7 @@ export default function Home() {
                     <Star key={i} className="w-5 h-5 text-yellow-500" fill="currentColor" />
                   ))}
                 </div>
-                <p className="text-muted-foreground mb-6 italic">"{testimonial.text}"</p>
+                <p className="text-muted-foreground mb-6">"{testimonial.text}"</p>
                 <div className="flex items-center space-x-3">
                   <img
                     src={testimonial.avatar}
@@ -337,10 +355,10 @@ export default function Home() {
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
                 className="bg-card border border-border rounded-2xl p-6"
               >
                 <h3 className="font-semibold mb-3">{faq.question}</h3>
@@ -351,36 +369,38 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center bg-gradient-to-br from-[var(--healthcare-cyan)] to-[var(--healthcare-blue)] rounded-3xl p-12 text-white relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-grid-white/10" />
-          <div className="relative z-10">
-            <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-xl mb-8 opacity-90">
-              Join thousands of patients who trust NirogyaSathi for their healthcare needs
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                to="/register"
-                className="px-8 py-4 rounded-xl bg-white dark:bg-slate-800 text-[var(--healthcare-cyan)] font-medium hover:shadow-2xl transition-all"
-              >
-                Create Account
-              </Link>
-              <Link
-                to="/doctors"
-                className="px-8 py-4 rounded-xl border-2 border-white text-white font-medium hover:bg-white dark:bg-slate-800/10 transition-all"
-              >
-                Browse Doctors
-              </Link>
+      {!isAuthenticated && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto text-center bg-gradient-primary rounded-3xl p-12 text-white relative overflow-hidden shadow-premium"
+          >
+            <div className="absolute inset-0 bg-grid-white/10" />
+            <div className="relative z-10">
+              <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+              <p className="text-xl mb-8 opacity-90">
+                Join thousands of patients who trust NirogyaSathi for their healthcare needs
+              </p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link
+                  to="/register"
+                  className="px-8 py-4 rounded-xl bg-white dark:bg-slate-800 text-[var(--healthcare-cyan)] font-medium hover:shadow-2xl transition-all"
+                >
+                  Create Account
+                </Link>
+                <Link
+                  to="/doctors"
+                  className="px-8 py-4 rounded-xl border-2 border-white text-white font-medium hover:bg-white dark:bg-slate-800/10 transition-all"
+                >
+                  Browse Doctors
+                </Link>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </section>
+          </motion.div>
+        </section>
+      )}
     </div>
   );
 }

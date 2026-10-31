@@ -22,12 +22,18 @@ export default function Login() {
     }
 
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       toast.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
       toast.error(typeof error === 'string' ? error : 'Login failed. Please try again.');
     }
+  };
+
+  const handleQuickLogin = (demoEmail, demoPass) => {
+    setEmail(demoEmail);
+    setPassword(demoPass);
+    toast.info(`Filled credentials for ${demoEmail}`);
   };
 
   return (
@@ -124,6 +130,47 @@ export default function Login() {
               Sign In
             </button>
           </form>
+
+          {/* Quick Demo Credentials */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 text-center">
+              Quick Demo Accounts
+            </p>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('user@nirogyasathi.com', 'user123')}
+                className="px-3 py-2 bg-muted/60 hover:bg-muted rounded-lg text-left transition-colors flex flex-col"
+              >
+                <span className="font-semibold text-foreground">Patient / User</span>
+                <span className="text-muted-foreground text-[10px]">user@nirogyasathi.com</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('doctor@nirogyasathi.com', 'doctor123')}
+                className="px-3 py-2 bg-muted/60 hover:bg-muted rounded-lg text-left transition-colors flex flex-col"
+              >
+                <span className="font-semibold text-foreground">Doctor</span>
+                <span className="text-muted-foreground text-[10px]">doctor@nirogyasathi.com</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('admin@nirogyasathi.com', 'admin123')}
+                className="px-3 py-2 bg-muted/60 hover:bg-muted rounded-lg text-left transition-colors flex flex-col"
+              >
+                <span className="font-semibold text-foreground">Admin</span>
+                <span className="text-muted-foreground text-[10px]">admin@nirogyasathi.com</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickLogin('ambulance@nirogyasathi.com', 'ambulance123')}
+                className="px-3 py-2 bg-muted/60 hover:bg-muted rounded-lg text-left transition-colors flex flex-col"
+              >
+                <span className="font-semibold text-foreground">Ambulance</span>
+                <span className="text-muted-foreground text-[10px]">ambulance@nirogyasathi.com</span>
+              </button>
+            </div>
+          </div>
 
           <div className="mt-8 text-center">
             <p className="text-muted-foreground">

@@ -1,8 +1,25 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
-import { FileText, Calendar, Hospital, MoreVertical, ExternalLink, Trash2, Edit2 } from 'lucide-react';
+import { FileText, Calendar, Hospital, ExternalLink, Trash2, Edit2, Bot, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
+import { healthRecordsAPI } from '../../utils/api';
+import { toast } from 'react-toastify';
 
-export default function VaultCard({ report, onEdit, onDelete, onView }) {
+export default function VaultCard({ report, onEdit, onDelete, onView, onSummaryView }) {
+  const [isSummarizing, setIsSummarizing] = useState(false);
+
+  const handleSummarize = async () => {
+    try {
+      setIsSummarizing(true);
+      const { data } = await healthRecordsAPI.summarize(report._id);
+      toast.success('Summary generated successfully!');
+      onSummaryView(data.data, report._id); // Update local state in parent
+    } catch (error) {
+      toast.error('Failed to generate summary');
+    } finally {
+      setIsSummarizing(false);
+    }
+  };
   const getCategoryColor = (category) => {
     const colors = {
       'MRI': 'bg-purple-500/10 text-purple-500 border-purple-500/20',
@@ -23,7 +40,7 @@ export default function VaultCard({ report, onEdit, onDelete, onView }) {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ y: -5 }}
-      className="bg-card border border-border rounded-2xl p-5 hover:shadow-xl transition-all duration-300 group relative overflow-hidden"
+      className="bg-card border border-border rounded-2xl p-5 hover:shadow-xl transition-all duration-300 group relative overflow-hidden flex flex-col h-full"
     >
       {/* Glassmorphism Background Effect */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--healthcare-cyan)]/5 to-transparent rounded-bl-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-500" />
@@ -34,15 +51,13 @@ export default function VaultCard({ report, onEdit, onDelete, onView }) {
         </div>
         
         <div className="flex gap-1">
-          <a 
-            href={report.fileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button 
+            onClick={() => onView(report)}
             className="p-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-[var(--healthcare-cyan)] transition-colors flex items-center justify-center"
             title="View Report"
           >
             <ExternalLink className="w-4 h-4" />
-          </a>
+          </button>
           <button 
             onClick={() => onEdit(report)}
             className="p-2 rounded-lg hover:bg-accent text-muted-foreground hover:text-[var(--healthcare-blue)] transition-colors"
@@ -60,17 +75,15 @@ export default function VaultCard({ report, onEdit, onDelete, onView }) {
         </div>
       </div>
 
-      <div className="space-y-3 relative z-10">
-        <a 
-          href={report.fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block group-hover:no-underline"
+      <div className="space-y-3 relative z-10 flex-1">
+        <button 
+          onClick={() => onView(report)}
+          className="block text-left w-full group-hover:no-underline"
         >
-          <h3 className="font-bold text-lg leading-tight group-hover:text-[var(--healthcare-cyan)] transition-colors line-clamp-1">
+          <h3 className="font-bold text-lg leading-tight group-hover:text-primary transition-colors line-clamp-1">
             {report.title}
           </h3>
-        </a>
+        </button>
         
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -90,13 +103,43 @@ export default function VaultCard({ report, onEdit, onDelete, onView }) {
         )}
       </div>
 
-      <div className="mt-5 pt-4 border-t border-border/50 flex items-center justify-between relative z-10">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 font-medium">
-          Uploaded {format(new Date(report.createdAt), 'MMM d, yyyy')}
-        </span>
-        <div className="w-8 h-8 rounded-lg bg-[var(--healthcare-cyan)]/10 flex items-center justify-center">
-          <FileText className="w-4 h-4 text-[var(--healthcare-cyan)]" />
+      <div className="mt-5 pt-4 border-t border-border/50 flex flex-col gap-4 relative z-10">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60 font-medium">
+            Uploaded {format(new Date(report.createdAt), 'MMM d, yyyy')}
+          </span>
+          <div className="w-8 h-8 rounded-lg bg-[var(--healthcare-cyan)]/10 flex items-center justify-center">
+            <FileText className="w-4 h-4 text-[var(--healthcare-cyan)]" />
+          </div>
         </div>
+
+        {report.summaryGenerated ? (
+          <button
+            onClick={() => onSummaryView(report.aiSummary, report._id)}
+            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[var(--healthcare-cyan)]/10 to-[var(--healthcare-blue)]/10 border border-[var(--healthcare-cyan)]/20 text-[var(--healthcare-cyan)] font-bold flex items-center justify-center gap-2 hover:bg-[var(--healthcare-cyan)]/20 transition-all shadow-sm"
+          >
+            <Bot className="w-4 h-4" />
+            View AI Summary
+          </button>
+        ) : (
+          <button
+            onClick={handleSummarize}
+            disabled={isSummarizing}
+            className="w-full py-2.5 rounded-xl bg-muted border border-border text-foreground font-bold flex items-center justify-center gap-2 hover:bg-muted/80 hover:border-muted-foreground/30 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {isSummarizing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-[var(--healthcare-cyan)]" />
+                <span className="animate-pulse">Analyzing...</span>
+              </>
+            ) : (
+              <>
+                <Bot className="w-4 h-4 text-muted-foreground" />
+                Summarize Report
+              </>
+            )}
+          </button>
+        )}
       </div>
     </motion.div>
   );

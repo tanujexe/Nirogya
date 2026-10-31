@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Search, Plus, Filter, Grid, List, 
+  Search, Plus, Filter,
   ShieldCheck, ArrowRight, Loader2,
   FileX, SearchX, Inbox
 } from 'lucide-react';
 import { healthRecordsAPI } from '../utils/api';
 import VaultCard from '../components/vault/VaultCard';
 import UploadModal from '../components/vault/UploadModal';
+import SummaryModal from '../components/vault/SummaryModal';
 import { toast } from 'react-toastify';
 
 const categories = [
@@ -19,9 +20,12 @@ export default function MedicalVault() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [viewType, setViewType] = useState('grid');
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReport, setEditingReport] = useState(null);
+
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+  const [selectedSummary, setSelectedSummary] = useState(null);
 
   useEffect(() => {
     fetchReports();
@@ -59,7 +63,39 @@ export default function MedicalVault() {
   };
 
   const handleView = (report) => {
-    window.open(report.fileUrl, '_blank');
+    if (!report.fileUrl && !report.viewUrl) {
+      toast.error('Report file URL not found');
+      return;
+    }
+
+    let url = report.viewUrl || report.fileUrl;
+
+    // If it's our backend proxy route, append the auth token for direct browser navigation
+    if (url.startsWith('/api/')) {
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      const token = userData.token;
+      if (token) {
+        url = `http://localhost:5000${url}?token=${encodeURIComponent(token)}`;
+      } else {
+        toast.error('Authentication token not found. Please log in again.');
+        return;
+      }
+    } else if (url.startsWith('//')) {
+      url = 'https:' + url;
+    }
+
+    toast.info('Opening report...', { autoClose: 1500 });
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      toast.warning('Popup blocked. Please allow popups for this site.');
+    }
+  };
+
+  const handleSummaryView = (summary, reportId) => {
+    setSelectedSummary(summary);
+    setIsSummaryModalOpen(true);
+    // Optimistically update the UI if the summary was just generated
+    setReports(prev => prev.map(r => r._id === reportId ? { ...r, summaryGenerated: true, aiSummary: summary } : r));
   };
 
   const filteredReports = reports.filter(report => {
@@ -134,20 +170,7 @@ export default function MedicalVault() {
             ))}
           </div>
 
-          <div className="flex bg-muted/50 p-1.5 rounded-xl border border-border self-stretch lg:self-auto">
-            <button 
-              onClick={() => setViewType('grid')}
-              className={`p-2 rounded-lg transition-all ${viewType === 'grid' ? 'bg-card shadow-sm text-[var(--healthcare-cyan)]' : 'text-muted-foreground'}`}
-            >
-              <Grid className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={() => setViewType('list')}
-              className={`p-2 rounded-lg transition-all ${viewType === 'list' ? 'bg-card shadow-sm text-[var(--healthcare-cyan)]' : 'text-muted-foreground'}`}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
+
         </div>
 
         {/* Content */}
@@ -159,10 +182,7 @@ export default function MedicalVault() {
         ) : filteredReports.length > 0 ? (
           <motion.div 
             layout
-            className={viewType === 'grid' 
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              : "flex flex-col gap-4"
-            }
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             <AnimatePresence>
               {filteredReports.map(report => (
@@ -172,7 +192,7 @@ export default function MedicalVault() {
                   onEdit={handleEdit}
                   onDelete={handleDelete}
                   onView={handleView}
-                  viewType={viewType}
+                  onSummaryView={handleSummaryView}
                 />
               ))}
             </AnimatePresence>
@@ -215,6 +235,12 @@ export default function MedicalVault() {
         }}
         onUploadSuccess={fetchReports}
         initialData={editingReport}
+      />
+
+      <SummaryModal
+        isOpen={isSummaryModalOpen}
+        onClose={() => setIsSummaryModalOpen(false)}
+        summary={selectedSummary}
       />
     </div>
   );

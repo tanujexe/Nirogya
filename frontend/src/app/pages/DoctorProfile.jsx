@@ -101,22 +101,22 @@ export default function DoctorProfile() {
                   <h1 className="text-3xl md:text-4xl font-black">
                     {doctorName}
                   </h1>
-                  <span className="inline-flex items-center px-3 py-1 bg-white dark:bg-slate-800/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider">
+                  <span className="inline-flex items-center px-3 py-1 bg-white/10 dark:bg-slate-800/20 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-wider text-white border border-white/20 shadow-sm">
                     Verified Pro
                   </span>
                 </div>
 
-                <p className="text-xl md:text-2xl font-medium opacity-90 mb-4">
+                <p className="text-xl md:text-2xl font-bold text-white mb-4 drop-shadow-sm">
                   {doctor.specialization}
                 </p>
 
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-8 mb-8 text-sm md:text-base font-medium">
-                  <span className="flex items-center gap-2 bg-white dark:bg-slate-800/10 px-4 py-2 rounded-xl backdrop-blur-sm">
-                    <Clock className="w-5 h-5 text-cyan-200" />
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 md:gap-8 mb-8 text-sm md:text-base font-bold">
+                  <span className="flex items-center gap-2 bg-white/10 dark:bg-slate-800/20 backdrop-blur-md px-4 py-2 rounded-xl text-white border border-white/20">
+                    <Clock className="w-5 h-5 text-cyan-300" />
                     {doctor.experience}+ Years Exp.
                   </span>
 
-                  <span className="flex items-center gap-2 bg-white dark:bg-slate-800/10 px-4 py-2 rounded-xl backdrop-blur-sm">
+                  <span className="flex items-center gap-2 bg-white/10 dark:bg-slate-800/20 backdrop-blur-md px-4 py-2 rounded-xl text-white border border-white/20">
                     <Star className="w-5 h-5 text-yellow-300" fill="currentColor" />
                     {doctor.rating || "New"} Rating
                   </span>
@@ -124,7 +124,7 @@ export default function DoctorProfile() {
 
                 <button
                   onClick={() => setShowBookingForm(true)}
-                  className="px-8 py-4 bg-white dark:bg-slate-800 text-[var(--healthcare-cyan)] rounded-2xl font-black shadow-xl shadow-black/10 hover:scale-105 active:scale-95 transition-all"
+                  className="px-8 py-4 bg-white dark:bg-slate-800 text-primary dark:text-blue-400 rounded-2xl font-black shadow-xl shadow-black/10 hover:scale-105 active:scale-95 transition-all"
                 >
                   Book Instant Appointment
                 </button>

@@ -9,10 +9,11 @@ export default function DoctorCard({ doctor }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8 }}
-      className="bg-card border border-border rounded-2xl p-6 hover:shadow-2xl hover:shadow-[var(--healthcare-cyan)]/10 transition-all duration-300 group"
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      whileHover={{ y: -4, scale: 1.01 }}
+      className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl hover:shadow-[var(--healthcare-cyan)]/5 transition-all duration-300 group"
     >
       <div className="flex items-start space-x-4">
         <div className="relative">
