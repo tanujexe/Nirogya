@@ -57,7 +57,7 @@ const requestBlood = asyncHandler(async (req, res) => {
   const bank = await BloodBank.findOneAndUpdate(
     { _id: bankId, [`stock.${bloodGroup}`]: { $gte: unitsNum } },
     { $inc: { [`stock.${bloodGroup}`]: -unitsNum } },
-    { new: true }
+    { returnDocument: 'after' }
   );
 
   if (!bank) {

@@ -5,15 +5,32 @@ const generateToken = require('../utils/generateToken');
 
 const register = asyncHandler(async (req, res) => {
   const { name, email, password, phone, role, ...doctorData } = req.body;
-  const userExists = await User.findOne({ email });
+
+  if (!email || !password || !name) {
+    res.status(400);
+    throw new Error('Please provide name, email, and password');
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const escaped = cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const userExists = await User.findOne({
+    $or: [
+      { email: cleanEmail },
+      { email: { $regex: new RegExp(`^${escaped}$`, 'i') } }
+    ]
+  });
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists');
+    throw new Error('User already exists with this email');
   }
 
   const user = await User.create({
-    name, email, password, phone, role: role || 'user'
+    name: name.trim(),
+    email: cleanEmail,
+    password,
+    phone: phone ? phone.trim() : undefined,
+    role: role || 'user'
   });
 
   if (role === 'doctor') {
@@ -39,7 +56,22 @@ const register = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+
+  if (!email || !password) {
+    res.status(400);
+    throw new Error('Please provide both email and password');
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const escaped = cleanEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // Case-insensitive lookup matches both exact lowercase and any legacy mixed-case stored emails
+  const user = await User.findOne({
+    $or: [
+      { email: cleanEmail },
+      { email: { $regex: new RegExp(`^${escaped}$`, 'i') } }
+    ]
+  });
 
   if (user && (await user.matchPassword(password))) {
     res.json({
@@ -50,12 +82,15 @@ const login = asyncHandler(async (req, res) => {
         email: user.email,
         role: user.role,
         avatar: user.avatar,
+        suspensionDetails: user.suspensionDetails,
         token: generateToken(user._id, user.role),
       }
     });
   } else {
     res.status(401);
-    throw new Error('Invalid email or password');
+    const err = new Error('Invalid email or password');
+    err.name = 'AuthError';
+    throw err;
   }
 });
 

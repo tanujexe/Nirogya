@@ -4,35 +4,56 @@ const User = require('../models/User');
 
 const getDoctors = asyncHandler(async (req, res) => {
   const { specialization, search, page = 1, limit = 20 } = req.query;
-  const query = { verified: true };
+  const skip = (page - 1) * limit;
+
+  // Query: Must be verified and active
+  const query = { 
+    verified: true,
+    status: 'active'
+  };
 
   if (specialization && specialization !== 'all') {
     query.specialization = { $regex: specialization, $options: 'i' };
   }
 
-  const skip = (page - 1) * limit;
-  let doctorsQuery = Doctor.find(query)
-    .populate('userId', 'name email avatar phone')
-    .limit(Number(limit))
-    .skip(Number(skip))
-    .lean();
+  // Handle Search Server-side
+  if (search) {
+    // 1. Find users whose name matches search
+    const matchingUsers = await User.find({
+      name: { $regex: search, $options: 'i' }
+    }).select('_id');
+    const userIds = matchingUsers.map(u => u._id);
 
-  const doctors = await doctorsQuery;
-
-  // Client-side search filter (name search requires populated userId)
-  const filtered = search
-    ? doctors.filter(d =>
-        d.userId?.name?.toLowerCase().includes(search.toLowerCase()) ||
-        d.specialization?.toLowerCase().includes(search.toLowerCase())
-      )
-    : doctors;
+    // 2. Add to doctor query
+    query.$or = [
+      { userId: { $in: userIds } },
+      { specialization: { $regex: search, $options: 'i' } },
+      { businessName: { $regex: search, $options: 'i' } }
+    ];
+  }
 
   const total = await Doctor.countDocuments(query);
-  res.json({ success: true, data: filtered, pagination: { total, page: Number(page), limit: Number(limit) } });
+  const doctors = await Doctor.find(query)
+    .populate('userId', 'name email avatar phone')
+    .sort({ rating: -1, createdAt: -1 })
+    .skip(Number(skip))
+    .limit(Number(limit))
+    .lean();
+
+  res.json({ 
+    success: true, 
+    data: doctors, 
+    pagination: { 
+      total, 
+      page: Number(page), 
+      limit: Number(limit),
+      pages: Math.ceil(total / limit)
+    } 
+  });
 });
 
 const getSpecializations = asyncHandler(async (req, res) => {
-  const specializations = await Doctor.distinct('specialization');
+  const specializations = await Doctor.distinct('specialization', { verified: true, status: 'active' });
   res.json({ success: true, data: specializations });
 });
 
@@ -67,7 +88,7 @@ const updateDoctorProfile = asyncHandler(async (req, res) => {
   const updatedDoctor = await Doctor.findOneAndUpdate(
     { userId: req.user.id },
     doctorFields,
-    { new: true }
+    { returnDocument: 'after' }
   ).populate('userId', 'name email phone avatar');
 
   res.json({ success: true, data: updatedDoctor });

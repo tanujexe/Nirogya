@@ -89,26 +89,34 @@ const applyAsProvider = asyncHandler(async (req, res) => {
 // @access  Public
 const getProvidersByType = asyncHandler(async (req, res) => {
   const { type } = req.params;
-  let providers;
+  const { search } = req.query;
+  let Model;
 
   switch (type) {
-    case 'doctor':
-      providers = await Doctor.find({ status: 'active' }).populate('userId', 'name avatar');
-      break;
-    case 'ambulance':
-      providers = await AmbulanceProvider.find({ status: 'active' }).populate('userId', 'name avatar');
-      break;
-    case 'bloodbank':
-      providers = await BloodBankProvider.find({ status: 'active' }).populate('userId', 'name avatar');
-      break;
-    case 'lab':
-      providers = await LabProvider.find({ status: 'active' }).populate('userId', 'name avatar');
-      break;
+    case 'doctor': Model = Doctor; break;
+    case 'ambulance': Model = AmbulanceProvider; break;
+    case 'bloodbank': Model = BloodBankProvider; break;
+    case 'lab': Model = LabProvider; break;
     default:
       res.status(400);
       throw new Error('Invalid provider type');
   }
 
+  // Filter: Must be verified and active
+  const query = { 
+    verified: true,
+    status: 'active'
+  };
+
+  if (search) {
+    query.$or = [
+      { businessName: { $regex: search, $options: 'i' } },
+      { city: { $regex: search, $options: 'i' } },
+      { state: { $regex: search, $options: 'i' } }
+    ];
+  }
+
+  const providers = await Model.find(query).populate('userId', 'name avatar');
   res.json({ success: true, data: providers });
 });
 
@@ -154,7 +162,8 @@ const getMyProfile = asyncHandler(async (req, res) => {
     case 'ambulance': Model = AmbulanceProvider; break;
     case 'bloodbank': Model = BloodBankProvider; break;
     case 'lab': Model = LabProvider; break;
-    default: res.status(400); throw new Error('Not a provider role');
+    default: 
+      return res.json({ success: true, data: null });
   }
   const profile = await Model.findOne({ userId }).populate('userId', 'name email phone avatar');
   res.json({ success: true, data: profile });
@@ -164,8 +173,9 @@ const updateMyProfile = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const role = req.user.role;
   
-  // Protect sensitive fields - they can only be changed by Admin
+  // Protect sensitive fields and extract identity fields
   const { 
+    name, phone, avatar,
     licenseNumber, verified, status, 
     userId: _uid, _id, createdAt, updatedAt, __v,
     hasVerifiedBadge, hasServicesBadge,
@@ -178,13 +188,27 @@ const updateMyProfile = asyncHandler(async (req, res) => {
     case 'ambulance': Model = AmbulanceProvider; break;
     case 'bloodbank': Model = BloodBankProvider; break;
     case 'lab': Model = LabProvider; break;
-    default: res.status(400); throw new Error('Not a provider role');
+    default: 
+      res.status(403); 
+      throw new Error('Unauthorized: You do not have a provider role to update.');
+  }
+
+  // Update User fields if provided
+  if (name || phone || avatar) {
+    const userUpdate = {};
+    if (name) userUpdate.name = name;
+    if (phone) userUpdate.phone = phone;
+    if (avatar) userUpdate.avatar = avatar;
+    await User.findByIdAndUpdate(userId, userUpdate);
+    
+    // Also add phone to provider update if it's provided
+    if (phone) updateData.phone = phone;
   }
 
   const profile = await Model.findOneAndUpdate(
     { userId }, 
     { $set: updateData }, 
-    { new: true, runValidators: true }
+    { returnDocument: 'after', runValidators: true }
   ).populate('userId', 'name email phone avatar');
 
   if (!profile) {

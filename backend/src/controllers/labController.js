@@ -72,13 +72,14 @@ const bookTest = asyncHandler(async (req, res) => {
 
   const booking = await Booking.create({
     userId:     req.user.id,
-    providerId: testId,
+    providerId: test.providerId || testId, // Fallback to testId if provider not linked
     type:       'lab',
     date:       new Date(date),
     timeSlot:   timeSlot || null,
     status:     'confirmed',
     notes,
     details: {
+      testId,
       testName:       test.testName,
       category:       test.category,
       price:          test.price,
