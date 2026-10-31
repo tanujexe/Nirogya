@@ -1,0 +1,21 @@
+# MediSense AI v11.0 — Install: pip install -r requirements.txt
+flask>=3.0.0
+flask-cors>=4.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+lightgbm>=4.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+pytesseract>=0.3.10
+Pillow>=10.0.0
+opencv-python>=4.8.0
+pymupdf>=1.23.0
+pdfminer.six>=20221105
+pypdf>=4.0.0
+pypdfium2>=4.0.0
+anthropic>=0.29.0
+shap>=0.46.0
+easyocr>=1.7.0
+# gunicorn>=21.0.0

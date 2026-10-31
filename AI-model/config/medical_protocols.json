@@ -1,0 +1,988 @@
+{
+  "expert_questions": [
+    {
+      "pair": [
+        "Dengue Fever",
+        "Malaria"
+      ],
+      "question": "Do you experience chills or night sweats?",
+      "sym": "chills",
+      "type": "yesno",
+      "options": [
+        "Yes, frequently",
+        "Sometimes",
+        "No, not at all"
+      ],
+      "hint": "Chills can occur in malaria, but symptoms overlap. Exposure history and appropriate testing are needed; symptoms alone cannot distinguish these illnesses."
+    },
+    {
+      "pair": [
+        "Meningitis",
+        "Migraine"
+      ],
+      "question": "Is your neck stiff or difficult to bend forward?",
+      "sym": "neck_stiffness",
+      "type": "radio",
+      "options": [
+        "Very stiff",
+        "Slightly stiff",
+        "Normal movement"
+      ],
+      "hint": "Neck stiffness with fever, severe headache, confusion, or light sensitivity can indicate meningitis and needs urgent medical assessment."
+    },
+    {
+      "pair": [
+        "Meningitis",
+        "Stroke"
+      ],
+      "question": "Do you feel any weakness or numbness on one side of your body?",
+      "sym": "one_side_weakness",
+      "type": "radio",
+      "options": [
+        "Yes, left side",
+        "Yes, right side",
+        "No weakness"
+      ],
+      "hint": "Sudden one-sided weakness can indicate stroke. Sudden neurological symptoms require emergency care; meningitis can also cause altered mental status."
+    },
+    {
+      "pair": [
+        "COVID-19",
+        "Influenza (Flu)"
+      ],
+      "question": "Have you noticed a loss of smell or taste?",
+      "sym": "loss_of_smell",
+      "type": "yesno",
+      "options": [
+        "Yes",
+        "No"
+      ],
+      "hint": "Loss of smell or taste can occur with COVID-19 but is not definitive. Testing and clinical context may be needed."
+    },
+    {
+      "pair": [
+        "COVID-19",
+        "Common Cold"
+      ],
+      "question": "Are you experiencing shortness of breath or extreme fatigue?",
+      "sym": "shortness_of_breath",
+      "type": "radio",
+      "options": [
+        "Severely short of breath",
+        "Mildly short of breath",
+        "Normal breathing"
+      ],
+      "hint": "Breathing difficulty can be a sign of severe respiratory illness and needs urgent assessment. It does not identify one specific virus."
+    },
+    {
+      "pair": [
+        "Pneumonia",
+        "Asthma"
+      ],
+      "question": "Do you have a fever accompanying your cough?",
+      "sym": "fever",
+      "type": "yesno",
+      "options": [
+        "Yes, high fever",
+        "Mild fever",
+        "No fever"
+      ],
+      "hint": "Fever may support infection, but pneumonia and asthma can overlap or coexist. A clinician may need examination and testing."
+    },
+    {
+      "pair": [
+        "Tuberculosis",
+        "Pneumonia"
+      ],
+      "question": "Have you experienced night sweats or coughed up blood?",
+      "sym": "night_sweats",
+      "type": "radio",
+      "options": [
+        "Yes, both",
+        "Night sweats only",
+        "Coughing blood only",
+        "No"
+      ],
+      "hint": "A persistent cough, night sweats, weight loss, or coughing blood warrants prompt evaluation. These symptoms are not specific to TB."
+    },
+    {
+      "pair": [
+        "Type 2 Diabetes",
+        "Hypothyroidism"
+      ],
+      "question": "Do you feel excessively thirsty and urinate very often?",
+      "sym": "excessive_thirst",
+      "type": "yesno",
+      "options": [
+        "Yes, constantly",
+        "More than usual",
+        "No"
+      ],
+      "hint": "Excessive thirst and frequent urination can occur with diabetes but need glucose testing; symptoms alone cannot confirm it."
+    },
+    {
+      "pair": [
+        "Dengue Fever",
+        "Chikungunya"
+      ],
+      "question": "Do you see tiny red spots on skin or have bleeding gums?",
+      "sym": "petechiae",
+      "type": "yesno",
+      "options": [
+        "Yes, red spots",
+        "Yes, bleeding gums",
+        "No"
+      ],
+      "hint": "Rash or bleeding may occur in dengue, but symptoms overlap with other illnesses. Any bleeding or severe abdominal pain needs urgent assessment."
+    },
+    {
+      "pair": [
+        "Kidney Stones",
+        "Urinary Tract Infection"
+      ],
+      "question": "Is the pain concentrated in your lower back or side (flank)?",
+      "sym": "flank_pain",
+      "type": "radio",
+      "options": [
+        "Severe flank pain",
+        "Mild back ache",
+        "No back pain"
+      ],
+      "hint": "Flank pain can occur with stones or kidney infection. Fever, vomiting, or severe pain warrants urgent medical evaluation."
+    },
+    {
+      "pair": [
+        "Hepatitis B",
+        "Liver Cirrhosis"
+      ],
+      "question": "Has your urine turned dark brown or cola-colored?",
+      "sym": "dark_urine",
+      "type": "yesno",
+      "options": [
+        "Yes, very dark",
+        "Slightly dark",
+        "Normal color"
+      ],
+      "hint": "Dark urine can occur with bilirubin elevation but does not identify the cause. Clinical evaluation and appropriate liver tests are needed."
+    },
+    {
+      "pair": [
+        "Anxiety Disorder",
+        "Hyperthyroidism"
+      ],
+      "question": "Have you noticed unexplained weight loss or heat intolerance?",
+      "sym": "weight_loss",
+      "type": "radio",
+      "options": [
+        "Weight loss & heat intolerance",
+        "Weight loss only",
+        "Heat intolerance only",
+        "No"
+      ],
+      "hint": "Weight loss and heat intolerance can occur with hyperthyroidism but are not diagnostic. Assessment may include thyroid function tests."
+    },
+    {
+      "pair": [
+        "Rheumatoid Arthritis",
+        "Osteoarthritis"
+      ],
+      "question": "Is your joint pain worse in the morning and lasts more than an hour?",
+      "sym": "joint_pain",
+      "type": "yesno",
+      "options": [
+        "Yes, severe morning stiffness",
+        "Mild stiffness",
+        "No morning stiffness"
+      ],
+      "hint": "Prolonged morning stiffness can suggest inflammatory arthritis, but diagnosis requires clinical assessment and sometimes laboratory/imaging tests."
+    },
+    {
+      "pair": [
+        "Migraine",
+        "Tension Headache"
+      ],
+      "question": "Is your headache throbbing on one side and accompanied by nausea?",
+      "sym": "nausea",
+      "type": "yesno",
+      "options": [
+        "Yes, one-sided throbbing",
+        "No, it's a dull band-like pain",
+        "No nausea"
+      ],
+      "hint": "One-sided throbbing pain and nausea are common in migraine, but headache type is assessed using the full history and red flags."
+    },
+    {
+      "pair": [
+        "Measles",
+        "Chickenpox"
+      ],
+      "question": "Did you have a high fever and cough before the rash appeared?",
+      "sym": "cough",
+      "type": "yesno",
+      "options": [
+        "Yes, cough first",
+        "No, rash started first",
+        "No cough"
+      ],
+      "hint": "Fever and cough before a rash can occur with measles, but rash illnesses overlap. Suspected measles requires prompt medical/public-health advice."
+    },
+    {
+      "pair": [
+        "Appendicitis",
+        "Gastroenteritis"
+      ],
+      "question": "Where is the pain most severe?",
+      "sym": "abdominal_pain",
+      "type": "radio",
+      "options": [
+        "Lower right abdomen",
+        "Around belly button",
+        "Upper abdomen",
+        "General discomfort"
+      ],
+      "hint": "Pain that moves to or becomes severe in the lower-right abdomen can indicate appendicitis and needs urgent assessment."
+    },
+    {
+      "pair": [
+        "Sepsis",
+        "Influenza (Flu)"
+      ],
+      "question": "Along with feeling very unwell, do you have confusion, fast or difficult breathing, faintness, or very little urine?",
+      "sym": "possible_sepsis_red_flags",
+      "type": "radio",
+      "options": [
+        "One or more of these symptoms",
+        "None of these symptoms",
+        "Unsure"
+      ],
+      "hint": "These can indicate a medical emergency, including sepsis. Seek emergency care; this question cannot diagnose sepsis."
+    },
+    {
+      "pair": [
+        "Deep Vein Thrombosis",
+        "Muscle Strain"
+      ],
+      "question": "Is one leg newly swollen, warm, red/discoloured, or painful without a clear explanation?",
+      "sym": "unilateral_leg_swelling",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No",
+        "Unsure"
+      ],
+      "hint": "A new one-sided swollen or painful leg needs prompt clinical assessment for a clot; symptoms alone cannot confirm or exclude DVT."
+    },
+    {
+      "pair": [
+        "Deep Vein Thrombosis",
+        "Pulmonary Embolism"
+      ],
+      "question": "Do you have sudden breathlessness, chest pain worse with breathing, coughing blood, or fainting?",
+      "sym": "possible_pe_red_flags",
+      "type": "radio",
+      "options": [
+        "Yes, one or more",
+        "No",
+        "Unsure"
+      ],
+      "hint": "These can be signs of pulmonary embolism and require emergency assessment."
+    },
+    {
+      "pair": [
+        "Acute Kidney Injury",
+        "Dehydration"
+      ],
+      "question": "Have you had a marked reduction in urine, new swelling, or worsening breathlessness?",
+      "sym": "reduced_urine_or_swelling",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No",
+        "Unsure"
+      ],
+      "hint": "Reduced urine or swelling can have serious causes and warrants prompt assessment, especially after illness or medication changes."
+    },
+    {
+      "pair": [
+        "Preeclampsia",
+        "Typical Pregnancy Discomfort"
+      ],
+      "question": "During pregnancy or after delivery, do you have a severe persistent headache, vision changes, upper abdominal pain, or breathlessness?",
+      "sym": "preeclampsia_warning_signs",
+      "type": "radio",
+      "options": [
+        "Yes, one or more",
+        "No",
+        "Unsure"
+      ],
+      "hint": "These symptoms can signal a serious pregnancy-related complication. Contact emergency obstetric services immediately."
+    },
+    {
+      "pair": [
+        "Celiac Disease",
+        "Irritable Bowel Syndrome"
+      ],
+      "question": "Do you have persistent digestive symptoms together with iron deficiency, unexplained weight loss, or a close relative with celiac disease?",
+      "sym": "celiac_features",
+      "type": "radio",
+      "options": [
+        "Yes, one or more",
+        "No",
+        "Unsure"
+      ],
+      "hint": "These features may prompt celiac testing, but they are not diagnostic. Do not start a gluten-free diet before testing unless advised."
+    },
+    {
+      "pair": [
+        "Acute Pancreatitis",
+        "Gastroenteritis"
+      ],
+      "question": "Do you have severe, persistent upper abdominal pain, especially if it spreads to the back or comes with repeated vomiting?",
+      "sym": "severe_upper_abdominal_pain",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No",
+        "Unsure"
+      ],
+      "hint": "Severe persistent abdominal pain needs urgent medical assessment; it cannot be safely distinguished by this question alone."
+    },
+    {
+      "pair": [
+        "Obstructive Sleep Apnea",
+        "Insomnia"
+      ],
+      "question": "Has someone noticed repeated pauses in your breathing or gasping during sleep, or do you have strong daytime sleepiness?",
+      "sym": "sleep_apnea_features",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No",
+        "Unsure"
+      ],
+      "hint": "These symptoms can warrant sleep-apnea evaluation; diagnosis requires appropriate clinical assessment and sleep testing."
+    },
+    {
+      "pair": [
+        "Gastroesophageal Reflux Disease",
+        "Peptic Ulcer Disease"
+      ],
+      "question": "Do you have persistent heartburn or acid regurgitation, especially after meals or when lying down?",
+      "sym": "reflux_symptoms",
+      "type": "radio",
+      "options": [
+        "Often",
+        "Sometimes",
+        "Never"
+      ],
+      "hint": "These symptoms can occur in reflux and other conditions. Chest pain, bleeding, trouble swallowing or unexplained weight loss needs medical evaluation."
+    },
+    {
+      "pair": [
+        "Iron Deficiency Anemia",
+        "Vitamin B12 Deficiency"
+      ],
+      "question": "Have you had persistent tiredness or breathlessness, and do you also have numbness/tingling or a sore tongue?",
+      "sym": "anemia_or_b12_features",
+      "type": "radio",
+      "options": [
+        "Tiredness/breathlessness only",
+        "Numbness/tingling or sore tongue too",
+        "Neither",
+        "Unsure"
+      ],
+      "hint": "Symptoms overlap among anemia types and other conditions. Blood tests and clinical evaluation are needed to identify the cause."
+    },
+    {
+      "pair": [
+        "Asthma",
+        "Pneumonia"
+      ],
+      "question": "Do you have recurring wheezing or chest tightness that varies over time or with triggers?",
+      "sym": "variable_wheeze",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No",
+        "Unsure"
+      ],
+      "hint": "Variable wheeze can occur with asthma but is not enough to diagnose it. Severe breathing difficulty is an emergency."
+    },
+    {
+      "pair": [
+        "Stroke",
+        "Migraine"
+      ],
+      "question": "Did weakness, facial drooping, speech difficulty, vision loss, or severe imbalance begin suddenly?",
+      "sym": "sudden_neurological_deficit",
+      "type": "radio",
+      "options": [
+        "Yes",
+        "No",
+        "Unsure"
+      ],
+      "hint": "Sudden neurological symptoms require emergency assessment for stroke, even if they improve."
+    }
+  ],
+  "tests": {
+    "Dengue Fever": [
+      "Dengue NAAT/RT-PCR or NS1 antigen during the early illness window, depending on day of illness and local guidance",
+      "IgM antibody testing when appropriate for illness timing",
+      "CBC/hematocrit and platelet monitoring when clinically indicated",
+      "Clinical monitoring for warning signs; a platelet count alone does not determine severity"
+    ],
+    "Malaria": [
+      "Urgent thick and thin peripheral blood smears",
+      "Malaria rapid diagnostic test (RDT) where available, alongside microscopy",
+      "Repeat smears if initial smear is negative but suspicion remains, as directed by clinician",
+      "PCR/species confirmation where indicated and available",
+      "CBC and other tests guided by severity"
+    ],
+    "Typhoid Fever": [
+      "Blood culture (preferred diagnostic test; clinician-directed, ideally before antibiotics when feasible)",
+      "Antimicrobial susceptibility testing if culture-positive",
+      "CBC and other tests guided by clinical assessment",
+      "Widal test is not recommended as a stand-alone confirmatory test because of false positives"
+    ],
+    "Tuberculosis": [
+      "Sputum molecular test (e.g., WHO-recommended rapid molecular diagnostic) as locally recommended",
+      "Sputum smear microscopy and culture/drug-susceptibility testing as indicated",
+      "Chest X-ray as part of assessment",
+      "Mantoux/TST or IGRA for TB infection assessment; these do not by themselves confirm active TB"
+    ],
+    "Pneumonia": [
+      "Chest X-ray",
+      "CBC",
+      "Sputum culture",
+      "SpO2 monitoring"
+    ],
+    "COVID-19": [
+      "RT-PCR test",
+      "Chest X-ray",
+      "SpO2",
+      "CBC"
+    ],
+    "Meningitis": [
+      "Emergency clinical assessment and blood cultures where indicated",
+      "Lumbar puncture with CSF analysis when safe and clinically appropriate",
+      "Neuroimaging before lumbar puncture only when indicated by clinical assessment",
+      "Do not delay emergency treatment when bacterial meningitis is suspected"
+    ],
+    "Stroke": [
+      "Emergency stroke assessment",
+      "Urgent non-contrast CT brain or MRI as available and clinically indicated",
+      "Blood glucose, vital signs, ECG and additional tests guided by stroke pathway",
+      "Vascular imaging when indicated"
+    ],
+    "Epilepsy": [
+      "EEG",
+      "MRI brain",
+      "CT scan"
+    ],
+    "Migraine": [
+      "Clinical history and neurological examination",
+      "No routine CT/MRI for typical migraine with a normal examination and no red flags",
+      "Urgent imaging/assessment when red flags or an atypical presentation are present"
+    ],
+    "Coronary Artery Disease": [
+      "ECG and clinical cardiovascular risk assessment",
+      "Troponin testing when acute coronary syndrome is suspected, using the local assay pathway",
+      "Echocardiography or other cardiac imaging when clinically indicated",
+      "Urgent emergency evaluation for possible heart attack symptoms"
+    ],
+    "Heart Failure": [
+      "Clinical assessment, ECG and echocardiography",
+      "BNP or NT-proBNP when clinically appropriate",
+      "Renal function, electrolytes, CBC and other tests guided by assessment",
+      "Chest X-ray when indicated"
+    ],
+    "Hypertension": [
+      "BP monitoring",
+      "ECG",
+      "Renal function"
+    ],
+    "Pulmonary Embolism": [
+      "Clinical pre-test probability assessment",
+      "D-dimer only when appropriate for the clinical probability and pathway",
+      "CT pulmonary angiography or ventilation/perfusion imaging when indicated",
+      "ECG and oxygen saturation are supportive assessments, not stand-alone rule-out tests"
+    ],
+    "Type 2 Diabetes": [
+      "Laboratory HbA1c, fasting plasma glucose, or 2-hour 75 g oral glucose tolerance test as appropriate",
+      "Confirm abnormal diagnostic results when required by guidelines and clinical circumstances",
+      "Urine albumin-to-creatinine ratio and eGFR for kidney assessment after diagnosis",
+      "Eye, foot and cardiovascular risk assessment as recommended"
+    ],
+    "Type 1 Diabetes": [
+      "Plasma glucose and HbA1c for diagnosis as clinically appropriate",
+      "Ketones and electrolytes urgently if diabetic ketoacidosis is suspected",
+      "Islet autoantibodies and C-peptide may help classify diabetes when indicated"
+    ],
+    "Hypothyroidism": [
+      "TSH",
+      "Free T4",
+      "CBC"
+    ],
+    "Hyperthyroidism": [
+      "TSH",
+      "Free T4",
+      "Free T3",
+      "Thyroid antibodies"
+    ],
+    "Hepatitis B": [
+      "Hepatitis B serology panel (e.g., HBsAg, anti-HBs, total anti-HBc, with IgM anti-HBc when acute infection is suspected)",
+      "Liver enzymes and bilirubin",
+      "HBV DNA and additional assessment when indicated",
+      "Liver imaging/fibrosis assessment based on clinical evaluation"
+    ],
+    "Hepatitis C": [
+      "Anti-HCV antibody screening",
+      "HCV RNA nucleic-acid test to confirm current infection after a reactive antibody result",
+      "Liver enzymes and fibrosis assessment as indicated",
+      "Liver ultrasound only when clinically indicated"
+    ],
+    "Liver Cirrhosis": [
+      "LFT",
+      "CBC",
+      "Ultrasound abdomen",
+      "Fibroscan"
+    ],
+    "Urinary Tract Infection": [
+      "Urinalysis when indicated by symptoms and patient context",
+      "Urine culture for complicated infection, pregnancy, recurrent infection, treatment failure or when otherwise indicated",
+      "CBC and renal function tests only when clinically indicated"
+    ],
+    "Kidney Stones": [
+      "Urinalysis and renal function assessment as indicated",
+      "Ultrasound or non-contrast CT depending on patient context and local pathway",
+      "Stone analysis and metabolic evaluation for selected/recurrent cases",
+      "Urgent assessment for fever, anuria, solitary kidney, pregnancy or uncontrolled pain"
+    ],
+    "Chronic Kidney Disease": [
+      "Creatinine",
+      "eGFR",
+      "Urine protein",
+      "Renal ultrasound"
+    ],
+    "Rheumatoid Arthritis": [
+      "Clinical joint assessment",
+      "RF and anti-CCP when clinically indicated",
+      "ESR/CRP and imaging as adjuncts; no single test alone confirms or excludes RA"
+    ],
+    "Systemic Lupus Erythematosus": [
+      "ANA",
+      "Anti-dsDNA",
+      "CBC",
+      "Urine protein"
+    ],
+    "Anemia (Iron Deficiency)": [
+      "CBC with red-cell indices",
+      "Ferritin and iron studies interpreted with inflammation and clinical context",
+      "Investigate the cause of iron deficiency, including blood loss or dietary/malabsorption factors as appropriate"
+    ],
+    "Leukemia": [
+      "CBC with differential",
+      "Bone marrow biopsy"
+    ],
+    "Asthma": [
+      "Spirometry with bronchodilator response when feasible",
+      "Peak expiratory flow as an adjunct in selected settings",
+      "Assessment for alternative diagnoses and exacerbation severity",
+      "Chest X-ray only when clinically indicated, not routinely for uncomplicated asthma"
+    ],
+    "Appendicitis": [
+      "CBC",
+      "Ultrasound abdomen",
+      "CT abdomen"
+    ],
+    "Gastroenteritis": [
+      "Clinical assessment of hydration and severity",
+      "Stool testing for selected severe, persistent, bloody, outbreak-associated or high-risk cases",
+      "Electrolytes/renal function when dehydration or severity warrants",
+      "CBC is not routinely required for every uncomplicated case"
+    ],
+    "Cholera": [
+      "Stool culture or validated molecular test where available",
+      "Clinical assessment of dehydration and shock",
+      "Electrolytes and renal function in severe illness",
+      "Urgent rehydration should not wait for test results when cholera is suspected"
+    ],
+    "HIV/AIDS": [
+      "Validated HIV antigen/antibody testing algorithm",
+      "Confirmatory testing according to national guidelines",
+      "HIV viral load and CD4 count after diagnosis as clinically indicated",
+      "Testing should follow consent, confidentiality and local guidance"
+    ],
+    "Leptospirosis": [
+      "Leptospira PCR early in illness and/or IgM serology depending on illness timing and local availability",
+      "CBC, renal function, liver tests and urinalysis as indicated",
+      "Urgent assessment for jaundice, reduced urine, bleeding, breathlessness or confusion"
+    ],
+    "Chikungunya": [
+      "RT-PCR during the early viremic phase when available",
+      "IgM serology later in illness, interpreted with timing and local guidance",
+      "CBC and other tests to assess severity or alternative diagnoses when indicated"
+    ],
+    "Psoriasis": [
+      "Skin biopsy (if needed)",
+      "Dermatologist review"
+    ],
+    "Chickenpox": [
+      "Clinical diagnosis",
+      "VZV PCR if needed"
+    ],
+    "Anxiety Disorder": [
+      "TSH (rule out thyroid)",
+      "ECG (rule out cardiac)"
+    ],
+    "Major Depressive Disorder": [
+      "TSH",
+      "Psychiatry assessment"
+    ],
+    "Osteoporosis": [
+      "DXA bone mineral density when indicated by age/risk",
+      "Calcium, renal function, vitamin D and secondary-cause tests as clinically indicated",
+      "Fracture-risk assessment"
+    ],
+    "Gout": [
+      "Serum uric acid",
+      "Joint X-ray"
+    ],
+    "Cushing's Syndrome": [
+      "24h urinary cortisol",
+      "Dexamethasone suppression test"
+    ],
+    "Addison's Disease": [
+      "Morning cortisol",
+      "ACTH stimulation",
+      "Electrolytes"
+    ],
+    "Peptic Ulcer Disease": [
+      "Upper GI endoscopy",
+      "H. pylori test",
+      "CBC"
+    ],
+    "Irritable Bowel Syndrome": [
+      "Colonoscopy (rule out)",
+      "Stool calprotectin"
+    ],
+    "Colorectal Cancer": [
+      "Colonoscopy",
+      "CEA",
+      "CT abdomen"
+    ],
+    "Lung Cancer": [
+      "Chest X-ray",
+      "CT chest",
+      "Bronchoscopy"
+    ],
+    "Breast Cancer": [
+      "Mammogram",
+      "Ultrasound breast",
+      "Biopsy"
+    ],
+    "Parkinson's Disease": [
+      "MRI brain",
+      "Neurology review"
+    ],
+    "Alzheimer's Disease": [
+      "MMSE",
+      "MRI brain",
+      "Neurology review"
+    ],
+    "Multiple Sclerosis": [
+      "MRI brain + spine",
+      "CSF analysis"
+    ],
+    "Sepsis": [
+      "Emergency clinical assessment and vital signs",
+      "Blood cultures before antimicrobials when this does not delay urgent treatment",
+      "Lactate, CBC, renal/liver function and other tests guided by suspected source",
+      "Source-directed cultures/imaging as clinically indicated"
+    ],
+    "Acute Kidney Injury": [
+      "Serial serum creatinine and urine output assessment",
+      "Electrolytes, urinalysis and urine microscopy as indicated",
+      "Medication/fluid review and assessment for obstruction",
+      "Renal ultrasound when obstruction is suspected or cause is unclear"
+    ],
+    "Iron Deficiency": [
+      "CBC and ferritin",
+      "Transferrin saturation/iron studies when indicated",
+      "Clinical evaluation for blood loss, dietary deficiency or malabsorption"
+    ],
+    "Obstructive Sleep Apnea": [
+      "Sleep history and validated screening as an initial step",
+      "Home sleep apnea test or polysomnography when indicated",
+      "Clinical assessment of cardiometabolic risk and alternative causes of symptoms"
+    ],
+    "Deep Vein Thrombosis": [
+      "Clinical pre-test probability assessment",
+      "D-dimer only when appropriate to the clinical pathway",
+      "Compression ultrasonography when indicated",
+      "Urgent assessment if leg swelling is accompanied by chest pain or breathlessness"
+    ],
+    "Preeclampsia": [
+      "Blood pressure assessment and obstetric evaluation",
+      "Urine protein assessment as indicated",
+      "CBC/platelets, creatinine and liver enzymes based on obstetric protocol",
+      "Urgent obstetric assessment for severe headache, visual symptoms, upper abdominal pain or breathlessness in pregnancy/postpartum"
+    ],
+    "Gastroesophageal Reflux Disease": [
+      "Clinical assessment and review of alarm symptoms",
+      "Endoscopy when alarm features or other indications are present",
+      "Testing for alternative diagnoses as indicated"
+    ],
+    "Celiac Disease": [
+      "Tissue transglutaminase IgA and total IgA while consuming gluten, unless clinician advises otherwise",
+      "IgG-based serology when IgA deficient",
+      "Specialist assessment and biopsy when indicated"
+    ],
+    "Iron Deficiency Anemia": [
+      "CBC with red-cell indices",
+      "Ferritin and iron studies interpreted in context",
+      "Assessment for cause, including menstrual/GI blood loss and malabsorption when appropriate"
+    ],
+    "Acute Pancreatitis": [
+      "Serum lipase",
+      "Clinical assessment and liver tests/electrolytes as indicated",
+      "Imaging based on diagnostic uncertainty, severity or suspected cause rather than automatically for every case"
+    ]
+  },
+  "diet": {
+    "Type 2 Diabetes": "Individualized eating pattern emphasizing vegetables, pulses/legumes, whole grains, fiber-rich foods and appropriate portions. Limit sugar-sweetened drinks and highly refined foods. Carbohydrate amount and meal plan should fit medication, glucose goals, culture and preferences.",
+    "Type 1 Diabetes": "Coordinate carbohydrate intake with insulin and glucose monitoring. Do not eliminate carbohydrates or change insulin without the diabetes care team. Seek urgent care for suspected ketoacidosis.",
+    "Hypertension": "A DASH-style pattern with vegetables, fruit, whole grains, pulses, nuts and appropriate protein can help. Reduce excess sodium and highly processed foods; tailor advice for kidney disease, pregnancy and medications.",
+    "Dengue Fever": "Rest and take frequent fluids/oral rehydration solution as tolerated. Use paracetamol/acetaminophen only as advised by a clinician; avoid aspirin and ibuprofen because of bleeding risk. Do not rely on papaya-leaf products as proven treatment. Seek urgent care for warning signs.",
+    "Malaria": "Maintain fluids and nutrition as tolerated and take prescribed antimalarial treatment exactly as directed. Diet does not replace prompt testing and treatment.",
+    "Typhoid Fever": "Maintain fluids and eat tolerated, safely prepared foods. Take prescribed antibiotics exactly as directed. Do not rely on Widal results alone to confirm diagnosis.",
+    "Tuberculosis": "Adequate energy and protein with a balanced diet can support recovery, especially if undernourished. Follow the prescribed TB regimen and monitoring plan; discuss supplements and drug-food interactions with the treatment team.",
+    "Hepatitis B": "Use a balanced diet and avoid alcohol, particularly with liver disease. Avoid unreviewed supplements or herbal products that may harm the liver; follow clinician advice.",
+    "Liver Cirrhosis": "Nutrition needs are individualized. Avoid alcohol and discuss sodium, protein, meal timing and fluid needs with the liver team or dietitian; do not automatically restrict protein.",
+    "Kidney Stones": "Fluid and diet advice depends on stone type and medical conditions. Many people benefit from adequate fluid intake and limiting excess sodium, while maintaining normal dietary calcium; avoid blanket low-oxalate rules without stone analysis or clinician advice.",
+    "Chronic Kidney Disease": "Diet depends on CKD stage, labs, medicines and dialysis status. Avoid automatically restricting protein, potassium, phosphorus or fluids without individualized advice from the clinician or renal dietitian.",
+    "Gout": "Limit alcohol and sugar-sweetened drinks and moderate high-purine foods if advised. A balanced diet and hydration may help, but diet alone often does not replace urate-lowering treatment.",
+    "Anemia (Iron Deficiency)": "Include iron-containing foods such as beans, lentils, fortified foods and, if eaten, meat; vitamin-C-containing foods can improve non-heme iron absorption. Tea/coffee around meals may reduce absorption. Confirm cause and use iron treatment only as advised.",
+    "Osteoporosis": "Aim for adequate dietary calcium and vitamin D, protein and weight-bearing/resistance activity when safe. Supplements should be based on needs and clinician advice; avoid smoking and excess alcohol.",
+    "Cholera": "Oral rehydration solution is the priority; severe dehydration requires urgent medical care and IV fluids. Resume appropriate food as tolerated; diet alone does not treat cholera.",
+    "Gastroenteritis": "Prioritize oral rehydration solution and fluids. Resume a normal age-appropriate diet as tolerated; a restrictive BRAT diet is not necessary. Seek care for dehydration, blood in stool, severe pain or persistent symptoms.",
+    "Migraine": "Regular meals, hydration and sleep may help. Track personal triggers rather than avoiding broad food lists without evidence. Discuss frequent or severe headaches with a clinician.",
+    "Hypothyroidism": "Use a balanced diet and take thyroid medication as prescribed, with timing separated from interfering supplements/foods as advised by the pharmacist or clinician. Avoid high-dose iodine or supplements unless prescribed.",
+    "Hyperthyroidism": "Maintain adequate energy and nutrition and discuss bone health/calcium/vitamin D with the care team. Avoid high-dose iodine supplements or seaweed products without medical advice.",
+    "COVID-19": "Maintain fluids and eat a balanced diet as tolerated. Supplements do not replace vaccination, indicated antiviral treatment or medical evaluation. Seek urgent care for breathing difficulty or other emergency symptoms.",
+    "Pneumonia": "Maintain fluids and nutrition as tolerated and follow the prescribed treatment plan. Seek urgent care for breathing difficulty, confusion, blue/grey lips or worsening illness.",
+    "Appendicitis": "Suspected appendicitis needs urgent medical assessment; do not use a diet plan or home treatment to delay care. Follow the emergency team's instructions about food and fluids.",
+    "Peptic Ulcer Disease": "Eat a balanced diet and avoid foods that personally worsen symptoms. Testing and treatment for H. pylori and review of NSAID use are important; a restrictive bland diet alone does not heal most ulcers.",
+    "Urinary Tract Infection": "Drink fluids normally if medically safe, but fluids or cranberry products do not cure an established infection. Follow clinician advice about testing and treatment; seek urgent care for fever, flank pain, vomiting or pregnancy.",
+    "Sepsis": "No diet treats sepsis. Seek emergency medical care; nutrition and fluids are managed according to clinical condition and swallowing/organ function.",
+    "Acute Kidney Injury": "Follow individualized fluid, sodium, potassium and protein advice based on kidney function, urine output and lab results. Do not self-restrict or increase fluids without clinical guidance.",
+    "Deep Vein Thrombosis": "Diet does not treat a blood clot. Follow urgent medical advice and ask about food interactions if prescribed warfarin or another anticoagulant.",
+    "Preeclampsia": "Diet is not a treatment for preeclampsia. Urgent obstetric assessment and monitoring are essential.",
+    "Gastroesophageal Reflux Disease": "Eat a balanced diet, consider smaller meals and avoid lying down soon after eating. Identify personal triggers; seek assessment for alarm symptoms.",
+    "Celiac Disease": "After appropriate testing confirms celiac disease, follow a strict gluten-free diet with dietitian support. Testing can become less reliable after gluten is removed.",
+    "Acute Pancreatitis": "Follow the clinical team's nutrition advice. Avoid alcohol if pancreatitis is suspected or diagnosed and seek medical care rather than self-managing severe pain.",
+    "Obstructive Sleep Apnea": "A balanced diet and weight management may help some people, but do not replace sleep testing, CPAP or other prescribed treatment.",
+    "Iron Deficiency": "Choose iron-containing foods and address the cause of deficiency with a clinician. Food alone may not correct established deficiency; supplementation should be guided by assessment.",
+    "Iron Deficiency Anemia": "Choose iron-containing foods and address the cause of deficiency with a clinician. Food alone may not correct established deficiency; supplementation should be guided by assessment.",
+    "Heart Failure": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Psoriasis": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Breast Cancer": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Major Depressive Disorder": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Leptospirosis": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Addison's Disease": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Systemic Lupus Erythematosus": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Leukemia": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Anxiety Disorder": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Lung Cancer": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Chikungunya": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Rheumatoid Arthritis": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "HIV/AIDS": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Asthma": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Stroke": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Epilepsy": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Hepatitis C": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Chickenpox": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Meningitis": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Pulmonary Embolism": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Parkinson's Disease": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Irritable Bowel Syndrome": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Coronary Artery Disease": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Multiple Sclerosis": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Alzheimer's Disease": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Colorectal Cancer": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease.",
+    "Cushing's Syndrome": "No condition-specific diet should be prescribed from this dataset alone. Use a balanced diet and individualized advice from the treating clinician or dietitian, especially during pregnancy or with kidney, liver, heart or metabolic disease."
+  },
+  "recovery": {
+    "Dengue Fever": "Follow clinician-directed monitoring and maintain oral fluids if tolerated. Warning signs can appear as fever settles: severe abdominal pain, persistent vomiting, bleeding, marked drowsiness/restlessness, breathing difficulty or reduced urine require urgent hospital assessment. Do not use aspirin/ibuprofen; platelet count alone does not determine severity.",
+    "Malaria": "Suspected malaria needs prompt diagnostic testing and clinician-directed treatment. Complete the prescribed regimen and attend follow-up; severe weakness, confusion, seizures, breathing difficulty, jaundice or reduced urine require emergency care.",
+    "Typhoid Fever": "Take antibiotics only as prescribed and complete the prescribed course. Maintain fluids and follow up if fever persists or returns, symptoms worsen, or severe abdominal pain, confusion or bleeding develops. Diagnosis and follow-up testing are clinician-directed; Widal is not a reliable stand-alone confirmation.",
+    "COVID-19": "Follow current local respiratory-virus guidance and clinician advice. Stay home while acutely ill and resume activities when symptoms are improving overall and fever has been absent for at least 24 hours without fever-reducing medicine, then take added precautions for 5 days where applicable. Seek urgent care for breathing difficulty, chest pain, confusion or blue/grey lips.",
+    "Pneumonia": "Take prescribed medicines as directed and follow the clinician's follow-up plan. Seek urgent care for worsening breathlessness, confusion, blue/grey lips, chest pain, inability to keep fluids down or deterioration. Repeat chest imaging is not required for every patient and depends on clinical context.",
+    "Tuberculosis": "Take the prescribed TB regimen exactly as directed and attend scheduled clinical, laboratory and sputum follow-up. Do not stop or change medicines without the TB team. Report persistent/recurrent symptoms, missed doses, jaundice, severe rash, visual changes or other possible adverse effects promptly.",
+    "Type 2 Diabetes": "Follow the agreed glucose-monitoring and treatment plan. HbA1c monitoring frequency is individualized, commonly about every 3 months when therapy changes or goals are not met and less often when stable. Arrange routine kidney, eye, foot and cardiovascular risk reviews with the care team.",
+    "Hypertension": "Monitor blood pressure as instructed and take medication as prescribed. Follow-up intervals and tests depend on treatment and comorbidities. Blood pressure with chest pain, severe breathlessness, confusion, fainting or new neurological symptoms needs emergency evaluation.",
+    "Meningitis": "Suspected meningitis is an emergency. Seek emergency care immediately; do not wait for a home recovery period or self-treat. Hospital treatment and follow-up depend on the cause and complications.",
+    "Stroke": "Any sudden face droop, arm weakness, speech difficulty, vision loss, severe imbalance or other new neurological deficit requires emergency services immediately. Note the last-known-well time. Rehabilitation and secondary prevention must be individualized by the stroke team.",
+    "Coronary Artery Disease": "Follow the cardiology treatment and rehabilitation plan. New or persistent chest pressure, breathlessness, sweating, faintness or pain spreading to the arm/jaw/back may be a heart attack and requires emergency care. Routine stress testing is not needed for everyone.",
+    "Hepatitis B": "Follow up with a clinician for monitoring and treatment decisions. Avoid alcohol and review supplements/medicines with the clinician. Liver tests and viral-load monitoring intervals depend on infection status, liver disease and treatment.",
+    "Kidney Stones": "Follow clinician advice on pain control, fluids and follow-up imaging. Strain urine if asked so the stone can be analyzed. Fever/chills, inability to urinate, persistent vomiting, uncontrolled pain or pregnancy with suspected stone needs urgent assessment.",
+    "Sepsis": "Emergency condition: call local emergency services or go to an emergency department immediately. Do not attempt home treatment or wait for test results. Hospital treatment and recovery follow-up depend on the infection source and organ effects.",
+    "Acute Kidney Injury": "Follow the clinician's plan for repeat kidney function/electrolyte testing, medication review and fluid guidance. Seek urgent care for markedly reduced urine, breathlessness, confusion, persistent vomiting or worsening swelling.",
+    "Deep Vein Thrombosis": "A suspected DVT needs prompt medical assessment. Follow the prescribed anticoagulant plan and do not stop it without medical advice. Sudden breathlessness, chest pain, coughing blood or collapse may indicate pulmonary embolism and require emergency care.",
+    "Preeclampsia": "Preeclampsia can occur during pregnancy or after delivery and requires urgent obstetric assessment. Severe headache, vision changes, upper abdominal pain, breathlessness, seizures or very high blood pressure require emergency care.",
+    "Gastroesophageal Reflux Disease": "Follow the treatment plan and reassess persistent symptoms. Trouble swallowing, vomiting blood, black stools, unexplained weight loss or chest pain needs prompt medical assessment.",
+    "Celiac Disease": "Follow a clinician-confirmed diagnosis and dietitian-guided gluten-free plan; monitor nutritional status as advised. Do not begin gluten avoidance before diagnostic testing without clinician guidance.",
+    "Acute Pancreatitis": "Acute pancreatitis generally requires medical evaluation and sometimes hospital care. Seek emergency help for severe persistent upper abdominal pain, repeated vomiting, fever, faintness or breathing difficulty. Follow the discharge plan and avoid alcohol if advised.",
+    "Obstructive Sleep Apnea": "Use prescribed CPAP or other therapy and attend follow-up. Avoid driving or operating machinery when sleepy. Seek reassessment if symptoms persist despite treatment.",
+    "Iron Deficiency": "Follow up for the cause of deficiency and repeat blood tests as directed. Take prescribed iron correctly and report side effects; do not assume diet alone will correct anemia.",
+    "Iron Deficiency Anemia": "Follow up for the cause of deficiency and repeat blood tests as directed. Take prescribed iron correctly and report side effects; do not assume diet alone will correct anemia.",
+    "Osteoporosis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Heart Failure": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Psoriasis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Appendicitis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Breast Cancer": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Cholera": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Hypothyroidism": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Major Depressive Disorder": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Chronic Kidney Disease": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Gout": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Migraine": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Leptospirosis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Addison's Disease": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Systemic Lupus Erythematosus": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Leukemia": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Anemia (Iron Deficiency)": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Anxiety Disorder": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Lung Cancer": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Chikungunya": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Urinary Tract Infection": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Rheumatoid Arthritis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "HIV/AIDS": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Asthma": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Epilepsy": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Hepatitis C": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Chickenpox": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Gastroenteritis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Pulmonary Embolism": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Parkinson's Disease": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Irritable Bowel Syndrome": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Type 1 Diabetes": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Multiple Sclerosis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Hyperthyroidism": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Alzheimer's Disease": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Peptic Ulcer Disease": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Colorectal Cancer": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Liver Cirrhosis": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs.",
+    "Cushing's Syndrome": "Follow the clinician's diagnosis-specific treatment and follow-up plan. Do not start, stop or change medicines based on this educational dataset. Seek urgent medical care for severe or rapidly worsening symptoms or any emergency warning signs."
+  },
+  "references": [
+    {
+      "id": "WHO_DENGUE_2025",
+      "organization": "World Health Organization",
+      "title": "WHO guidelines for clinical management of arboviral diseases: dengue, chikungunya, Zika and yellow fever",
+      "year": 2025,
+      "url": "https://www.who.int/publications/i/item/9789240111110",
+      "used_for": [
+        "Dengue/chikungunya symptom overlap",
+        "clinical management",
+        "warning-sign framing"
+      ]
+    },
+    {
+      "id": "CDC_DENGUE_CARE",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "Clinical Care of Dengue",
+      "year": 2026,
+      "url": "https://www.cdc.gov/dengue/hcp/clinical-care/index.html",
+      "used_for": [
+        "Dengue warning signs",
+        "avoid aspirin/ibuprofen",
+        "no universal platelet-only severity rule"
+      ]
+    },
+    {
+      "id": "CDC_TYPHOID",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "Clinical Guidance for Typhoid Fever and Paratyphoid Fever",
+      "year": 2024,
+      "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/index.html",
+      "used_for": [
+        "Blood culture",
+        "Widal limitations"
+      ]
+    },
+    {
+      "id": "CDC_MALARIA",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "Evaluation and Diagnosis of Malaria",
+      "year": 2026,
+      "url": "https://www.cdc.gov/malaria/hcp/clinical-guidance/evaluation-and-diagnosis.html",
+      "used_for": [
+        "Blood smear/RDT/PCR testing",
+        "urgent assessment"
+      ]
+    },
+    {
+      "id": "WHO_TB_2025",
+      "organization": "World Health Organization",
+      "title": "WHO consolidated guidelines on tuberculosis: module 4: treatment and care",
+      "year": 2025,
+      "url": "https://www.who.int/publications/i/item/9789240107243",
+      "used_for": [
+        "TB treatment follow-up",
+        "regimen-dependent care"
+      ]
+    },
+    {
+      "id": "CDC_RESPIRATORY",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "Preventing Spread of Respiratory Viruses When You're Sick",
+      "year": 2025,
+      "url": "https://www.cdc.gov/respiratory-viruses/prevention/precautions-when-sick.html",
+      "used_for": [
+        "General respiratory-virus recovery and return-to-activity guidance"
+      ]
+    },
+    {
+      "id": "NIDDK_CKD",
+      "organization": "National Institute of Diabetes and Digestive and Kidney Diseases",
+      "title": "Eating Right for Chronic Kidney Disease",
+      "year": null,
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd/eating-nutrition",
+      "used_for": [
+        "Individualized CKD nutrition"
+      ]
+    },
+    {
+      "id": "ADA_DIAGNOSIS",
+      "organization": "American Diabetes Association",
+      "title": "Diagnosis and Classification of Diabetes: Standards of Care in Diabetes",
+      "year": 2026,
+      "url": "https://diabetesjournals.org/care/issue",
+      "used_for": [
+        "Diabetes diagnostic testing and confirmation"
+      ]
+    },
+    {
+      "id": "CDC_STROKE",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "Signs and Symptoms of Stroke",
+      "year": null,
+      "url": "https://www.cdc.gov/stroke/signs-symptoms/index.html",
+      "used_for": [
+        "Sudden neurological symptoms and emergency escalation"
+      ]
+    },
+    {
+      "id": "CDC_HIV",
+      "organization": "Centers for Disease Control and Prevention",
+      "title": "HIV Testing",
+      "year": null,
+      "url": "https://www.cdc.gov/hiv/testing/index.html",
+      "used_for": [
+        "HIV testing algorithm and confirmation"
+      ]
+    }
+  ],
+  "clinical_use_note": "Educational decision-support content only, not a diagnostic or treatment protocol. Symptoms cannot confirm or exclude disease. Use current local/national guidelines, clinician assessment, patient age/pregnancy/comorbidities and lab-specific methods. Emergency red flags require urgent professional care. Review by a licensed clinician is required before clinical deployment."
+}

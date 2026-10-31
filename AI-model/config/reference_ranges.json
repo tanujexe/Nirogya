@@ -1,0 +1,2077 @@
+{
+  "_metadata": {
+    "schema_version": "2.0.0",
+    "last_reviewed": "2026-10-29",
+    "guidelines": [
+      "CLSI EP28-A3c: Defining, Establishing, and Verifying Reference Intervals in the Clinical Laboratory",
+      "WHO Diagnostic and Laboratory Guidelines",
+      "Tietz Textbook of Clinical Chemistry and Molecular Diagnostics (6th Ed.)",
+      "Nelson Textbook of Pediatrics (21st Ed.)"
+    ],
+    "note": "Biomarkers support demographic-aware stratification by age and sex where clinically established."
+  },
+  "hemoglobin": {
+    "male": [
+      13.5,
+      17.5
+    ],
+    "female": [
+      12.0,
+      16.0
+    ],
+    "unit": "g/dL",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "WHO Haemoglobin concentrations for diagnosis of anaemia (WHO/NMH/NHD/MNM/11.1); Tietz 6th Ed",
+    "citation_url": "https://www.who.int/publications/i/item/WHO-NMH-NHD-MNM-11.1",
+    "reviewed_date": "2026-10-29",
+    "population": "Ambulatory / outpatient general population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 0.08,
+        "description": "Neonate (0-28 days)",
+        "male": [
+          15.0,
+          24.0
+        ],
+        "female": [
+          15.0,
+          24.0
+        ],
+        "unit": "g/dL",
+        "source": "Tietz / Mayo Clinic Labs"
+      },
+      {
+        "age_min": 0.08,
+        "age_max": 2.0,
+        "description": "Infant (1-24 months)",
+        "male": [
+          10.5,
+          13.5
+        ],
+        "female": [
+          10.5,
+          13.5
+        ],
+        "unit": "g/dL",
+        "source": "WHO Guidelines"
+      },
+      {
+        "age_min": 2.0,
+        "age_max": 12.0,
+        "description": "Child (2-11 years)",
+        "male": [
+          11.5,
+          14.5
+        ],
+        "female": [
+          11.5,
+          14.5
+        ],
+        "unit": "g/dL",
+        "source": "WHO Guidelines"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 18.0,
+        "description": "Adolescent (12-17 years)",
+        "male": [
+          13.0,
+          16.0
+        ],
+        "female": [
+          12.0,
+          16.0
+        ],
+        "unit": "g/dL",
+        "source": "Tietz 6th Ed"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 65.0,
+        "description": "Adult (18-64 years)",
+        "male": [
+          13.5,
+          17.5
+        ],
+        "female": [
+          12.0,
+          16.0
+        ],
+        "unit": "g/dL",
+        "source": "WHO Guidelines"
+      },
+      {
+        "age_min": 65.0,
+        "age_max": 150.0,
+        "description": "Elderly (65+ years)",
+        "male": [
+          12.5,
+          17.0
+        ],
+        "female": [
+          11.5,
+          16.0
+        ],
+        "unit": "g/dL",
+        "source": "Mayo Clinic Laboratories"
+      }
+    ]
+  },
+  "wbc": {
+    "male": [
+      4000,
+      10000
+    ],
+    "female": [
+      4000,
+      10000
+    ],
+    "unit": "/μL",
+    "sex_dependent": false,
+    "age_dependent": true,
+    "source": "Nelson Textbook of Pediatrics 21st Ed; Tietz Clinical Guide to Laboratory Tests",
+    "citation_url": "https://www.mayocliniclabs.com/test-catalog/overview/9168",
+    "reviewed_date": "2026-10-29",
+    "population": "Healthy ambulatory pediatric and adult population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 0.08,
+        "description": "Neonate (0-28 days)",
+        "male": [
+          9000,
+          30000
+        ],
+        "female": [
+          9000,
+          30000
+        ],
+        "unit": "/μL",
+        "source": "Nelson Pediatrics"
+      },
+      {
+        "age_min": 0.08,
+        "age_max": 2.0,
+        "description": "Infant (1-24 months)",
+        "male": [
+          6000,
+          17500
+        ],
+        "female": [
+          6000,
+          17500
+        ],
+        "unit": "/μL",
+        "source": "Nelson Pediatrics"
+      },
+      {
+        "age_min": 2.0,
+        "age_max": 12.0,
+        "description": "Child (2-11 years)",
+        "male": [
+          4500,
+          13500
+        ],
+        "female": [
+          4500,
+          13500
+        ],
+        "unit": "/μL",
+        "source": "Nelson Pediatrics"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 18.0,
+        "description": "Adolescent (12-17 years)",
+        "male": [
+          4500,
+          11000
+        ],
+        "female": [
+          4500,
+          11000
+        ],
+        "unit": "/μL",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 150.0,
+        "description": "Adult (18+ years)",
+        "male": [
+          4000,
+          10000
+        ],
+        "female": [
+          4000,
+          10000
+        ],
+        "unit": "/μL",
+        "source": "Tietz"
+      }
+    ]
+  },
+  "platelets": {
+    "male": [
+      150000,
+      400000
+    ],
+    "female": [
+      150000,
+      400000
+    ],
+    "unit": "/μL",
+    "sex_dependent": false,
+    "age_dependent": true,
+    "source": "CLSI EP28-A3c; Tietz Textbook of Clinical Chemistry",
+    "citation_url": "https://clsi.org/standards/products/method-evaluation/documents/ep28/",
+    "reviewed_date": "2026-10-29",
+    "population": "General population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 0.08,
+        "description": "Neonate (0-28 days)",
+        "male": [
+          150000,
+          450000
+        ],
+        "female": [
+          150000,
+          450000
+        ],
+        "unit": "/μL",
+        "source": "Nelson Pediatrics"
+      },
+      {
+        "age_min": 0.08,
+        "age_max": 150.0,
+        "description": "Infant, Child, and Adult",
+        "male": [
+          150000,
+          400000
+        ],
+        "female": [
+          150000,
+          400000
+        ],
+        "unit": "/μL",
+        "source": "CLSI EP28-A3c"
+      }
+    ]
+  },
+  "rbc": {
+    "male": [
+      4.5,
+      5.9
+    ],
+    "female": [
+      4.0,
+      5.2
+    ],
+    "unit": "million/μL",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "Tietz Textbook of Clinical Chemistry, 6th Ed; Mayo Clinic Labs",
+    "citation_url": "https://www.mayocliniclabs.com/test-catalog/overview/81720",
+    "reviewed_date": "2026-10-29",
+    "population": "General population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 0.08,
+        "description": "Neonate (0-28 days)",
+        "male": [
+          4.0,
+          6.6
+        ],
+        "female": [
+          4.0,
+          6.6
+        ],
+        "unit": "million/μL",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 0.08,
+        "age_max": 12.0,
+        "description": "Child (1 month - 11 years)",
+        "male": [
+          4.0,
+          5.2
+        ],
+        "female": [
+          4.0,
+          5.2
+        ],
+        "unit": "million/μL",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 150.0,
+        "description": "Adolescent and Adult (12+ years)",
+        "male": [
+          4.5,
+          5.9
+        ],
+        "female": [
+          4.0,
+          5.2
+        ],
+        "unit": "million/μL",
+        "source": "Tietz"
+      }
+    ]
+  },
+  "mcv": {
+    "male": [
+      80,
+      100
+    ],
+    "female": [
+      80,
+      100
+    ],
+    "unit": "fL"
+  },
+  "mch": {
+    "male": [
+      27,
+      33
+    ],
+    "female": [
+      27,
+      33
+    ],
+    "unit": "pg"
+  },
+  "mchc": {
+    "male": [
+      32,
+      36
+    ],
+    "female": [
+      32,
+      36
+    ],
+    "unit": "g/dL"
+  },
+  "rdw": {
+    "male": [
+      11.5,
+      14.5
+    ],
+    "female": [
+      11.5,
+      14.5
+    ],
+    "unit": "%"
+  },
+  "rdw_cv": {
+    "male": [
+      11.5,
+      14.5
+    ],
+    "female": [
+      11.5,
+      14.5
+    ],
+    "unit": "%"
+  },
+  "rdw_sd": {
+    "male": [
+      39,
+      46
+    ],
+    "female": [
+      39,
+      46
+    ],
+    "unit": "fL"
+  },
+  "mpv": {
+    "male": [
+      7.5,
+      12.0
+    ],
+    "female": [
+      7.5,
+      12.0
+    ],
+    "unit": "fL"
+  },
+  "pct": {
+    "male": [
+      0.17,
+      0.35
+    ],
+    "female": [
+      0.17,
+      0.35
+    ],
+    "unit": "%"
+  },
+  "pcv": {
+    "male": [
+      41,
+      53
+    ],
+    "female": [
+      36,
+      46
+    ],
+    "unit": "%",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "Tietz Textbook of Clinical Chemistry and Molecular Diagnostics; Mayo Clinic Labs",
+    "citation_url": "https://www.mayocliniclabs.com/test-catalog/overview/81720",
+    "reviewed_date": "2026-10-29",
+    "population": "General outpatient population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 0.08,
+        "description": "Neonate (0-28 days)",
+        "male": [
+          44.0,
+          70.0
+        ],
+        "female": [
+          44.0,
+          70.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 0.08,
+        "age_max": 2.0,
+        "description": "Infant (1-24 months)",
+        "male": [
+          32.0,
+          42.0
+        ],
+        "female": [
+          32.0,
+          42.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 2.0,
+        "age_max": 12.0,
+        "description": "Child (2-11 years)",
+        "male": [
+          35.0,
+          45.0
+        ],
+        "female": [
+          35.0,
+          45.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 18.0,
+        "description": "Adolescent (12-17 years)",
+        "male": [
+          37.0,
+          49.0
+        ],
+        "female": [
+          36.0,
+          46.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 65.0,
+        "description": "Adult (18-64 years)",
+        "male": [
+          41.0,
+          53.0
+        ],
+        "female": [
+          36.0,
+          46.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 65.0,
+        "age_max": 150.0,
+        "description": "Elderly (65+ years)",
+        "male": [
+          40.0,
+          50.0
+        ],
+        "female": [
+          35.0,
+          45.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      }
+    ]
+  },
+  "hematocrit": {
+    "male": [
+      41,
+      53
+    ],
+    "female": [
+      36,
+      46
+    ],
+    "unit": "%",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "Tietz Textbook of Clinical Chemistry and Molecular Diagnostics; Mayo Clinic Labs",
+    "citation_url": "https://www.mayocliniclabs.com/test-catalog/overview/81720",
+    "reviewed_date": "2026-10-29",
+    "population": "General outpatient population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 0.08,
+        "description": "Neonate (0-28 days)",
+        "male": [
+          44.0,
+          70.0
+        ],
+        "female": [
+          44.0,
+          70.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 0.08,
+        "age_max": 2.0,
+        "description": "Infant (1-24 months)",
+        "male": [
+          32.0,
+          42.0
+        ],
+        "female": [
+          32.0,
+          42.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 2.0,
+        "age_max": 12.0,
+        "description": "Child (2-11 years)",
+        "male": [
+          35.0,
+          45.0
+        ],
+        "female": [
+          35.0,
+          45.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 18.0,
+        "description": "Adolescent (12-17 years)",
+        "male": [
+          37.0,
+          49.0
+        ],
+        "female": [
+          36.0,
+          46.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 65.0,
+        "description": "Adult (18-64 years)",
+        "male": [
+          41.0,
+          53.0
+        ],
+        "female": [
+          36.0,
+          46.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 65.0,
+        "age_max": 150.0,
+        "description": "Elderly (65+ years)",
+        "male": [
+          40.0,
+          50.0
+        ],
+        "female": [
+          35.0,
+          45.0
+        ],
+        "unit": "%",
+        "source": "Tietz"
+      }
+    ]
+  },
+  "esr": {
+    "male": [
+      0,
+      15
+    ],
+    "female": [
+      0,
+      20
+    ],
+    "unit": "mm/hr",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "ICSH Westergren Reference Method; Tietz Clinical Guide",
+    "citation_url": "https://onlinelibrary.wiley.com/doi/10.1111/ijlh.12644",
+    "reviewed_date": "2026-10-29",
+    "population": "General population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 18.0,
+        "description": "Child / Adolescent (<18 years)",
+        "male": [
+          0,
+          10
+        ],
+        "female": [
+          0,
+          10
+        ],
+        "unit": "mm/hr",
+        "source": "ICSH"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 50.0,
+        "description": "Adult (<50 years)",
+        "male": [
+          0,
+          15
+        ],
+        "female": [
+          0,
+          20
+        ],
+        "unit": "mm/hr",
+        "source": "ICSH"
+      },
+      {
+        "age_min": 50.0,
+        "age_max": 150.0,
+        "description": "Older Adult (50+ years)",
+        "male": [
+          0,
+          20
+        ],
+        "female": [
+          0,
+          30
+        ],
+        "unit": "mm/hr",
+        "source": "ICSH"
+      }
+    ]
+  },
+  "neutrophils": {
+    "male": [
+      40,
+      75
+    ],
+    "female": [
+      40,
+      75
+    ],
+    "unit": "%"
+  },
+  "lymphocytes": {
+    "male": [
+      20,
+      45
+    ],
+    "female": [
+      20,
+      45
+    ],
+    "unit": "%"
+  },
+  "eosinophils": {
+    "male": [
+      0,
+      6
+    ],
+    "female": [
+      0,
+      6
+    ],
+    "unit": "%"
+  },
+  "monocytes": {
+    "male": [
+      2,
+      10
+    ],
+    "female": [
+      2,
+      10
+    ],
+    "unit": "%"
+  },
+  "basophils": {
+    "male": [
+      0,
+      2
+    ],
+    "female": [
+      0,
+      2
+    ],
+    "unit": "%"
+  },
+  "blood_sugar": {
+    "male": [
+      70,
+      99
+    ],
+    "female": [
+      70,
+      99
+    ],
+    "unit": "mg/dL"
+  },
+  "hba1c": {
+    "male": [
+      4.0,
+      5.6
+    ],
+    "female": [
+      4.0,
+      5.6
+    ],
+    "unit": "%"
+  },
+  "cholesterol": {
+    "male": [
+      0,
+      200
+    ],
+    "female": [
+      0,
+      200
+    ],
+    "unit": "mg/dL"
+  },
+  "triglycerides": {
+    "male": [
+      0,
+      150
+    ],
+    "female": [
+      0,
+      150
+    ],
+    "unit": "mg/dL"
+  },
+  "hdl": {
+    "male": [
+      40,
+      null
+    ],
+    "female": [
+      50,
+      null
+    ],
+    "unit": "mg/dL"
+  },
+  "ldl": {
+    "male": [
+      0,
+      100
+    ],
+    "female": [
+      0,
+      100
+    ],
+    "unit": "mg/dL"
+  },
+  "vldl": {
+    "male": [
+      5,
+      40
+    ],
+    "female": [
+      5,
+      40
+    ],
+    "unit": "mg/dL"
+  },
+  "creatinine": {
+    "male": [
+      0.7,
+      1.3
+    ],
+    "female": [
+      0.6,
+      1.1
+    ],
+    "unit": "mg/dL",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "National Kidney Foundation KDOQI Guidelines; Tietz Clinical Guide",
+    "citation_url": "https://www.kidney.org/professionals/kdoqi/guidelines",
+    "reviewed_date": "2026-10-29",
+    "population": "General outpatient population (reflects muscle mass differences)",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 2.0,
+        "description": "Infant (0-24 months)",
+        "male": [
+          0.2,
+          0.4
+        ],
+        "female": [
+          0.2,
+          0.4
+        ],
+        "unit": "mg/dL",
+        "source": "NKF KDOQI"
+      },
+      {
+        "age_min": 2.0,
+        "age_max": 12.0,
+        "description": "Child (2-11 years)",
+        "male": [
+          0.3,
+          0.7
+        ],
+        "female": [
+          0.3,
+          0.7
+        ],
+        "unit": "mg/dL",
+        "source": "NKF KDOQI"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 18.0,
+        "description": "Adolescent (12-17 years)",
+        "male": [
+          0.5,
+          1.0
+        ],
+        "female": [
+          0.5,
+          0.9
+        ],
+        "unit": "mg/dL",
+        "source": "NKF KDOQI"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 65.0,
+        "description": "Adult (18-64 years)",
+        "male": [
+          0.7,
+          1.3
+        ],
+        "female": [
+          0.6,
+          1.1
+        ],
+        "unit": "mg/dL",
+        "source": "NKF KDOQI"
+      },
+      {
+        "age_min": 65.0,
+        "age_max": 150.0,
+        "description": "Elderly (65+ years)",
+        "male": [
+          0.8,
+          1.4
+        ],
+        "female": [
+          0.6,
+          1.2
+        ],
+        "unit": "mg/dL",
+        "source": "NKF KDOQI"
+      }
+    ]
+  },
+  "urea": {
+    "male": [
+      15,
+      40
+    ],
+    "female": [
+      15,
+      40
+    ],
+    "unit": "mg/dL"
+  },
+  "uric_acid": {
+    "male": [
+      3.4,
+      7.0
+    ],
+    "female": [
+      2.4,
+      6.0
+    ],
+    "unit": "mg/dL",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "American College of Rheumatology (ACR) Gout Guidelines; Tietz",
+    "citation_url": "https://rheumatology.org/practice-quality/clinical-support/clinical-practice-guidelines/gout",
+    "reviewed_date": "2026-10-29",
+    "population": "General outpatient population",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 12.0,
+        "description": "Child (0-11 years)",
+        "male": [
+          2.0,
+          5.5
+        ],
+        "female": [
+          2.0,
+          5.5
+        ],
+        "unit": "mg/dL",
+        "source": "Tietz"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 150.0,
+        "description": "Adolescent and Adult (12+ years)",
+        "male": [
+          3.4,
+          7.0
+        ],
+        "female": [
+          2.4,
+          6.0
+        ],
+        "unit": "mg/dL",
+        "source": "ACR Guidelines"
+      }
+    ]
+  },
+  "bilirubin": {
+    "male": [
+      0.1,
+      1.2
+    ],
+    "female": [
+      0.1,
+      1.2
+    ],
+    "unit": "mg/dL"
+  },
+  "protein": {
+    "male": [
+      6.0,
+      8.3
+    ],
+    "female": [
+      6.0,
+      8.3
+    ],
+    "unit": "g/dL"
+  },
+  "albumin": {
+    "male": [
+      3.5,
+      5.0
+    ],
+    "female": [
+      3.5,
+      5.0
+    ],
+    "unit": "g/dL"
+  },
+  "globulin": {
+    "male": [
+      2.0,
+      3.5
+    ],
+    "female": [
+      2.0,
+      3.5
+    ],
+    "unit": "g/dL"
+  },
+  "sgot": {
+    "male": [
+      10,
+      40
+    ],
+    "female": [
+      9,
+      32
+    ],
+    "unit": "U/L"
+  },
+  "sgpt": {
+    "male": [
+      7,
+      56
+    ],
+    "female": [
+      7,
+      45
+    ],
+    "unit": "U/L"
+  },
+  "alkaline_phosphatase": {
+    "male": [
+      44,
+      147
+    ],
+    "female": [
+      44,
+      147
+    ],
+    "unit": "U/L",
+    "sex_dependent": false,
+    "age_dependent": true,
+    "source": "International Federation of Clinical Chemistry (IFCC); Tietz Guide",
+    "citation_url": "https://ifcc.org/",
+    "reviewed_date": "2026-10-29",
+    "population": "General population (elevated during pediatric osteoblastic growth)",
+    "intervals": [
+      {
+        "age_min": 0.0,
+        "age_max": 1.0,
+        "description": "Infant (0-12 months)",
+        "male": [
+          110,
+          360
+        ],
+        "female": [
+          110,
+          360
+        ],
+        "unit": "U/L",
+        "source": "IFCC"
+      },
+      {
+        "age_min": 1.0,
+        "age_max": 12.0,
+        "description": "Child (1-11 years, active bone growth)",
+        "male": [
+          100,
+          350
+        ],
+        "female": [
+          100,
+          350
+        ],
+        "unit": "U/L",
+        "source": "IFCC"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 18.0,
+        "description": "Adolescent (12-17 years)",
+        "male": [
+          100,
+          390
+        ],
+        "female": [
+          80,
+          300
+        ],
+        "unit": "U/L",
+        "source": "IFCC"
+      },
+      {
+        "age_min": 18.0,
+        "age_max": 150.0,
+        "description": "Adult (18+ years)",
+        "male": [
+          44,
+          147
+        ],
+        "female": [
+          44,
+          147
+        ],
+        "unit": "U/L",
+        "source": "IFCC"
+      }
+    ],
+    "requires_age": true
+  },
+  "gtt_fasting": {
+    "male": [
+      70,
+      99
+    ],
+    "female": [
+      70,
+      99
+    ],
+    "unit": "mg/dL"
+  },
+  "gtt_postprandial": {
+    "male": [
+      70,
+      140
+    ],
+    "female": [
+      70,
+      140
+    ],
+    "unit": "mg/dL"
+  },
+  "tsh": {
+    "male": [
+      0.4,
+      4.0
+    ],
+    "female": [
+      0.4,
+      4.0
+    ],
+    "unit": "mIU/L"
+  },
+  "t3": {
+    "male": [
+      80,
+      200
+    ],
+    "female": [
+      80,
+      200
+    ],
+    "unit": "ng/dL"
+  },
+  "t4": {
+    "male": [
+      5.0,
+      12.0
+    ],
+    "female": [
+      5.0,
+      12.0
+    ],
+    "unit": "μg/dL"
+  },
+  "ft3": {
+    "male": [
+      2.0,
+      4.4
+    ],
+    "female": [
+      2.0,
+      4.4
+    ],
+    "unit": "pg/mL"
+  },
+  "ft4": {
+    "male": [
+      0.8,
+      1.8
+    ],
+    "female": [
+      0.8,
+      1.8
+    ],
+    "unit": "ng/dL"
+  },
+  "sodium": {
+    "male": [
+      135,
+      145
+    ],
+    "female": [
+      135,
+      145
+    ],
+    "unit": "mEq/L"
+  },
+  "potassium": {
+    "male": [
+      3.5,
+      5.0
+    ],
+    "female": [
+      3.5,
+      5.0
+    ],
+    "unit": "mEq/L"
+  },
+  "chloride": {
+    "male": [
+      98,
+      107
+    ],
+    "female": [
+      98,
+      107
+    ],
+    "unit": "mEq/L"
+  },
+  "calcium": {
+    "male": [
+      8.5,
+      10.5
+    ],
+    "female": [
+      8.5,
+      10.5
+    ],
+    "unit": "mg/dL"
+  },
+  "magnesium": {
+    "male": [
+      1.5,
+      2.4
+    ],
+    "female": [
+      1.5,
+      2.4
+    ],
+    "unit": "mg/dL"
+  },
+  "phosphorus": {
+    "male": [
+      2.5,
+      4.5
+    ],
+    "female": [
+      2.5,
+      4.5
+    ],
+    "unit": "mg/dL"
+  },
+  "bicarbonate": {
+    "male": [
+      22,
+      29
+    ],
+    "female": [
+      22,
+      29
+    ],
+    "unit": "mmol/L"
+  },
+  "serum_osmolality": {
+    "male": [
+      275,
+      295
+    ],
+    "female": [
+      275,
+      295
+    ],
+    "unit": "mOsm/kg"
+  },
+  "iron": {
+    "male": [
+      65,
+      175
+    ],
+    "female": [
+      50,
+      170
+    ],
+    "unit": "μg/dL"
+  },
+  "ferritin": {
+    "male": [
+      30,
+      400
+    ],
+    "female": [
+      13,
+      150
+    ],
+    "unit": "ng/mL",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "WHO Serum ferritin concentrations for assessment of iron status; Tietz",
+    "citation_url": "https://www.who.int/publications/i/item/9789240000803",
+    "reviewed_date": "2026-10-29",
+    "population": "General population",
+    "intervals": [
+      {
+        "age_min": 0.5,
+        "age_max": 12.0,
+        "description": "Child (6 months - 11 years)",
+        "male": [
+          7.0,
+          140.0
+        ],
+        "female": [
+          7.0,
+          140.0
+        ],
+        "unit": "ng/mL",
+        "source": "WHO Guidelines"
+      },
+      {
+        "age_min": 12.0,
+        "age_max": 50.0,
+        "description": "Adult (12-49 years, menstruating female)",
+        "male": [
+          30.0,
+          400.0
+        ],
+        "female": [
+          13.0,
+          150.0
+        ],
+        "unit": "ng/mL",
+        "source": "WHO Guidelines"
+      },
+      {
+        "age_min": 50.0,
+        "age_max": 150.0,
+        "description": "Older Adult (50+ years, post-menopausal)",
+        "male": [
+          30.0,
+          400.0
+        ],
+        "female": [
+          20.0,
+          250.0
+        ],
+        "unit": "ng/mL",
+        "source": "WHO Guidelines"
+      }
+    ]
+  },
+  "tibc": {
+    "male": [
+      250,
+      450
+    ],
+    "female": [
+      250,
+      450
+    ],
+    "unit": "μg/dL"
+  },
+  "transferrin": {
+    "male": [
+      200,
+      360
+    ],
+    "female": [
+      200,
+      360
+    ],
+    "unit": "mg/dL"
+  },
+  "transferrin_saturation": {
+    "male": [
+      20,
+      50
+    ],
+    "female": [
+      15,
+      45
+    ],
+    "unit": "%"
+  },
+  "vitamin_d": {
+    "male": [
+      20,
+      50
+    ],
+    "female": [
+      20,
+      50
+    ],
+    "unit": "ng/mL"
+  },
+  "vitamin_b12": {
+    "male": [
+      200,
+      900
+    ],
+    "female": [
+      200,
+      900
+    ],
+    "unit": "pg/mL"
+  },
+  "folate": {
+    "male": [
+      2.7,
+      17.0
+    ],
+    "female": [
+      2.7,
+      17.0
+    ],
+    "unit": "ng/mL"
+  },
+  "ldh": {
+    "male": [
+      140,
+      280
+    ],
+    "female": [
+      140,
+      280
+    ],
+    "unit": "U/L"
+  },
+  "lipase": {
+    "male": [
+      13,
+      60
+    ],
+    "female": [
+      13,
+      60
+    ],
+    "unit": "U/L"
+  },
+  "amylase": {
+    "male": [
+      30,
+      110
+    ],
+    "female": [
+      30,
+      110
+    ],
+    "unit": "U/L"
+  },
+  "ggt": {
+    "male": [
+      9,
+      48
+    ],
+    "female": [
+      9,
+      36
+    ],
+    "unit": "U/L"
+  },
+  "crp": {
+    "male": [
+      0,
+      5
+    ],
+    "female": [
+      0,
+      5
+    ],
+    "unit": "mg/L"
+  },
+  "troponin_i": {
+    "male": null,
+    "female": null,
+    "unit": "ng/mL"
+  },
+  "troponin_t": {
+    "male": null,
+    "female": null,
+    "unit": "ng/mL"
+  },
+  "bnp": {
+    "male": [
+      0,
+      100
+    ],
+    "female": [
+      0,
+      100
+    ],
+    "unit": "pg/mL"
+  },
+  "nt_probnp": {
+    "male": null,
+    "female": null,
+    "unit": "pg/mL"
+  },
+  "d_dimer": {
+    "male": null,
+    "female": null,
+    "unit": "μg/mL"
+  },
+  "inr": {
+    "male": [
+      0.8,
+      1.2
+    ],
+    "female": [
+      0.8,
+      1.2
+    ],
+    "unit": "ratio"
+  },
+  "pt": {
+    "male": [
+      11,
+      14
+    ],
+    "female": [
+      11,
+      14
+    ],
+    "unit": "seconds"
+  },
+  "aptt": {
+    "male": [
+      25,
+      35
+    ],
+    "female": [
+      25,
+      35
+    ],
+    "unit": "seconds"
+  },
+  "fibrinogen": {
+    "male": [
+      200,
+      400
+    ],
+    "female": [
+      200,
+      400
+    ],
+    "unit": "mg/dL"
+  },
+  "lactate": {
+    "male": [
+      0.5,
+      2.2
+    ],
+    "female": [
+      0.5,
+      2.2
+    ],
+    "unit": "mmol/L"
+  },
+  "procalcitonin": {
+    "male": [
+      0,
+      0.5
+    ],
+    "female": [
+      0,
+      0.5
+    ],
+    "unit": "ng/mL"
+  },
+  "pth": {
+    "male": [
+      15,
+      65
+    ],
+    "female": [
+      15,
+      65
+    ],
+    "unit": "pg/mL"
+  },
+  "cortisol": {
+    "male": null,
+    "female": null,
+    "unit": "μg/dL"
+  },
+  "egfr": {
+    "male": [
+      90,
+      null
+    ],
+    "female": [
+      90,
+      null
+    ],
+    "unit": "mL/min/1.73m²"
+  },
+  "uacr": {
+    "male": [
+      0,
+      30
+    ],
+    "female": [
+      0,
+      30
+    ],
+    "unit": "mg/g"
+  },
+  "copper": {
+    "male": [
+      70,
+      140
+    ],
+    "female": [
+      70,
+      140
+    ],
+    "unit": "μg/dL"
+  },
+  "specific_gravity": {
+    "male": [
+      1.005,
+      1.03
+    ],
+    "female": [
+      1.005,
+      1.03
+    ],
+    "unit": "SG"
+  },
+  "ph": {
+    "male": [
+      4.5,
+      8.0
+    ],
+    "female": [
+      4.5,
+      8.0
+    ],
+    "unit": "pH"
+  },
+  "pus_cells": {
+    "male": [
+      0,
+      5
+    ],
+    "female": [
+      0,
+      5
+    ],
+    "unit": "/hpf"
+  },
+  "rbc_urine": {
+    "male": [
+      0,
+      2
+    ],
+    "female": [
+      0,
+      2
+    ],
+    "unit": "/hpf"
+  },
+  "protein_urine": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "glucose_urine": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "ketones_urine": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "blood_urine": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "nitrite": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "leukocyte_esterase": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "bilirubin_urine": {
+    "male": [
+      "negative"
+    ],
+    "female": [
+      "negative"
+    ],
+    "unit": "dipstick"
+  },
+  "reticulocyte_count": {
+    "male": [
+      0.5,
+      2.5
+    ],
+    "female": [
+      0.5,
+      2.5
+    ],
+    "unit": "%"
+  },
+  "absolute_reticulocyte_count": {
+    "male": [
+      25000,
+      100000
+    ],
+    "female": [
+      25000,
+      100000
+    ],
+    "unit": "/μL"
+  },
+  "absolute_neutrophils": {
+    "male": [
+      1500,
+      7500
+    ],
+    "female": [
+      1500,
+      7500
+    ],
+    "unit": "/μL"
+  },
+  "absolute_lymphocytes": {
+    "male": [
+      1000,
+      4000
+    ],
+    "female": [
+      1000,
+      4000
+    ],
+    "unit": "/μL"
+  },
+  "absolute_monocytes": {
+    "male": [
+      200,
+      800
+    ],
+    "female": [
+      200,
+      800
+    ],
+    "unit": "/μL"
+  },
+  "absolute_eosinophils": {
+    "male": [
+      0,
+      500
+    ],
+    "female": [
+      0,
+      500
+    ],
+    "unit": "/μL"
+  },
+  "absolute_basophils": {
+    "male": [
+      0,
+      200
+    ],
+    "female": [
+      0,
+      200
+    ],
+    "unit": "/μL"
+  },
+  "bun": {
+    "male": [
+      7,
+      20
+    ],
+    "female": [
+      7,
+      20
+    ],
+    "unit": "mg/dL"
+  },
+  "direct_bilirubin": {
+    "male": [
+      0,
+      0.3
+    ],
+    "female": [
+      0,
+      0.3
+    ],
+    "unit": "mg/dL"
+  },
+  "urine_casts_hyaline": {
+    "male": [
+      0,
+      4
+    ],
+    "female": [
+      0,
+      4
+    ],
+    "unit": "/lpf"
+  },
+  "urine_albumin_24h": {
+    "male": [
+      0,
+      30
+    ],
+    "female": [
+      0,
+      30
+    ],
+    "unit": "mg/24h"
+  },
+  "urine_creatinine_24h": {
+    "male": [
+      800,
+      2000
+    ],
+    "female": [
+      600,
+      1800
+    ],
+    "unit": "mg/24h"
+  },
+  "urine_albumin_creatinine_ratio": {
+    "male": [
+      0,
+      30
+    ],
+    "female": [
+      0,
+      30
+    ],
+    "unit": "mg/g"
+  },
+  "urine_appearance": {
+    "male": [
+      "clear"
+    ],
+    "female": [
+      "clear"
+    ],
+    "unit": "qualitative"
+  },
+  "urine_color": {
+    "male": [
+      "pale yellow",
+      "yellow",
+      "amber"
+    ],
+    "female": [
+      "pale yellow",
+      "yellow",
+      "amber"
+    ],
+    "unit": "qualitative"
+  },
+  "arterial_ph": {
+    "male": [
+      7.35,
+      7.45
+    ],
+    "female": [
+      7.35,
+      7.45
+    ],
+    "unit": "pH"
+  },
+  "arterial_pco2": {
+    "male": [
+      35,
+      45
+    ],
+    "female": [
+      35,
+      45
+    ],
+    "unit": "mmHg"
+  },
+  "arterial_po2": {
+    "male": [
+      80,
+      100
+    ],
+    "female": [
+      80,
+      100
+    ],
+    "unit": "mmHg"
+  },
+  "arterial_bicarbonate": {
+    "male": [
+      22,
+      26
+    ],
+    "female": [
+      22,
+      26
+    ],
+    "unit": "mmol/L"
+  },
+  "base_excess": {
+    "male": [
+      -2,
+      2
+    ],
+    "female": [
+      -2,
+      2
+    ],
+    "unit": "mmol/L"
+  },
+  "psa": {
+    "male": [
+      0,
+      4.0
+    ],
+    "female": [
+      0,
+      4.0
+    ],
+    "unit": "ng/mL",
+    "applicable_sex": "male",
+    "sex_dependent": true,
+    "age_dependent": true,
+    "source": "American Urological Association (AUA) Guidelines for Prostate Cancer Detection",
+    "citation_url": "https://www.auanet.org/guidelines-and-quality/guidelines/early-detection-of-prostate-cancer-guideline",
+    "reviewed_date": "2026-10-29",
+    "population": "Male screening population",
+    "intervals": [
+      {
+        "age_min": 18.0,
+        "age_max": 50.0,
+        "description": "Adult (<50 years)",
+        "male": [
+          0.0,
+          2.5
+        ],
+        "female": null,
+        "unit": "ng/mL",
+        "source": "AUA Guidelines"
+      },
+      {
+        "age_min": 50.0,
+        "age_max": 60.0,
+        "description": "Adult (50-59 years)",
+        "male": [
+          0.0,
+          3.5
+        ],
+        "female": null,
+        "unit": "ng/mL",
+        "source": "AUA Guidelines"
+      },
+      {
+        "age_min": 60.0,
+        "age_max": 70.0,
+        "description": "Adult (60-69 years)",
+        "male": [
+          0.0,
+          4.5
+        ],
+        "female": null,
+        "unit": "ng/mL",
+        "source": "AUA Guidelines"
+      },
+      {
+        "age_min": 70.0,
+        "age_max": 150.0,
+        "description": "Elderly (70+ years)",
+        "male": [
+          0.0,
+          6.5
+        ],
+        "female": null,
+        "unit": "ng/mL",
+        "source": "AUA Guidelines"
+      }
+    ]
+  },
+  "ca125": {
+    "male": [
+      0,
+      35.0
+    ],
+    "female": [
+      0,
+      35.0
+    ],
+    "unit": "U/mL"
+  },
+  "cea": {
+    "male": [
+      0,
+      5.0
+    ],
+    "female": [
+      0,
+      5.0
+    ],
+    "unit": "ng/mL"
+  },
+  "ca19_9": {
+    "male": [
+      0,
+      37.0
+    ],
+    "female": [
+      0,
+      37.0
+    ],
+    "unit": "U/mL"
+  },
+  "afp": {
+    "male": [
+      0,
+      10.0
+    ],
+    "female": [
+      0,
+      10.0
+    ],
+    "unit": "ng/mL"
+  }
+}
