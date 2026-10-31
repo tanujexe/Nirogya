@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MediSense AI v11.0</title>
+<style>
+:root{--bg:#0a0f1e;--card:#111827;--acc:#00d4ff;--acc2:#667eea;--ok:#4caf50;--warn:#ff9800;--err:#f44336;--txt:#e2e8f0;--mut:#94a3b8;--bdr:rgba(0,212,255,.18)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);min-height:100vh;padding:14px;color:var(--txt)}
+.wrap{max-width:1440px;margin:0 auto;background:linear-gradient(135deg,var(--card),#0f1f3d);border-radius:20px;box-shadow:0 25px 80px rgba(0,0,0,.6);border:1px solid var(--bdr);overflow:hidden}
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#060d20,#0d1f40);padding:28px 36px;text-align:center;border-bottom:1px solid var(--bdr)}
+.hdr h1{font-size:2.2em;color:var(--acc);text-shadow:0 0 25px rgba(0,212,255,.35);margin-bottom:6px}
+.hdr p{color:var(--mut);font-size:.95em}
+.badges{display:flex;justify-content:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+.badge{background:rgba(0,212,255,.1);border:1px solid var(--bdr);border-radius:20px;padding:4px 11px;font-size:.72em;color:var(--acc);font-weight:700}
+/* LAYOUT */
+.main{display:grid;grid-template-columns:1fr 1.3fr}
+.left{padding:26px;border-right:1px solid var(--bdr)}
+.right{padding:26px;overflow-y:auto;max-height:90vh}
+.sec{color:var(--acc);font-size:1em;margin-bottom:12px;border-bottom:1px solid var(--bdr);padding-bottom:7px;text-transform:uppercase;font-weight:700;letter-spacing:1.5px}
+/* TABS */
+.tabs{display:flex;gap:3px;background:rgba(255,255,255,.05);border-radius:9px;padding:3px;margin-bottom:14px}
+.tab{flex:1;padding:8px;border:none;border-radius:7px;background:transparent;color:var(--mut);cursor:pointer;font-size:.78em;font-weight:700;transition:all .2s;font-family:inherit}
+.tab.on{background:linear-gradient(135deg,var(--acc),#0099cc);color:#000}
+.tc{display:none}.tc.on{display:block}
+/* INPUTS */
+textarea,input,select{width:100%;background:rgba(255,255,255,.04);border:1.5px solid var(--bdr);border-radius:9px;color:var(--txt);font-family:inherit;font-size:.88em;padding:10px 12px;transition:all .2s}
+textarea{height:125px;resize:vertical}
+textarea:focus,input:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 16px rgba(0,212,255,.12)}
+.vrow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:9px 0}
+.vi label{font-size:.7em;color:var(--mut);display:block;margin-bottom:3px}
+/* BUTTONS */
+.brow{display:flex;gap:8px;margin-top:11px}
+.btn{cursor:pointer;font-family:inherit;border:none;border-radius:8px;padding:10px 16px;font-size:.92em;font-weight:700;transition:all .25s}
+.btn-p{flex:1;background:linear-gradient(135deg,var(--acc),#0099cc);color:#000}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,212,255,.3)}
+.btn-s{background:rgba(255,255,255,.07);color:var(--txt);border:1px solid rgba(255,255,255,.13)}
+.btn-s:hover{background:rgba(255,255,255,.12)}
+/* EXAMPLES */
+.ex{background:rgba(255,255,255,.03);padding:13px;border-radius:9px;margin-top:14px;border:1px solid rgba(255,255,255,.06)}
+.ex h3{color:var(--acc);margin-bottom:9px;font-size:.8em;text-transform:uppercase;letter-spacing:1px}
+.exb{display:block;width:100%;text-align:left;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(0,212,255,.13);border-radius:6px;margin-bottom:5px;font-size:.78em;color:var(--txt);cursor:pointer;font-family:inherit;transition:all .2s}
+.exb:hover{background:rgba(0,212,255,.08);border-color:var(--acc)}
+/* VOICE */
+.vw{text-align:center;padding:18px 0}
+.vbtn{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#0077aa);border:none;cursor:pointer;font-size:1.8em;color:#000;transition:all .3s}
+.vbtn.rec{animation:vp 1s ease infinite;background:linear-gradient(135deg,var(--err),#cc0000)}
+@keyframes vp{0%{box-shadow:0 0 0 0 rgba(244,67,54,.5)}70%{box-shadow:0 0 0 18px rgba(244,67,54,0)}100%{box-shadow:0 0 0 0 rgba(244,67,54,0)}}
+.vhint{color:var(--mut);font-size:.8em;margin-top:8px}
+.vstatus{color:var(--err);font-weight:700;margin-top:6px;display:none}
+.vtrans{background:rgba(255,255,255,.05);border-radius:7px;padding:8px;margin-top:10px;font-size:.86em;min-height:48px;display:none}
+/* UPLOAD */
+.upz{border:2px dashed var(--bdr);border-radius:11px;padding:26px;text-align:center;cursor:pointer;transition:all .2s}
+.upz:hover,.upz.drag{border-color:var(--acc);background:rgba(0,212,255,.04)}
+.upz input{display:none}
+.upi{font-size:2.2em;margin-bottom:8px}
+.upt{color:var(--mut);font-size:.82em}.upt span{color:var(--acc)}
+.fprev{margin-top:8px;font-size:.8em;color:var(--ok)}
+/* LOADING */
+.load{display:none;text-align:center;padding:26px}
+.spin{border:4px solid rgba(255,255,255,.1);border-top:4px solid var(--acc);border-radius:50%;width:40px;height:40px;animation:spin .9s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* RESULTS */
+.res{display:none}
+.emerg{background:rgba(244,67,54,.18);border:2px solid var(--err);border-radius:10px;padding:14px;margin-bottom:16px;display:none;animation:ep 1.2s ease infinite}
+@keyframes ep{0%,100%{border-color:#f44336}50%{border-color:#ff7043;box-shadow:0 0 18px rgba(244,67,54,.35)}}
+.emerg h3{color:#ff6b6b;font-size:1em;margin-bottom:4px}
+.emerg p{color:#ffb3b3;font-size:.86em}
+.wbox{background:rgba(255,152,0,.1);border-left:4px solid var(--warn);border-radius:4px;padding:10px 13px;margin-bottom:12px;color:#ffcc80;display:none;font-size:.86em}
+/* FOLLOW-UP CHAT */
+.fup{background:rgba(0,212,255,.07);border:1.5px solid rgba(0,212,255,.3);border-radius:11px;padding:14px;margin:12px 0;display:none}
+.fup h4{color:var(--acc);font-size:.82em;text-transform:uppercase;letter-spacing:1px;margin-bottom:9px}
+.fupq{font-size:.92em;color:#c3cfe2;margin-bottom:11px;padding:9px;background:rgba(0,0,0,.2);border-radius:7px}
+.furow{display:flex;gap:7px}
+.fuin{flex:1;padding:8px 11px;background:rgba(255,255,255,.06);border:1.5px solid var(--bdr);border-radius:8px;color:var(--txt);font-family:inherit;font-size:.88em}
+.fuin:focus{outline:none;border-color:var(--acc)}
+.fusend{padding:8px 15px;background:linear-gradient(135deg,var(--acc2),#4a3f9f);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.84em;font-family:inherit}
+/* SYMPTOMS */
+.stags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.stag{background:rgba(0,212,255,.12);color:var(--acc);padding:4px 10px;border-radius:17px;font-size:.76em;font-weight:700;border:1px solid rgba(0,212,255,.27)}
+/* PREDICTIONS */
+.pc{background:rgba(255,255,255,.05);border:1.5px solid var(--bdr);border-radius:11px;padding:14px;margin-bottom:11px;transition:all .25s}
+.pc:hover{border-color:var(--acc);background:rgba(0,212,255,.05)}
+.pc.top{border-color:rgba(0,212,255,.5);background:rgba(0,212,255,.06)}
+.ph{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.rb{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--acc),#0077aa);color:#000;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.9em;flex-shrink:0}
+.pd{font-size:1.05em;font-weight:700;color:var(--acc)}
+.pdr{font-size:.78em;color:var(--mut);margin-top:2px}
+.cb{height:6px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:7px 0}
+.cf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--acc),#0099cc);transition:width .8s}
+.cf.hi{background:linear-gradient(90deg,var(--ok),#2e7d32)}
+.cf.med{background:linear-gradient(90deg,var(--warn),#e65100)}
+.cl{display:flex;justify-content:space-between;font-size:.76em;color:var(--mut);margin-bottom:3px}
+.why{font-size:.8em;color:var(--mut)}
+.why span{color:var(--ok);margin-right:4px}
+/* SEVERITY */
+.sv{border-radius:9px;padding:13px 15px;margin:12px 0}
+.sb{display:inline-block;padding:5px 13px;border-radius:17px;font-weight:700;font-size:.86em}
+.sCRITICAL{background:var(--err);color:#fff}.sSEVERE{background:var(--warn);color:#000}
+.sMODERATE{background:#ffc107;color:#000}.sMILD{background:var(--ok);color:#fff}
+.sa{margin-top:6px;font-size:.84em;color:var(--mut)}
+.sf{margin-top:5px;font-size:.76em;color:#90a4ae}
+/* ENTROPY */
+.ebar-w{margin:5px 0;font-size:.76em;color:var(--mut)}
+.ebar{height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin-top:3px}
+.ef{height:100%;border-radius:3px;transition:width .6s}
+/* CLINICAL */
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.cc{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:9px;padding:12px}
+.cc h4{color:var(--acc);font-size:.76em;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}
+.cc p,.cc li{font-size:.8em;color:#90a4ae;margin-bottom:3px}
+.cc ul{padding-left:14px}
+/* DOCTORS */
+.dg{background:rgba(255,255,255,.03);border-radius:9px;padding:14px;margin-bottom:12px;border:1px solid rgba(255,255,255,.06)}
+.ds{color:var(--acc);font-weight:700;margin-bottom:9px;font-size:.9em}
+.dtag{display:inline-block;background:rgba(76,175,80,.18);color:#81c784;padding:3px 9px;border-radius:11px;font-size:.71em;margin:2px;border:1px solid rgba(76,175,80,.27)}
+.dc{background:rgba(255,255,255,.04);border:1px solid var(--bdr);border-radius:8px;padding:11px;margin-bottom:8px;transition:all .2s}
+.dc:hover{background:rgba(0,212,255,.07);border-color:var(--acc)}
+.dn{color:var(--acc);font-weight:700;margin-bottom:5px;font-size:.9em}
+.dm{font-size:.78em;color:#90a4ae;display:grid;grid-template-columns:75px 1fr;gap:3px 8px}
+.ml{color:#607d8b}.star{color:#ffc107}
+/* REPORT */
+.rres{display:none;margin-top:16px}
+.lt{width:100%;border-collapse:collapse;font-size:.8em;margin-top:8px}
+.lt th{background:rgba(0,212,255,.14);color:var(--acc);padding:6px 10px;text-align:left}
+.lt td{padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
+.sHIGH{color:#ff7043;font-weight:700}.sLOW{color:#29b6f6;font-weight:700}.snormal{color:var(--ok)}
+/* ERR */
+.err{background:rgba(244,67,54,.1);border:1.5px solid var(--err);color:#ff8a80;padding:13px;border-radius:9px;display:none;font-size:.86em}
+/* PLACEHOLDER */
+#ph{text-align:center;padding:50px 20px;color:var(--mut)}
+/* RESPONSIVE */
+@media(max-width:1024px){.main{grid-template-columns:1fr}.left{border-right:none;border-bottom:1px solid var(--bdr)}}
+@media(max-width:600px){.hdr h1{font-size:1.6em}.vrow{grid-template-columns:1fr 1fr}.cgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hdr">
+  <h1>🏥 MediSense AI <small style="font-size:.5em;opacity:.6">v11.0</small></h1>
+  <p>Clinical Decision Support — Text · Voice · Hinglish · Hindi · Lab Report · Follow-up</p>
+  <div class="badges">
+    <span class="badge">🔬 CatBoost + XGBoost + LightGBM (ensemble)</span>
+    <span class="badge">🎤 Voice EN/HI/Hinglish</span>
+    <span class="badge">📷 Lab Report OCR</span>
+    <span class="badge">🚨 Emergency Detection</span>
+    <span class="badge">💬 Smart Follow-up</span>
+    <span class="badge">📊 Entropy Reasoning</span>
+    <span class="badge">🧪 Tests + Diet + Recovery</span>
+  </div>
+</div>
+
+<div class="main">
+<!-- LEFT -->
+<div class="left">
+  <h2 class="sec">📋 Describe Symptoms</h2>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('text',this)">📝 Text/Hinglish</button>
+    <button class="tab" onclick="switchTab('voice',this)">🎤 Voice</button>
+    <button class="tab" onclick="switchTab('report',this)">📷 Lab Report</button>
+  </div>
+
+  <!-- TEXT -->
+  <div id="tc-text" class="tc on">
+    <textarea id="inp" placeholder="English: High fever 39°C, severe headache, stiff neck. Age 28, male.&#10;&#10;Hinglish: Mujhe tez bukhar hai, gardan akad gayi, sar mein bahut dard.&#10;&#10;Hindi: मुझे तेज बुखार है और गर्दन अकड़ गई है।"></textarea>
+    <div class="vrow">
+      <div class="vi"><label>Age</label><input type="number" id="age" placeholder="35" min="0" max="120"></div>
+      <div class="vi"><label>Gender</label><select id="gender"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option></select></div>
+      <div class="vi"><label>SpO2 %</label><input type="number" id="spo2" placeholder="98" min="50" max="100"></div>
+    </div>
+    <div class="brow">
+      <button class="btn btn-p" onclick="analyze()">🔍 Analyze Symptoms</button>
+      <button class="btn btn-s" onclick="clearAll()">Clear</button>
+    </div>
+    <div class="ex">
+      <h3>⚡ Quick Examples</h3>
+      <button class="exb" onclick="setEx('severe headache, stiff neck, high fever 39.5°C, confusion. Age 28, HR 115 bpm')">🧠 Meningitis — neck stiffness + fever + severe headache</button>
+      <button class="exb" onclick="setEx('chest pain radiating to left arm, cold sweats, shortness of breath. Age 52, HR 130')">❤️ Cardiac — chest pain + cold sweats</button>
+      <button class="exb" onclick="setEx('loss of taste, loss of smell, fever, cough, fatigue. SpO2 94%')">🦠 COVID-19 — loss of taste + smell + cough</button>
+      <button class="exb" onclick="setEx('high fever with chills, night sweats, muscle pain. Age 30')">🦟 Malaria — chills + night sweats + fever</button>
+      <button class="exb" onclick="setEx('petechiae, high fever, severe headache, joint pain, eye redness')">🩸 Dengue — petechiae + joint pain + eye redness</button>
+      <button class="exb" onclick="setEx('excessive thirst, frequent urination, weight loss. blood sugar 320 mg/dl')">🩺 Diabetes — thirst + urination + high sugar</button>
+      <button class="exb" onclick="setEx('one side weakness, slurred speech, face drooping. Age 60. BP 180/100')">🚨 STROKE — one side weakness + speech difficulty</button>
+      <button class="exb" onclick="setEx('mujhe tez bukhar hai, gardan hilana mushkil hai, sar mein bahut dard. Age 25')">🇮🇳 Hinglish — bukhar + gardan akad + sar dard</button>
+    </div>
+  </div>
+
+  <!-- VOICE -->
+  <div id="tc-voice" class="tc">
+    <div class="vw">
+      <button class="vbtn" id="vbtn" onclick="toggleVoice()">🎤</button>
+      <div class="vhint">Click to speak · English · Hinglish · Hindi supported</div>
+      <div style="margin-top:10px;display:flex;justify-content:center;gap:8px;align-items:center">
+        <span style="color:var(--mut);font-size:.78em;font-weight:700">Voice language</span>
+        <select id="vlang" style="max-width:210px;padding:6px 10px;font-size:.82em">
+          <option value="hi-IN" selected>Hindi/Hinglish (hi-IN)</option>
+          <option value="en-IN">English (en-IN)</option>
+        </select>
+      </div>
+      <div class="vstatus" id="vstatus">🔴 Recording... Speak now</div>
+      <div class="vtrans" id="vtrans"><em style="color:var(--mut)">Your speech appears here...</em></div>
+    </div>
+    <div class="brow" style="margin-top:12px">
+      <button class="btn btn-p" id="vabtn" style="display:none" onclick="analyzeVoice()">🔍 Analyze Voice Input</button>
+    </div>
+    <p style="color:var(--mut);font-size:.78em;margin-top:10px;text-align:center">
+      Uses Web Speech API — Chrome recommended<br>
+      Try: "mujhe bukhar aur sar dard hai" or "I have fever and headache"
+    </p>
+  </div>
+
+  <!-- REPORT -->
+  <div id="tc-report" class="tc">
+    <p style="color:var(--mut);font-size:.83em;margin-bottom:11px">Upload blood test / CBC / lab report image or PDF. AI extracts values and flags abnormalities.</p>
+    <div class="upz" id="upz"
+         onclick="document.getElementById('rfile').click()"
+         ondragover="event.preventDefault();this.classList.add('drag')"
+         ondragleave="this.classList.remove('drag')"
+         ondrop="dropFile(event)">
+      <div class="upi">📄</div>
+      <p class="upt">Drag & drop or <span>click to upload</span><br><small>JPG · PNG · PDF supported</small></p>
+      <div class="fprev" id="fprev"></div>
+      <input type="file" id="rfile" accept=".jpg,.jpeg,.png,.pdf,.bmp,.tiff,.tif,.webp" onchange="selectFile(event)">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input type="number" id="rptAge" placeholder="Age (years)" style="flex:1;padding:8px" min="0" max="125">
+      <select id="rptSex" style="flex:1;padding:8px">
+        <option value="">Sex (Unspecified)</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+    </div>
+    <div style="margin-top:6px">
+      <input type="date" id="rptDob" placeholder="Date of Birth" style="width:100%;padding:8px">
+    </div>
+    <textarea id="extraSym" style="margin-top:10px;height:60px" placeholder="Optional: also describe symptoms (e.g. 'I have fever and body pain')"></textarea>
+    <div class="brow" style="margin-top:10px">
+      <button class="btn btn-p" onclick="analyzeReport()">🔬 Analyze Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+  <h2 class="sec">📊 Analysis Results</h2>
+  <div class="err" id="errBox"></div>
+  <div class="load" id="loadBox"><div class="spin"></div><p style="color:var(--mut)">AI ensemble analyzing...</p></div>
+
+  <div class="res" id="resBox">
+    <div class="emerg" id="emBanner"><h3 id="emTitle"></h3><p id="emMsg"></p></div>
+    <div class="wbox" id="wBox"></div>
+
+    <!-- FOLLOW-UP CHAT (WORKING) -->
+    <div class="fup" id="fupBox">
+      <h4>🩺 Follow-up Question</h4>
+      <div class="fupq" id="fupQ"></div>
+      <div class="furow">
+        <input class="fuin" id="fupIn" placeholder="Type your answer (e.g. 'yes I have chills' or 'no')" onkeydown="if(event.key==='Enter')sendFollowup()">
+        <button class="fusend" onclick="sendFollowup()">Send ➤</button>
+      </div>
+    </div>
+
+    <div id="symArea"></div>
+    <div id="entArea"></div>
+    <div id="discArea" style="display:none;margin-bottom:12px;padding:11px 14px;background:rgba(96,125,139,.15);border-left:4px solid #607d8b;border-radius:6px;font-size:.78em;color:#b0bec5;line-height:1.45"></div>
+    <div id="predArea"></div>
+    <div id="sevArea"></div>
+    <div id="clinArea"></div>
+    <div id="tipArea"></div>
+    <div id="docArea"></div>
+  </div>
+
+  <div class="rres" id="rresBox">
+    <h3 class="sec">🔬 Lab Report Analysis</h3>
+    <div id="labFind"></div>
+    <div id="labPred"></div>
+  </div>
+
+  <div id="ph">
+    <div style="font-size:3em;margin-bottom:12px">🩺</div>
+    <h3 style="color:#4a5568;margin-bottom:7px">Ready to Analyze</h3>
+    <p style="font-size:.86em">Enter symptoms · use voice · or upload a lab report</p>
+  </div>
+</div>
+</div>
+</div>
+
+<script>
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let sessionId = null;
+
+// ─── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(n, btn) {
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tc-'+n).classList.add('on'); btn.classList.add('on');
+}
+function setEx(t) { document.getElementById('inp').value=t; switchTab('text',document.querySelector('.tab')); }
+
+// ─── CLEAR ─────────────────────────────────────────────────────────────────
+function clearAll() {
+  ['inp','age','spo2'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('gender').value=''; sessionId=null; reset();
+  document.getElementById('ph').style.display='block';
+}
+
+// ─── VOICE (English + Hinglish + Hindi) ────────────────────────────────────
+let recog=null, isRec=false, vtext='';
+function toggleVoice() {
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    alert('Voice input requires Chrome browser.'); return; }
+  isRec ? stopVoice() : startVoice();
+}
+function startVoice() {
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  vtext=''; document.getElementById('vtrans').textContent='Listening...';
+  document.getElementById('vabtn').style.display='none';
+  recog=new SR();
+  const langSel=document.getElementById('vlang');
+  recog.lang=(langSel && langSel.value) ? langSel.value : 'hi-IN';
+  recog.interimResults=true; recog.continuous=true;
+  recog.onstart=()=>{ isRec=true; document.getElementById('vbtn').classList.add('rec');
+    document.getElementById('vbtn').textContent='⏹';
+    document.getElementById('vstatus').style.display='block';
+    document.getElementById('vtrans').style.display='block'; };
+  recog.onresult=e=>{ let in2='',fn='';
+    for(let i=e.resultIndex;i<e.results.length;i++)
+      e.results[i].isFinal ? fn+=e.results[i][0].transcript+' ' : in2+=e.results[i][0].transcript;
+    vtext+=fn; document.getElementById('vtrans').textContent=(vtext+in2)||'Listening...';
+    if(vtext.trim()) document.getElementById('vabtn').style.display='block'; };
+  recog.onerror=(e)=>{ stopVoice(); alert('Voice error: '+(e && e.error ? e.error : 'unknown')+'. Please allow microphone permission in Chrome.'); };
+  recog.onend=()=>{isRec=false;};
+  recog.start();
+}
+function stopVoice() {
+  if(recog) recog.stop(); isRec=false;
+  document.getElementById('vbtn').classList.remove('rec');
+  document.getElementById('vbtn').textContent='🎤';
+  document.getElementById('vstatus').style.display='none';
+}
+async function analyzeVoice() {
+  if(!vtext.trim()) return;
+  try {
+    const r=await fetch('/normalize-input',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:vtext.trim()})});
+    const d=await r.json();
+    document.getElementById('inp').value=(r.ok&&d.normalized_text)?d.normalized_text:vtext.trim();
+  } catch(e){
+    document.getElementById('inp').value=vtext.trim();
+  }
+  switchTab('text',document.querySelector('.tab')); analyze();
+}
+
+// ─── FILE UPLOAD ───────────────────────────────────────────────────────────
+let selFile=null;
+function selectFile(e){ selFile=e.target.files[0]; showPrev(); }
+function dropFile(e){ e.preventDefault(); document.getElementById('upz').classList.remove('drag'); selFile=e.dataTransfer.files[0]; showPrev(); }
+function showPrev(){ if(!selFile) return; document.getElementById('fprev').textContent='✅ '+selFile.name+' ('+Math.round(selFile.size/1024)+' KB)'; }
+
+async function analyzeReport() {
+  if(!selFile){ alert('Please select a file first.'); return; }
+  showLoad(true); reset();
+  try {
+    const fd=new FormData();
+    fd.append('file',selFile);
+    const sexEl = document.getElementById('rptSex');
+    if(sexEl && sexEl.value) fd.append('gender', sexEl.value);
+    const ageEl = document.getElementById('rptAge');
+    if(ageEl && ageEl.value) fd.append('age', ageEl.value);
+    const dobEl = document.getElementById('rptDob');
+    if(dobEl && dobEl.value) fd.append('dob', dobEl.value);
+    fd.append('symptoms',document.getElementById('extraSym').value||'');
+    const r=await fetch('/analyze-report',{method:'POST',body:fd});
+    const d=await r.json(); showLoad(false);
+    if(!r.ok||d.error){showErr(d.error||'Report analysis failed');return;}
+    showReport(d);
+  } catch(e){showLoad(false);showErr('Network error: '+e.message);}
+}
+function showReport(d) {
+  document.getElementById('ph').style.display='none';
+  document.getElementById('rresBox').style.display='block';
+  let html='';
+  if(d.findings&&d.findings.length){
+    html+='<table class="lt"><thead><tr><th>Parameter</th><th>Value</th><th>Normal Range</th><th>Status</th><th>Significance</th></tr></thead><tbody>';
+    d.findings.forEach(f=>{
+      const cls='s'+f.status;
+      html+=`<tr><td><strong>${f.parameter}</strong></td><td>${f.value} ${f.unit}</td><td>${f.normal_range} ${f.unit}</td><td class="${cls}">${f.status}</td><td style="color:#90a4ae;font-size:.8em">${f.hint||'—'}</td></tr>`;
+    }); html+='</tbody></table>';
+  } else { html='<p style="color:var(--mut);font-size:.86em">Could not extract values. Ensure image is clear, well-lit, and text is sharp.</p>'; }
+  if(d.extracted_text) html+=`<details style="margin-top:8px"><summary style="color:var(--acc);cursor:pointer;font-size:.82em">View extracted text</summary><pre style="background:rgba(0,0,0,.3);padding:10px;border-radius:7px;font-size:.73em;color:#90a4ae;white-space:pre-wrap;margin-top:6px;max-height:200px;overflow-y:auto">${d.extracted_text}</pre></details>`;
+  document.getElementById('labFind').innerHTML=html;
+  if(d.ml_prediction&&d.ml_prediction.length){
+    let ph='<h3 class="sec" style="margin-top:16px">🎯 Possible Conditions from Lab</h3>';
+    d.ml_prediction.forEach(p=>{
+      ph+=`<div class="pc"><div class="ph"><div class="rb">${p.rank}</div><div><div class="pd">${p.disease}</div><div class="pdr">👨‍⚕️ ${p.doctor}</div></div></div><div class="cl"><span>Confidence</span><span>${p.confidence}%</span></div><div class="cb"><div class="cf" style="width:${p.confidence}%"></div></div></div>`;
+    });
+    if(d.disclaimer) ph+=`<p style="color:#607d8b;font-size:.78em;margin-top:10px;padding:8px;background:rgba(255,255,255,.03);border-radius:6px">⚠️ ${d.disclaimer}</p>`;
+    document.getElementById('labPred').innerHTML=ph;
+  }
+}
+
+// ─── MAIN ANALYZE ──────────────────────────────────────────────────────────
+async function analyze() {
+  const text=document.getElementById('inp').value.trim();
+  if(!text){showErr('Please describe your symptoms first.');return;}
+  sessionId=null;
+  await doRequest({text,age:document.getElementById('age').value||null,
+    gender:document.getElementById('gender').value||null,
+    spo2:document.getElementById('spo2').value||null},'predict');
+}
+
+async function doRequest(payload, endpoint) {
+  showLoad(true); reset();
+  try {
+    const r=await fetch('/'+endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json(); showLoad(false);
+    if(!r.ok||d.error){showErr(d.error||'Analysis failed');return;}
+    if(d.session_id) sessionId=d.session_id;
+    showResults(d);
+  } catch(e){showLoad(false);showErr('Network error: '+e.message);}
+}
+
+// ─── FOLLOW-UP (WORKING) ───────────────────────────────────────────────────
+async function sendFollowup() {
+  const ans=document.getElementById('fupIn').value.trim();
+  if(!ans||!sessionId) return;
+  document.getElementById('fupIn').value='';
+  document.getElementById('fupBox').style.display='none';
+  await doRequest({session_id:sessionId,answer:ans},'follow_up');
+}
+
+// ─── DISPLAY RESULTS ───────────────────────────────────────────────────────
+function showResults(d) {
+  document.getElementById('ph').style.display='none';
+  document.getElementById('resBox').style.display='block';
+  document.getElementById('rresBox').style.display='none';
+
+  // Emergency
+  if(d.emergency&&d.emergency.triggered){
+    const b=document.getElementById('emBanner'); b.style.display='block';
+    document.getElementById('emTitle').textContent='🚨 '+d.emergency.name;
+    document.getElementById('emMsg').textContent=d.emergency.action;
+  }
+  // Warning
+  if(d.warning){ const w=document.getElementById('wBox'); w.textContent=d.warning; w.style.display='block'; }
+
+  // Follow-up question
+  const fu=d.follow_up;
+  if(fu&&fu.needs_follow_up&&fu.question){
+    document.getElementById('fupQ').textContent=fu.question;
+    document.getElementById('fupBox').style.display='block';
+    setTimeout(()=>document.getElementById('fupIn').focus(),100);
+  }
+
+  // Detected symptoms
+  if(d.detected_symptoms&&d.detected_symptoms.length)
+    document.getElementById('symArea').innerHTML=`<h3 class="sec">✓ Detected Symptoms (${d.total_symptoms})</h3><div class="stags">${d.detected_symptoms.map(s=>`<span class="stag">✓ ${s}</span>`).join('')}</div>`;
+
+  // Entropy meter
+  if(d.entropy!==undefined){
+    const pct=Math.min(d.entropy/2.5*100,100);
+    const col=pct>70?'#f44336':pct>40?'#ff9800':'#4caf50';
+    const lbl=pct>70?'High uncertainty — follow-up needed':pct>40?'Moderate uncertainty':'High confidence';
+    document.getElementById('entArea').innerHTML=`<div class="ebar-w">Certainty: <strong style="color:${col}">${lbl}</strong><div class="ebar"><div class="ef" style="width:${pct}%;background:${col}"></div></div></div>`;
+  }
+
+  // Disclaimer (clinical safety)
+  if(d.disclaimer){
+    const da=document.getElementById('discArea');
+    da.textContent='⚕️ '+d.disclaimer;
+    da.style.display='block';
+  }
+
+  // Predictions
+  if(d.predictions&&d.predictions.length){
+    let h='<h3 class="sec">🎯 Differential Diagnosis'+(d.updated?' <small style="color:var(--ok);font-weight:700">· Updated after your answer</small>':'')+'</h3>';
+    d.predictions.forEach(p=>{
+      const fc=p.confidence>=65?'hi':p.confidence>=40?'med':'';
+      const why=(p.why||[]).map(r=>`<span>✓</span>${r}`).join('<br>');
+      h+=`<div class="pc${p.rank===1?' top':''}"><div class="ph"><div class="rb">${p.rank}</div><div><div class="pd">${p.disease}</div><div class="pdr">👨‍⚕️ ${p.doctor}</div></div></div><div class="cl"><span>Confidence</span><span>${p.confidence}%</span></div><div class="cb"><div class="cf ${fc}" style="width:${Math.min(p.confidence,100)}%"></div></div>${why?`<div class="why">${why}</div>`:''}</div>`;
+    });
+    document.getElementById('predArea').innerHTML=h;
+    if(d.updated) document.getElementById('predArea').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  // Severity
+  if(d.triage){
+    const t=d.triage; const l=t.level||'MILD';
+    const bg={CRITICAL:'rgba(244,67,54,.12)',SEVERE:'rgba(255,152,0,.12)',MODERATE:'rgba(255,193,7,.12)',MILD:'rgba(76,175,80,.12)'};
+    const bc={CRITICAL:'#f44336',SEVERE:'#ff9800',MODERATE:'#ffc107',MILD:'#4caf50'};
+    const fac=t.factors&&t.factors.length?`<div class="sf">Factors: ${t.factors.join(', ')}</div>`:'';
+    document.getElementById('sevArea').innerHTML=`<div class="sv" style="background:${bg[l]};border-left:4px solid ${bc[l]}"><span class="sb s${l}">${l}</span><div class="sa">${t.advice||''}</div>${fac}</div>`;
+  }
+
+  // Clinical: tests, diet, recovery
+  if(d.tests||d.diet||d.recovery){
+    const tests=d.tests&&d.tests.length?`<div class="cc"><h4>🧪 Suggested Tests</h4><ul>${d.tests.map(t=>`<li>${t}</li>`).join('')}</ul></div>`:'';
+    const diet=d.diet?`<div class="cc"><h4>🥗 Diet Advice</h4><p>${d.diet}</p></div>`:'';
+    const rec=d.recovery?`<div class="cc" style="grid-column:1/-1"><h4>🗓 Recovery Plan</h4><p>${d.recovery}</p></div>`:'';
+    document.getElementById('clinArea').innerHTML=`<div class="cgrid">${tests}${diet}${rec}</div>`;
+  }
+
+  // Follow-up tips
+  if(d.follow_up_questions&&d.follow_up_questions.length)
+    document.getElementById('tipArea').innerHTML='<h3 class="sec" style="margin-top:14px">🩺 Questions for Your Doctor</h3>'+d.follow_up_questions.map(q=>`<div style="background:rgba(102,126,234,.1);border-left:3px solid var(--acc2);padding:8px 12px;border-radius:4px;margin-bottom:6px;font-size:.84em;color:#c3cfe2">❓ ${q}</div>`).join('');
+
+  // Doctors
+  const dr=d.doctor_recommendations;
+  if(dr&&dr.items&&dr.items.length){
+    let dh=`<h3 class="sec" style="margin-top:14px">🏥 Recommended Doctors in ${dr.city}</h3>`;
+    dr.items.forEach(item=>{
+      dh+=`<div class="dg"><div class="ds">👨‍⚕️ ${item.specialist}</div><div>${item.for_diseases.map(d=>`<span class="dtag">${d}</span>`).join('')}</div>${item.doctors.map(doc=>`<div class="dc"><div class="dn">📋 Dr. ${doc.name}</div><div class="dm"><span class="ml">Rating</span><span><span class="star">⭐</span>${doc.rating} (${doc.reviews} reviews) · ${doc.experience_years} yrs</span><span class="ml">Hospital</span><span>${doc.hospital}, ${doc.location}</span><span class="ml">Fee</span><span>₹${doc.fees_inr}</span><span class="ml">Hours</span><span>${doc.availability}</span></div></div>`).join('')}</div>`;
+    });
+    document.getElementById('docArea').innerHTML=dh;
+  }
+}
+
+// ─── HELPERS ───────────────────────────────────────────────────────────────
+function showLoad(b){ document.getElementById('loadBox').style.display=b?'block':'none'; }
+function showErr(m){ const e=document.getElementById('errBox'); e.textContent='⚠️ '+m; e.style.display='block'; document.getElementById('ph').style.display='none'; }
+function reset(){
+  ['emBanner','wBox','errBox','rresBox','fupBox'].forEach(id=>document.getElementById(id).style.display='none');
+  ['symArea','entArea','predArea','sevArea','clinArea','tipArea','docArea','labFind','labPred'].forEach(id=>document.getElementById(id).innerHTML='');
+  const da=document.getElementById('discArea'); da.style.display='none'; da.textContent='';
+  document.getElementById('resBox').style.display='none';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('inp').addEventListener('keydown',e=>{ if(e.ctrlKey&&e.key==='Enter') analyze(); });
+});
+</script>
+</body>
+</html>
